@@ -8,8 +8,13 @@ import {
   ScrollView
 } from "react-native";
 import { useTheme, makeStyles, Icon, Button } from '@rneui/themed';
+
 import blocksState from "../Data/blocksState"; 
 import { RenderObj } from "./RenderObj";
+import { ScreenHeight } from "@rneui/base";
+import { ToolBarHeight } from "./SimpleToolbar"
+
+const addButtonSize = 60;
 
 export const BlocksList: React.FC = () => {
   const [isVisible, setVisible] = useState(false);
@@ -23,7 +28,12 @@ export const BlocksList: React.FC = () => {
   const { theme } = useTheme();
   const styles = useStyles(theme);
   
-  const onPressEvent = (content: {id: number | string, type: string, name: string, value: string}) => {
+  const onPressEvent = (content: {
+    id: number | string, 
+    type: string, name: 
+    string, 
+    value: string
+  }) => {
     block[content.id] = {
       type: content.type,
       name: content.name,
@@ -40,6 +50,7 @@ export const BlocksList: React.FC = () => {
     setBlockValue('');
     console.log(block);
   }, [block])
+  
 
   return (
     <View>
@@ -47,45 +58,44 @@ export const BlocksList: React.FC = () => {
         <View style={styles.addButton} >
           <TouchableOpacity onPress={() => {setVisible(true)}}>
             <Icon 
-              name="circle-with-plus"
+              name="plus"
               type="entypo"
-              size={75}
+              size={addButtonSize}
             />
           </TouchableOpacity>
         </View>
         ) : undefined }
       
-      
-      <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
-        <Modal
-          animationType = {"fade"}
-          transparent={true}
-          visible={isVisible}
-          presentationStyle="overFullScreen"
-        >
-          <View style={styles.modal}>
-            <View style={styles.blocksSelectView}>
-              <TouchableOpacity style={styles.selectionBlock} onPress={() => setBlockType('function')}>
-                <Text style={styles.selectionText}>Function</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.selectionBlock} onPress={() => setBlockType('declare')}>
-                <Text style={styles.selectionText}>Declare</Text>
-              </TouchableOpacity>
-            </View>
-            <TextInput placeholder="name" value={blockName} onChangeText={(text) => setBlockName(text)}/>
-            <TextInput placeholder="value" value={blockValue} onChangeText={(text) => setBlockValue(text)}/>
-            <Button buttonStyle={{backgroundColor: theme.colors?.success}} title="Add" onPress={() => {
-              onPressEvent({id: Date.now(), type: blockType, name: blockName, value: blockValue});
-            }}/>
-            <Button 
-              title="Close Modal" 
-              onPress={() => {setBlockType(''); setBlockName(''); setBlockValue(''); setVisible(!isVisible);}}  
-              icon={{name: "close", type: 'antdesign'}}
-              buttonStyle={styles.closeButton}
-              iconRight={true}
-            />
+      <Modal
+        animationType = {"fade"}
+        transparent={true}
+        visible={isVisible}
+        presentationStyle="overFullScreen"
+      >
+        <View style={styles.modal}>
+          <View style={styles.blocksSelectView}>
+            <TouchableOpacity style={styles.selectionBlock} onPress={() => setBlockType('function')}>
+              <Text style={styles.selectionText}>Function</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.selectionBlock} onPress={() => setBlockType('declare')}>
+              <Text style={styles.selectionText}>Declare</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
+          <TextInput placeholder="name" value={blockName} onChangeText={(text) => setBlockName(text)}/>
+          <TextInput placeholder="value" value={blockValue} onChangeText={(text) => setBlockValue(text)}/>
+          <Button buttonStyle={{backgroundColor: theme.colors?.success}} title="Add" onPress={() => {
+            onPressEvent({id: Date.now(), type: blockType, name: blockName, value: blockValue});
+          }}/>
+          <Button 
+            title="Close Modal" 
+            onPress={() => {setBlockType(''); setBlockName(''); setBlockValue(''); setVisible(!isVisible);}}  
+            icon={{name: "close", type: 'antdesign'}}
+            buttonStyle={styles.closeButton}
+            iconRight={true}
+          />
+        </View>
+      </Modal>
+      <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
         <RenderObj/>
       </ScrollView>
     </View>  
@@ -147,11 +157,14 @@ const useStyles = makeStyles((theme) => ({
   },
 
   addButton: {
-    backgroundColor: theme.colors?.primary, 
+    backgroundColor: theme.colors?.secondary, 
     borderRadius: 50,
     position: "absolute", 
-    bottom: 85, 
-    right: 10, 
-    zIndex: 100
+    top: ScreenHeight - ToolBarHeight - addButtonSize, // dont know how to do it correctly
+    right: 20,
+    zIndex: 100,
+
+    elevation: 5,
+    shadowColor: theme.colors?.black
   }
 }));

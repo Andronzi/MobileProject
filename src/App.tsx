@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { ActivityIndicator, View} from "react-native";
-import { useTheme, makeStyles } from "@rneui/themed"
-
+import { ActivityIndicator, View, Text } from "react-native";
+import { useTheme, makeStyles, Button } from "@rneui/themed"
 
 import { BlocksList } from './Components/BlocksList';
-import Console from "./Components/Console";
-// import NavMenu from "./Components/NavMenu";
+import ConsoleScreen from "./Components/ConsoleScreen";
+import { createNavContainer } from "./Components/StackNav";
 
 import { testBchFile } from "./Butch/main"
 import { ButchBuilder } from "./Butch/Butch";
+import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
 
 type AppData = { builder: ButchBuilder, new?: string }; 
 
@@ -22,6 +22,8 @@ function initApp(): Promise<AppData> {
 
   return Promise.all(tasks).then(() => appData)
 }
+
+const Nav = createNavContainer();
 
 export const App: React.FC = () => {
   const [appData, setAppData] = useState<AppData | undefined>();
@@ -43,9 +45,30 @@ export const App: React.FC = () => {
   } 
   else return (
     <View style={{ zIndex: 0 }}>
-
-      {/* <Console builder={appData.builder}/> */}
-      <BlocksList/>
+      <Nav.Stack>
+        <Nav.Screen name={"console"} 
+          component={ConsoleScreen} 
+          transProps={{ builder: appData.builder }} 
+        />
+        <Nav.Screen name={"default"} component={ 
+          ({ navigator }) => (
+            <View>
+              <ToolBar>
+                <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
+                <Button title="Console" onPress={() => { navigator.goTo("console") }} />
+              </ToolBar>
+              <BlocksList />
+            </View>
+          )
+        } />
+        <Nav.Screen name="globals" component={ ({ navigator }) => <>
+            <ToolBar>
+              <LeftArrow onPress={navigator.goBack}/>
+            </ToolBar>
+            <View><Text>Place here list of functions and global variables</Text></View>
+          </>
+        } />
+      </Nav.Stack>
     </View>
   )
 }
