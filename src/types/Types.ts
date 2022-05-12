@@ -9,24 +9,27 @@
 //   | Record<string, unknown>;
 // export default StyleType;
 
+import { CButchObj } from "src/Butch/ButchObj";
+
+// TODO: test React.Attributes for props
 export interface IStyle {
-  [key: string]: unknown | undefined;
+    [key: string]: unknown | undefined;
 }
 export type Children = React.ReactNode[] | undefined;
 
 export interface FunctionBlock {
-  type: "2352";
-  name: string;
-  args?: string;
+    type: "2352";
+    name: string;
+    args?: string;
 }
 
 export interface LoopBlock {
-  expression: string;
+    expression: string;
 }
 
-export interface InitBlock {
-  name?: string;
-  expression: string;
+export interface DeclarationBlock {
+    name: string;
+    expression: string;
 }
 
 // enum Conditionals {
@@ -36,14 +39,16 @@ export interface InitBlock {
 // }
 
 export interface ConditionalOperator {
-  type: string; // "if", "elseif", "else"
-  expression: string;
+    type: string; // "if", "elseif", "else"
+    expression: string;
 }
 
-export interface ElementData {
-  type: InitBlock | FunctionBlock | LoopBlock | ConditionalOperator;
-  coordinates: { x: number; y: number };
-  size: { width: number; height: number };
-  content?: ElementData[];
-}
-export type ProgramData = ElementData[];
+// export interface ElementData {
+//   type: InitBlock | FunctionBlock | LoopBlock | ConditionalOperator;
+//   coordinates: { x: number; y: number };
+//   size: { width: number; height: number };
+//   content?: ElementData[];
+// }
+
+export type ProgramData = CButchObj | undefined;
+export type BObjInfo = CButchObj;

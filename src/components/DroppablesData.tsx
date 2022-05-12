@@ -2,13 +2,15 @@ import React, { useContext } from "react";
 import { FlatList } from "react-native";
 import PropTypes from "prop-types";
 
-import { ElementData, ProgramData } from "../types/Types";
+import { ProgramData } from "../types/Types";
 import {
   ConditionalComponent,
+  ForLoopComponent,
   FunctionComponent,
-  InitComponent,
-  LoopComponent,
+  DeclarationComponent,
+  WhileLoopComponent,
 } from "../Modules/ProgramBlocks";
+import { CButchObj } from "src/Butch/ButchObj";
 
 const DNDElementsContext = React.createContext<ProgramData>(undefined);
 
@@ -51,21 +53,34 @@ interface DNDElementsProviderProps {
 }
 
 const ProgramBlocks = {
-  FunctionBlock: FunctionComponent,
-  LoopBlock: LoopComponent,
-  InitBlock: InitComponent,
-  ConditionalOperator: ConditionalComponent,
+  declare: DeclarationComponent,
+  function: FunctionComponent,
+  // invoker:,
+  // deref:,
+  // type:,
+  // name:,
+  // nameSeq:,
+  // content:,
+  // value:,
+  // text:,
+  // expression: ,
+  // return:,
+  // break:,
+  // log:,
+  while: WhileLoopComponent,
+  for: ForLoopComponent,
+  if: ConditionalComponent,
+  // container:,
+  // set:,
+  // print:
 };
 
-function createElementByElementData(elementData: ElementData) {
-  return React.createElement(ProgramBlocks[typeof elementData.type]);
-}
 // TODO: удалить всё нахуй.
 function DNDElementsProvider({ programData }: DNDElementsProviderProps) {
   return (
     <DNDElementsContext.Provider value={programData}>
       <FlatList
-        data={programData}
+        data={programData?.cContent}
         renderItem={item => createElementByElementData(item.item)}
       />
     </DNDElementsContext.Provider>
