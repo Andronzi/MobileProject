@@ -6,10 +6,10 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
-import Task from "./src/components/Task";
-import TasksTitle from "./src/components/TasksTitle";
-import Circle from "./src/components/Circle";
-import Colors from "./src/config/colors";
+import Task from "./Components/Task";
+import TasksTitle from "./Components/TasksTitle";
+import Circle from "./Components/Circle";
+import Colors from "./config/colors";
 
 const App = () => {
   const [taskList] = useState([
