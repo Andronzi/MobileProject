@@ -1,6 +1,14 @@
-import { Block, Environment, Value, TypeNames, Signal, SignalTypes, ContainerBlock } from "./base";
+import { 
+    Block, 
+    Environment, 
+    Value, 
+    TypeNames, 
+    Signal, 
+    SignalTypes, 
+    ContainerBlock, 
+    ScopeBlock 
+} from "./base";
 import ExpressionBlock from "./ExpressionBlock";
-import { verifyVariableName } from "./utils";
 import RuntimeError from "./errors";
 
 /**
@@ -142,7 +150,7 @@ export class ReturnBlock extends Block
 
     constructor(outBlock: Block | undefined) {
         super();
-        if (outBlock){
+        if (outBlock) {
             this.outBlockIndex = this.pushToContent(outBlock)[0];
         }
     }
@@ -175,6 +183,28 @@ export class __consolelog extends Block
     
 }
 
+export class PrintBlock extends Block 
+{
+    private valueIndex: number;
+    private writers: Function[];
+
+    constructor(valueBlock: Block, writers: Function[]) {
+        super();
+        this.valueIndex = this.pushToContent(valueBlock)[0];
+        this.writers = writers;
+    }
+
+    protected logicsBody(env: Environment): Value {
+        const value = 
+            this.getContent()[this.valueIndex]
+            .execute(env)
+            .evaluate(env, TypeNames.STRING);
+        
+        this.writers.forEach(writer => writer(value + "\n"));
+        return Value.Undefined;
+    }
+}
+
 export class SetBlock extends Block
 {
     public leftValueIndex: number;
@@ -182,8 +212,8 @@ export class SetBlock extends Block
 
     constructor(leftValue: Block, rightValue: Block) {
         super();
-        this.leftValueIndex = this.pushToContent(leftValue)[0];
-        this.rightBlockIndex = this.pushToContent(rightValue)[0];
+        [this.leftValueIndex, this.rightBlockIndex] = 
+            this.pushToContent(leftValue, rightValue);
     }
 
     protected logicsBody(env: Environment): Value {
@@ -196,42 +226,87 @@ export class SetBlock extends Block
     }
 }
 
-export class WhileBlock extends ContainerBlock 
+export class WhileBlock extends Block 
 {
     private conditionIndex: number;
+    private containerIndex: number;
 
-    constructor(condition: ExpressionBlock, internalBlocks: Block[]) {
-        super(internalBlocks);
-        this.conditionIndex = this.pushToContent(condition)[0];
+    constructor(condition: ExpressionBlock, container: Block) {
+        super();
+        [this.conditionIndex, this.containerIndex]
+            = this.pushToContent(condition, container);
     }
 
     protected logicsBody(env: Environment): Value {
-        const condition = this.getContent()[this.conditionIndex];
+        const content = this.getContent(),
+            condition = content[this.conditionIndex],
+            container = content[this.containerIndex];
         
         while (condition.execute(env).evaluate(env, TypeNames.BOOLEAN)) {
-            super.logicsBody(env);
+            container.execute(env);
         }
+
         return Value.Undefined;
     }
 }
 
-export class ForBlock extends WhileBlock 
+export class ForBlock extends ScopeBlock 
 {
     private beforeIndex: number;
+    private conditionIndex: number;
     private afterIndex: number;
+    private containerIndex: number;
 
     constructor(beforeLoopBlock: Block, condition: ExpressionBlock,
-        afterItBlock: Block, internalBlocks: Block[]) {
-        super(condition, internalBlocks);
-        this.beforeIndex = this.pushToContent(beforeLoopBlock)[0];
-        this.afterIndex = this.pushToContent(afterItBlock)[0];
-
-        this.containerIndexes.push(this.afterIndex);
+        afterItBlock: Block, container: Block) {
+        super();
+        [this.beforeIndex, this.conditionIndex, this.afterIndex, this.containerIndex] = 
+            this.pushToContent(beforeLoopBlock, condition, afterItBlock, container);
     }
 
     protected logicsBody(env: Environment): Value {
         const content = this.getContent();
-        content[this.beforeIndex].execute(env);
-        return super.logicsBody(env);
+        for (content[this.beforeIndex].execute(env); 
+            content[this.conditionIndex].execute(env).evaluate(env, TypeNames.BOOLEAN); 
+            content[this.afterIndex].execute(env)) 
+        {
+            content[this.containerIndex].execute(env);
+        }
+
+        return Value.Undefined
+    }
+}
+
+export class IfBlock extends Block
+{
+    private conditionIndex: number;
+    private ifContainerIndex: number;
+    private elseContainerIndex: number | undefined;
+
+    constructor(condition: ExpressionBlock,
+        ifBlock: Block, elseBlock: Block | undefined = undefined) {
+        super();
+        // this.conditionIndex = this.pushToContent(condition)[0];
+        // this.ifContainerIndex = this.pushToContent(ifContainer)[0];
+        // this.elseContainerIndex = this.pushToContent(elseContainer)[0];
+
+        [this.conditionIndex, this.ifContainerIndex] =
+            this.pushToContent(condition, ifBlock);
+            
+        if (elseBlock)
+            this.elseContainerIndex = this.pushToContent(elseBlock)[0];
+    }
+
+    protected logicsBody(env: Environment): Value {
+        const content = this.getContent()
+
+        if (content[this.conditionIndex].execute(env)) {
+            content[this.ifContainerIndex].execute(env);
+        } 
+        else if (this.elseContainerIndex) {
+            content[this.ifContainerIndex].execute(env);
+        }
+
+        return Value.Undefined;
     }
 }

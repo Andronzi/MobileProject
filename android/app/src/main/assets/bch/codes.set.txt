@@ -7,9 +7,14 @@ name
 nameSeq
 content
 value
-returnable
 text
 expression
 return
 break
 log
+while
+for
+if
+container
+set
+print

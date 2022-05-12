@@ -17,23 +17,21 @@ export const RenderObj: React.FC = () => {
             {
                 Object.entries(data).map(([key, value]: [key: string | number, value: any]) => {
                     switch (value.type) {
-                        case "function": {
+                        case "function": 
                             return (
                                 <View key={key.toString()} style={styles.obj}>
                                     <NameBlock text={value.name} keys={[key]}/>
                                     <FunctionBlock content={value.content} keys={[key]}/>
                                 </View>
                             )
-                        }
 
-                        case "declare": {
+                        case "declare": 
                             return (
                                 <View key={key.toString()} style={styles.obj}>
                                     <NameBlock text={value.name} keys={[key]}/>
                                     <DeclareBlock content={value.content} keys={[key]}/>
                                 </View>
                             )
-                        }
                     }
 
                     return;

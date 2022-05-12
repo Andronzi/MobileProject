@@ -4,7 +4,7 @@ class StateAPI {
     static changeName(keys: Array<string | number>, newName: string | number | boolean  | null, state=blockState) {
         if (!keys.length) return;
 
-        let k = keys.shift();
+        const k = keys.shift();
         Object.entries(state).map(([key, value]: [string | number, any]) => {
             if (key === k) {
                 if (!keys.length) {
