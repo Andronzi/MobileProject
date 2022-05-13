@@ -35,6 +35,16 @@ export default class ButchObj {
         return node;
     }
 
+    // __getString(key: string): string {
+    //     const item = this.data[this.codes[key]];
+    //     return typeof item === "string" ? item : "";
+    // }
+
+    // __getStringArray(key: string): string[] {
+    //     const item = this.data[this.codes[key]];
+    //     return Array.isArray(item) ? item : [""];
+    // }
+
     get(key: string): B_ObjPayload {
         return this.data[this.codes[key]];
     }
@@ -57,12 +67,20 @@ export default class ButchObj {
     }
 }
 
+interface Coordinates {
+    x?: number;
+    y?: number;
+}
+
 export class CButchObj extends ButchObj {
     public cContent: CButchObj[] | undefined;
+    public coordinates: Coordinates;
 
     constructor(obj: { [key: string]: any }, codes: { [key: string]: string }) {
         super(obj, codes);
 
+        this.coordinates = {};
+        // Возможно этот конструктор не работает
         this.cContent = super.content()?.map(item => new CButchObj(item, codes));
     }
 
