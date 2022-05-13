@@ -11,6 +11,7 @@ import {
   WhileLoopComponent,
 } from "../Modules/ProgramBlocks";
 import { CButchObj } from "src/Butch/ButchObj";
+import createProgramBlock from "src/Utilities/ProgramBlockLayout";
 
 const DNDElementsContext = React.createContext<ProgramData>(undefined);
 
@@ -79,10 +80,7 @@ const ProgramBlocks = {
 function DNDElementsProvider({ programData }: DNDElementsProviderProps) {
   return (
     <DNDElementsContext.Provider value={programData}>
-      <FlatList
-        data={programData?.cContent}
-        renderItem={item => createElementByElementData(item.item)}
-      />
+      <FlatList data={programData?.cContent} renderItem={item => createProgramBlock(item.item)} />
     </DNDElementsContext.Provider>
   );
 }

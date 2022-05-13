@@ -9,11 +9,40 @@ import {
 } from "../Modules/ProgramBlocks";
 import { CButchObj } from "src/Butch/ButchObj";
 import DRErrors from "src/Errors";
+import { DeclarationBlock } from "src/types/Types";
 
-function createDeclare(type: string, content: CButchObj[]) {
-  // const declarationBlock = React.createElement(DeclarationComponent, {
-  //   expression: content[0].get("expression") ? content[0].get("value"),
-  // });
+
+const stringFields = ["type", "name", "value"] as const;
+type StringField = (typeof stringFields)[number];
+
+const stringArrayFields = ["nameSeq"] as const;
+type StringArrayField = (typeof stringArrayFields)[number];
+
+const recursiveFields = ["content"];
+type RecursiveField = (typeof recursiveFields)[number];
+
+function isStringField(value: any): value is StringField {
+    return stringFields.includes(value);
+}
+
+function isStringArrayField(value: any): value is StringArrayField {
+    return stringArrayFields.includes(value);
+}
+
+function isRecursiveField(value: any): value is RecursiveField {
+    return recursiveFields.includes(value);
+}
+
+function createDeclare(content: CButchObj[]) {
+  
+  
+  const d = "name";
+  const props: DeclarationBlock = {
+    name: isStringField(s) ? content[0].get(s) : "",
+    expression:  
+  }
+
+  const declarationBlock = React.createElement(DeclarationComponent, {});
 }
 
 export default function createProgramBlock(item: CButchObj): JSX.Element {
