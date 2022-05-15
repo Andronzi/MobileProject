@@ -6,7 +6,7 @@ import { BlocksList } from './Components/BlocksList';
 import ConsoleScreen from "./Components/ConsoleScreen";
 import { createNavContainer } from "./Components/StackNav";
 
-import { testBchFile } from "./Butch/main"
+import { testBchFile, manualTest } from "./Butch/main"
 import { ButchBuilder } from "./Butch/Butch";
 import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
 
@@ -34,10 +34,7 @@ export const App: React.FC = () => {
   if (!appData) {
     initApp().then(data => {
       setAppData(data);
-      
-      // for debugging
-      testBchFile(data.builder);
-    })
+    }) 
 
     return <View style={styles.loadScreen}>
       <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -55,6 +52,11 @@ export const App: React.FC = () => {
             <View>
               <ToolBar>
                 <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
+                <Button title="Launch" onPress={() => { 
+                  testBchFile(appData.builder); 
+                  // manualTest();
+                  navigator.goTo("console", { reset: true });
+                }} />
                 <Button title="Console" onPress={() => { navigator.goTo("console") }} />
               </ToolBar>
               <BlocksList />
@@ -63,7 +65,7 @@ export const App: React.FC = () => {
         } />
         <Nav.Screen name="globals" component={ ({ navigator }) => <>
             <ToolBar>
-              <LeftArrow onPress={navigator.goBack}/>
+              <LeftArrow onPress={() => navigator.goBack()}/>
             </ToolBar>
             <View><Text>Place here list of functions and global variables</Text></View>
           </>

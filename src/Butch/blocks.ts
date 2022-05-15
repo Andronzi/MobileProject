@@ -186,12 +186,12 @@ export class __consolelog extends Block
 export class PrintBlock extends Block 
 {
     private valueIndex: number;
-    private writers: Function[];
+    private writer: (data: string) => void;
 
-    constructor(valueBlock: Block, writers: Function[]) {
+    constructor(valueBlock: Block, writer: (data: string) => void) {
         super();
         this.valueIndex = this.pushToContent(valueBlock)[0];
-        this.writers = writers;
+        this.writer = writer;
     }
 
     protected logicsBody(env: Environment): Value {
@@ -200,7 +200,7 @@ export class PrintBlock extends Block
             .execute(env)
             .evaluate(env, TypeNames.STRING);
         
-        this.writers.forEach(writer => writer(value + "\n"));
+        this.writer(value + "\n");
         return Value.Undefined;
     }
 }

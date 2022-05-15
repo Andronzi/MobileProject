@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import {  
 	ScrollView, 
 	Text, 
@@ -12,36 +12,51 @@ import ToolBar, { LeftArrow } from "./SimpleToolbar"
 
 type props = {
 	builder: ButchBuilder,
-	navigator: Navigator 
+	navigator: Navigator,
+	reset?: boolean 
 }
 
 const ConsoleScreen: React.FC<props> = ({ 
 	builder, 
-	navigator
-}) => {
+	navigator,
+	reset
+}) => {	
+	const scrollView = useRef<ScrollView>(null)
 	const [textStream, setTextStream] = useState({ id: "", value: "" });
+	if (reset) {
+		console.log("cleared");
+		setTextStream(prev => ({ ...prev, value: "" }));
+	}
 
-	const { theme } = useTheme(),
-		styles = useStyles(theme);
-	
-	if (!textStream.id)
+	if (!textStream.id) {
 		textStream.id = builder.useOutStream({ 
 			write: (str: string) => {
 				setTextStream(prev => { 
 					return { id: prev.id, value: prev.value + str };
 				});
 		}});
+	}
 
+	console.log("updated");
+	
+	const { theme } = useTheme(), styles = useStyles(theme);
+	
 	return (
 		<View>
 			<ToolBar>
-				<LeftArrow onPress={navigator.goBack} />
+				<LeftArrow onPress={() => navigator.goBack()} />
 			</ToolBar>
-			<ScrollView style={styles.win}>
+			<ScrollView 
+				style={styles.win} 
+				ref={scrollView}
+				onLayout={() => {
+					scrollView.current?.scrollToEnd();
+				}}
+			>
 				<Text style={styles.text}>
 					{textStream.value}  
 				</Text>
-			</ScrollView>   
+		</ScrollView> 
 		</View>
 	)
 }

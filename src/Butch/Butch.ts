@@ -24,6 +24,7 @@ import { v4 } from "uuid";
 export class Program extends Block
 {
     private globalEnv: Environment;
+    private flusher: { flush: () => void, interval: number } | undefined;
 
     constructor() {
         super();
@@ -40,6 +41,10 @@ export class Program extends Block
         this.pushToContent(funcBlock);
         this.globalEnv.create(name, new Value(TypeNames.FUNCKBLOCK, funcBlock))
         return this;
+    }
+
+    useFlushFunc(flushFunc: () => void, autoFlushInterval: number = NaN) {
+        this.flusher = { flush: flushFunc, interval: autoFlushInterval };
     }
 
     setBlock(newBlock: Block, path: number[]) {
@@ -64,7 +69,18 @@ export class Program extends Block
     }
 
     execute(): Value {
-        return super.execute(this.globalEnv);
+        const flushInterval = this.flusher && Number.isFinite(this.flusher.interval)
+            ? setInterval(this.flusher.flush, this.flusher.interval)
+            : undefined;
+        
+        super.execute(this.globalEnv);
+
+        if (flushInterval) 
+            clearInterval(flushInterval);
+
+        this.flusher?.flush();
+
+        return Value.Undefined;
     }
 }
 
@@ -86,7 +102,14 @@ export class ButchBuilder
     private builders: Map<string, Builder>;
     private exBuilders: Map<string, ExBuilder>;
     private middlewares: Middleware[];
+
     private streams: { id: string, write: Function }[] = [];
+    private outPutBuffer = "";
+    private flushBuffer = () =>  {
+        this.streams.forEach(({write}) => write(this.outPutBuffer));
+        this.outPutBuffer = "";
+    }
+    private pushBuffer = (str: string) => { this.outPutBuffer += str; };
 
     constructor(codes: {[key: string]: string}) {
         this.c = codes;
@@ -107,8 +130,12 @@ export class ButchBuilder
             [this.c.break, () => BreakBlock],
             [this.c.return, info => new ReturnBlock(info.obj.extension.builtContent[0])],
             [this.c.log, info => new __consolelog(info.obj.extension.builtContent[0])],
-            [this.c.print, info => new PrintBlock(info.obj.extension.builtContent[0], this.streams.map(stream => stream.write))],
-            [this.c.set, info => new SetBlock(info.obj.extension.builtContent[0], info.obj.extension.builtContent[1])],
+            [this.c.print, info => new PrintBlock(
+                info.obj.extension.builtContent[0], this.pushBuffer)],
+
+            [this.c.set, info => new SetBlock(
+                info.obj.extension.builtContent[0], info.obj.extension.builtContent[1])],
+                
             [this.c.container, info => new ContainerBlock(info.obj.extension.builtContent)]
         ]);
 
@@ -216,7 +243,7 @@ export class ButchBuilder
         CompilationError.throwUnknownBlock(info);
     }
 
-    build(programObj: ButchObj): Program {
+    build(programObj: ButchObj, autoFlushInterval: number = NaN): Program {
         const prog = new Program(); 
         const content = programObj.content() ?? CompilationError.throwInvalidFile();
 
@@ -239,6 +266,11 @@ export class ButchBuilder
                     CompilationError.throwUnknownBlock(info);
             }
         }
+
+        if (this.streams.length) {
+            prog.useFlushFunc(this.flushBuffer, autoFlushInterval);
+        }
+
         return prog;
     }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { 
   Modal, 
   View, 
@@ -11,17 +11,18 @@ import { useTheme, makeStyles, Icon, Button } from '@rneui/themed';
 
 import blocksState from "../Data/blocksState"; 
 import { RenderObj } from "./RenderObj";
-import { ScreenHeight } from "@rneui/base";
-import { ToolBarHeight } from "./SimpleToolbar"
+import { Dimensions } from "react-native";
 
 const addButtonSize = 60;
 
 export const BlocksList: React.FC = () => {
+  const [addButtonPos, setAddButtonPos] = useState({ right: 20, bottom: 20 })
   const [isVisible, setVisible] = useState(false);
-
   const [blockType, setBlockType] = useState('');
   const [blockName, setBlockName] = useState('');
   const [blockValue, setBlockValue] = useState('');
+
+  const selfRef = useRef(null);
 
   const block: any = blocksState;
 
@@ -44,33 +45,40 @@ export const BlocksList: React.FC = () => {
       }
     }
   }
-
+  
   useEffect(() => {
     setBlockName('');
     setBlockValue('');
     console.log(block);
-  }, [block])
-  
+  }, [block]) 
 
   return (
-    <View>
+    <View ref={selfRef}
+      onLayout={({ nativeEvent }) => {
+        setAddButtonPos(prev => ({ 
+          ...prev, 
+          bottom: nativeEvent.layout.y + nativeEvent.layout.height
+            - Dimensions.get("window").height + 20
+        }));
+    }}>
       { !isVisible ? (
-        <View style={styles.addButton} >
-          <TouchableOpacity onPress={() => {setVisible(true)}}>
-            <Icon 
-              name="plus"
-              type="entypo"
-              size={addButtonSize}
-            />
-          </TouchableOpacity>
-        </View>
+          <View style={[styles.addButton, addButtonPos]} >
+            <TouchableOpacity onPress={() => {setVisible(true)}}>
+              <Icon 
+                name="plus"
+                type="entypo"
+                size={addButtonSize}
+              />
+            </TouchableOpacity>
+          </View>
         ) : undefined }
-      
+
       <Modal
         animationType = {"fade"}
         transparent={true}
         visible={isVisible}
         presentationStyle="overFullScreen"
+        onRequestClose={() => setVisible(false)}
       >
         <View style={styles.modal}>
           <View style={styles.blocksSelectView}>
@@ -117,14 +125,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%'
   },
 
-  menu: {
-    backgroundColor: theme.colors?.primary,
-    padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-    
-  },
-
   modal: {
     padding: 20,
     marginTop: '20%',
@@ -160,8 +160,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.colors?.secondary, 
     borderRadius: 50,
     position: "absolute", 
-    top: ScreenHeight - ToolBarHeight - addButtonSize, // dont know how to do it correctly
-    right: 20,
     zIndex: 100,
 
     elevation: 5,

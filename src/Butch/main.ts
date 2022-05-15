@@ -1,40 +1,39 @@
 // import { FuncBlock, Environment, Block } from "./base"
-import { ContainerBlock } from "./base"
 import * as B from "./blocks"
 import ExpressionBlock from "./ExpressionBlock"
 import { ButchBuilder, Program } from "./Butch"
 import { createButchCodesFile, readButchCodes, readButchCodesSetAssets } from "./utils"
-import ButchObj from "./ButchObj"
+import { CButchObj } from "./ButchObj"
 import rnfs from "react-native-fs"
 
 export async function testBchFile(builder: ButchBuilder) {
     const namedTestProg = await rnfs.readFileAssets("bch/testProgram.json");
     const progStr = builder.encodeNamedProgram(namedTestProg)
     
-    const bobj = new ButchObj(JSON.parse(progStr), builder.getCodes());
+    const bobj = new CButchObj(JSON.parse(progStr), builder.getCodes());
     
     const program = builder.build(bobj);
     try {
+        const t = Date.now();
         program.execute();
+        console.log(Date.now() - t);
     } catch (e: any) {
         console.log("Finished with exeption :\nIn ", e.blockIndexStack, "\n", e);
     }
 }
 
-function manualTest() {
-    const decVar = new B.DeclareBlock("var", new ExpressionBlock("0"));
-    const forLoop = new B.ForBlock(
-        new B.DeclareBlock("i", new ExpressionBlock("0")),
-        new ExpressionBlock("i < 10000"),
-        new B.SetBlock(new ExpressionBlock("i"), new ExpressionBlock("i + 1")),
-        new ContainerBlock([new B.SetBlock(new ExpressionBlock("var"), new ExpressionBlock("var + i"))])
-    )
-    const main = new B.FuncBlock([decVar, forLoop, 
-        new B.__consolelog(new B._dereferenceBlock("var"))]);
+export function manualTest() {
+    const decVar = new B.DeclareBlock("i", new ExpressionBlock("0"));
+    const whileBlock = new B.WhileBlock(
+        new ExpressionBlock("i < 1000000"),
+        new ExpressionBlock("i = i + 1"))
+    const main = new B.FuncBlock([decVar, whileBlock, new B.__consolelog(new ExpressionBlock("i"))]);
     const prog = new Program();
     prog.useFunction("main", main);
     
+    const t = Date.now();
     prog.execute();
+    console.log(Date.now() - t);
 }
 
 export function initDefaultBuilder() {
