@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef, useContext } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import PropTypes from "prop-types";
 
-import useComponentData from "../Hooks/useComponentData";
+// import useComponentData from "../Hooks/useComponentData";
 // import { DroppablesDataContext } from "./DroppablesData";
 // import { DroppablesData } from "./DroppablesData";
 

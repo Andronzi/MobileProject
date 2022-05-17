@@ -8,7 +8,7 @@ import {
     isRecursiveField,
     isStringArrayField,
     isStringField,
-} from "src/Types/BObjFields";
+} from "../types/BObjFields";
 
 /**
  * wraper of encoded object

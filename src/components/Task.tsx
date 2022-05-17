@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     marginEnd: 15,
   },
   taskText: {
-    fontSize: 14,
+    fontSize: 16,
     maxWidth: "80%",
     lineHeight: 16,
     paddingVertical: 0,

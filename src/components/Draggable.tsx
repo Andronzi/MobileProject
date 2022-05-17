@@ -1,12 +1,9 @@
 import React, { useRef } from "react";
 import { View, Animated, PanResponder, TouchableWithoutFeedback } from "react-native";
 
-import { Children, IStyle } from "../Types/Types";
-import useStateCallback from "../Hooks/useStateCallback";
-// import { DroppablesDataContext } from "./DroppablesData";
-// import AnimatedTouchable from "./AnimatedTouchable";
+import { Children, IStyle } from "../types/Types";
+import useStateCallback from "../hooks/useStateCallback";
 
-// const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 const ANIMATION_FRICTION = 8;
 
 interface IDraggableProps {
@@ -26,10 +23,11 @@ const createMargins = (styles: IStyle = {}) => {
 
   return stylesMargins;
 };
-let _animatedValueX = 0;
-let _animatedValueY = 0;
 
 function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
+  let _animatedValueX = 0;
+  let _animatedValueY = 0;
+
   const [state, setState] = useStateCallback({
     isAnimating: false,
     isDragging: false,

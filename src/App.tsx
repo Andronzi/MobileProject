@@ -51,13 +51,13 @@ export const App: React.FC = () => {
           ({ navigator }) => (
             <View>
               <ToolBar>
-                <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
-                <Button title="Launch" onPress={() => { 
+                <Button radius={10} title="Globals" onPress={() => { navigator.goTo("globals") }} />
+                <Button radius={undefined} title="Launch" onPress={() => { 
                   testBchFile(appData.builder); 
                   // manualTest();
                   navigator.goTo("console", { reset: true });
                 }} />
-                <Button title="Console" onPress={() => { navigator.goTo("console") }} />
+                <Button radius={"xs"} title="Console" onPress={() => { navigator.goTo("console") }} />
               </ToolBar>
               <BlocksList />
             </View>
