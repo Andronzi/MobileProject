@@ -10,7 +10,7 @@ import { testBchFile, manualTest } from "./Butch/main"
 import { ButchBuilder } from "./Butch/Butch";
 import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
 
-type AppData = { builder: ButchBuilder, new?: string }; 
+type AppData = { builder: ButchBuilder; new?: string };
 
 function initApp(): Promise<AppData> {
   let appData: AppData;
@@ -18,16 +18,16 @@ function initApp(): Promise<AppData> {
     ButchBuilder.initDefaultBuilder().then(builder => {
       appData = { ...appData, builder };
     }),
-  ]
+  ];
 
-  return Promise.all(tasks).then(() => appData)
+  return Promise.all(tasks).then(() => appData);
 }
 
 const Nav = createNavContainer();
 
 export const App: React.FC = () => {
   const [appData, setAppData] = useState<AppData | undefined>();
-  
+
   const { theme } = useTheme();
   const styles = useStyles(theme);
 
@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
     alignContent: "center",
     width: "100%",
     height: "100%",
-  }
-}))
+  },
+}));
 
-export default App
+export default App;

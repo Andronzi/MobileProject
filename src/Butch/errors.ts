@@ -1,8 +1,7 @@
-import { Block } from "./base"
-import * as Bch from "./Butch"
+import { Block } from "./base";
+import * as Bch from "./Butch";
 
-export class RuntimeError extends Error
-{
+export class RuntimeError extends Error {
     public blockIdStack: string[][] = [];
     public blockIndexStack: number[][] = [];
 
@@ -13,7 +12,8 @@ export class RuntimeError extends Error
     }
 
     logBlockLocation(where: Block) {
-        const indexFrame = [], idFrame = [];
+        const indexFrame = [],
+            idFrame = [];
         let curBlock: Block | undefined = where;
         while (curBlock?.parent) {
             indexFrame.push(curBlock.index);
@@ -22,17 +22,16 @@ export class RuntimeError extends Error
         }
         this.blockIdStack.push(idFrame);
         this.blockIndexStack.push(indexFrame);
-    }    
+    }
 
     static throwTypeError(where: Block, expected: string, had: string): never {
-        let error = new RuntimeError(where, 
-            `Expected ${expected}, but had ${had}`);
+        const error = new RuntimeError(where, `Expected ${expected}, but had ${had}`);
         error.name = "TypeError";
         throw error;
-    } 
-    
+    }
+
     static throwIdentifierError(where: Block, message: string): never {
-        let error = new RuntimeError(where, message);
+        const error = new RuntimeError(where, message);
         error.name = "IdentifierError";
         throw error;
     }
@@ -54,7 +53,7 @@ export class RuntimeError extends Error
     }
 
     static throwArgumentError(where: Block): never {
-        let error = new RuntimeError(where, "Invalid arguments");
+        const error = new RuntimeError(where, "Invalid arguments");
         error.name = "ArgumentError";
         throw error;
     }
@@ -64,28 +63,37 @@ export class RuntimeError extends Error
     }
 }
 
-export class CompilationError extends Error
-{
+export class CompilationError extends Error {
     public errorLocation: Array<number>;
 
     constructor(message: string, info: Bch.BlockInfo | undefined = undefined) {
         if (info) {
-            message += ` in Block ${JSON.stringify(info.obj.data, null, 4)}, located in [${info.location}]`;
+            message += ` in Block ${JSON.stringify(
+                info.obj.data,
+                null,
+                4,
+            )}, located in [${info.location.toString()}]`;
         }
         super(message);
-        this.errorLocation = (info ? info.location : []);
+        this.errorLocation = info ? info.location : [];
     }
 
     static throwSyntax(info: Bch.BlockInfo): never {
-        throw new CompilationError("Invalid syntax", info);  
+        throw new CompilationError("Invalid syntax", info);
     }
 
     static throwUnknownBlock(info: Bch.BlockInfo): never {
-        throw new CompilationError("Unknown Block", info);  
+        throw new CompilationError("Unknown Block", info);
     }
 
     static throwInvalidFile(message: string = ""): never {
         throw new CompilationError("Invalid compiling file; " + message);
+    }
+}
+
+export class BObjError {
+    static throwInvalidField(key: string): never {
+        throw new Error(`Key ${key} is invalid or undefined`);
     }
 }
 

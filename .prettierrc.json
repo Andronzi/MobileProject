@@ -1,0 +1,19 @@
+{
+  "arrowParens": "avoid",
+  "bracketSameLine": true,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "useTabs": false,
+  "bracketSpacing": true,
+  "printWidth": 100,
+  "jsxBracketSameLine": true,
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "options": {
+        "tabWidth": 4
+      }
+    }
+  ]
+}

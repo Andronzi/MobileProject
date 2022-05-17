@@ -19,11 +19,11 @@ const factorial = (function() {
 })()
 
 const primitiveCaster = (env: Environment, val: Value) => {
-    const dTypeVal = Math.abs(val.getType() - TypeNames.PRIMITIVE);
-    if (val.getType() === TypeNames.ANY || (dTypeVal < 1000 && dTypeVal >= 0)) { 
+    const dTypeVal = Math.abs(val.type - TypeNames.PRIMITIVE);
+    if (val.type === TypeNames.ANY || (dTypeVal < 1000 && dTypeVal >= 0)) { 
         return val.evaluate(env, TypeNames.ANY) 
     } else { 
-        RuntimeError.throwTypeError(env.curBlock, "primitive", TypeNames[val.getType()])
+        RuntimeError.throwTypeError(env.curBlock, "primitive", TypeNames[val.type])
     }
 }
 
