@@ -5,9 +5,11 @@ import {
   Text, 
   TouchableOpacity, 
   TextInput, 
-  ScrollView
+  ScrollView,
+  Button,
+  Pressable
 } from "react-native";
-import { useTheme, makeStyles, Icon, Button } from '@rneui/themed';
+import { useTheme, makeStyles, Icon } from '@rneui/themed';
 
 import blocksState from "../Data/blocksState"; 
 import { RenderObj } from "./RenderObj";
@@ -91,16 +93,17 @@ export const BlocksList: React.FC = () => {
           </View>
           <TextInput placeholder="name" value={blockName} onChangeText={(text) => setBlockName(text)}/>
           <TextInput placeholder="value" value={blockValue} onChangeText={(text) => setBlockValue(text)}/>
-          <Button buttonStyle={{backgroundColor: theme.colors?.success}} title="Add" onPress={() => {
+          <Pressable style={styles.modalAddButton} onPress={() => {
             onPressEvent({id: Date.now(), type: blockType, name: blockName, value: blockValue});
-          }}/>
-          <Button 
-            title="Close Modal" 
-            onPress={() => {setBlockType(''); setBlockName(''); setBlockValue(''); setVisible(!isVisible);}}  
-            icon={{name: "close", type: 'antdesign'}}
-            buttonStyle={styles.closeButton}
-            iconRight={true}
-          />
+          }}>
+            <Text style={styles.selectionText}>Add</Text>
+            {/* <Icon name="close" type="antdesign"/>     */}
+          </Pressable>
+          <Pressable style={styles.modalCloseButton} onPress={() => {
+            setBlockType(''); setBlockName(''); setBlockValue(''); setVisible(!isVisible);}}
+          >
+            <Text style={styles.selectionText}>Close Modal</Text>
+          </Pressable>
         </View>
       </Modal>
       <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
@@ -148,11 +151,21 @@ const useStyles = makeStyles((theme) => ({
   },
 
   selectionText: {
+    color: theme.colors?.white,
     textAlign: 'center',
     fontSize: 16
   },
 
-  closeButton: {
+  modalAddButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: 10,
+    backgroundColor: theme.colors?.success
+  },
+
+  modalCloseButton: {
+    padding: 10,
     backgroundColor: '#FF3333'
   },
 

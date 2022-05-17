@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { ActivityIndicator, View, Text } from "react-native";
-import { useTheme, makeStyles, Button } from "@rneui/themed"
+import { ActivityIndicator, View, Text, Button } from "react-native";
+import { useTheme, makeStyles } from "@rneui/themed"
 
 import { BlocksList } from './Components/BlocksList';
 import ConsoleScreen from "./Components/ConsoleScreen";
@@ -51,13 +51,13 @@ export const App: React.FC = () => {
           ({ navigator }) => (
             <View>
               <ToolBar>
-                <Button radius={10} title="Globals" onPress={() => { navigator.goTo("globals") }} />
-                <Button radius={undefined} title="Launch" onPress={() => { 
+                <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
+                <Button title="Launch" onPress={() => { 
                   testBchFile(appData.builder); 
                   // manualTest();
                   navigator.goTo("console", { reset: true });
                 }} />
-                <Button radius={"xs"} title="Console" onPress={() => { navigator.goTo("console") }} />
+                <Button title="Console" onPress={() => { navigator.goTo("console") }} />
               </ToolBar>
               <BlocksList />
             </View>
