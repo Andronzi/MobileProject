@@ -4,14 +4,14 @@ import * as B from "./blocks"
 import ExpressionBlock from "./ExpressionBlock"
 import { ButchBuilder, Program } from "./Butch"
 import { createButchCodesFile, readButchCodes, readButchCodesSetAssets } from "./utils"
-import ButchObj from "./ButchObj"
+import ButchObjBase from "./ButchObj"
 import rnfs from "react-native-fs"
 
 export async function testBchFile(builder: ButchBuilder) {
     const namedTestProg = await rnfs.readFileAssets("bch/testProgram.json");
     const progStr = builder.encodeNamedProgram(namedTestProg)
     
-    const bobj = new ButchObj(JSON.parse(progStr), builder.getCodes());
+    const bobj = new ButchObjBase(JSON.parse(progStr), builder.getCodes());
     
     const program = builder.build(bobj);
     try {

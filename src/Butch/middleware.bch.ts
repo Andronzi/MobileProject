@@ -1,7 +1,7 @@
 import * as Bch from "./Butch"
 import { verifyVariableName } from "./utils"
 import { CompilationError } from "./errors"
-import ButchObj from "./ButchObj"
+import ButchObjBase from "./ButchObj"
 import { Block } from "./base"
 
 export const syntaxCheck: Bch.Middleware = 
@@ -17,12 +17,12 @@ export const syntaxCheck: Bch.Middleware =
  */
 export const prebuildInternalBlocks: Bch.Middleware = 
     function(info: Bch.BlockInfo, app: Bch.ButchBuilder) {
-        const content = info.obj.content();
+        const content = info.obj.getContent();
         if (content && content.length > 0) {
             const newContent: Block[] = new Array<Block>(content.length);
             for (let i = 0; i < content.length; ++i) {
                 newContent[i] = app.buildBlock(
-                    {obj: new ButchObj(content[i], info.obj.codes), location: info.location.concat(i)});
+                    {obj: new ButchObjBase(content[i], info.obj.codes), location: info.location.concat(i)});
             }
             info.obj.extension .builtContent = newContent;
         } 

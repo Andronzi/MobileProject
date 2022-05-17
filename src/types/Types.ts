@@ -9,7 +9,7 @@
 //   | Record<string, unknown>;
 // export default StyleType;
 
-import { CButchObj } from "src/Butch/ButchObj";
+import { ButchObj } from "src/Butch/ButchObj";
 
 // TODO: test React.Attributes for props
 export interface IStyle {
@@ -50,5 +50,5 @@ export interface ConditionalOperator {
 //   content?: ElementData[];
 // }
 
-export type ProgramData = CButchObj | undefined;
-export type BObjInfo = CButchObj;
+export type ProgramData = ButchObj | undefined;
+export type BObjInfo = ButchObj;

@@ -89,4 +89,11 @@ export class CompilationError extends Error {
   }
 }
 
+export class BObjError 
+{
+  static throwInvalidField(key: string): never {
+    throw new Error(`Key ${key} is invalid or undefined`);
+  }
+}
+
 export default RuntimeError;

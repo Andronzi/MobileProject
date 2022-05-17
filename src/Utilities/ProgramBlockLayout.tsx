@@ -7,7 +7,7 @@ import {
   DeclarationComponent,
   WhileLoopComponent,
 } from "../Modules/ProgramBlocks";
-import { CButchObj } from "src/Butch/ButchObj";
+import { ButchObj } from "src/Butch/ButchObj";
 import DRErrors from "src/Errors";
 import { DeclarationBlock } from "src/types/Types";
 
@@ -33,7 +33,7 @@ function isRecursiveField(value: any): value is RecursiveField {
     return recursiveFields.includes(value);
 }
 
-function createDeclare(content: CButchObj[]) {
+function createDeclare(content: ButchObj[]) {
   
   
   const d = "name";
@@ -45,12 +45,12 @@ function createDeclare(content: CButchObj[]) {
   const declarationBlock = React.createElement(DeclarationComponent, {});
 }
 
-export default function createProgramBlock(item: CButchObj): JSX.Element {
-  if (item.cContent === undefined) return React.createElement(FunctionComponent); // Plug
+export default function createProgramBlock(item: ButchObj): JSX.Element {
+  if (item.content === undefined) return React.createElement(FunctionComponent); // Plug
   const itemPayload = item.get("type");
   const type: string = typeof itemPayload === "string" ? itemPayload : DRErrors.incorrectType();
 
-  for (let i = 0; i < item.cContent.length; i++) {}
+  for (let i = 0; i < item.content.length; i++) {}
 
   switch (type) {
     case "declare":
