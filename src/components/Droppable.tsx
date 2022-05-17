@@ -1,97 +1,20 @@
-import React, { useState, useCallback, useRef, useContext } from "react";
-import { View, Text } from "react-native";
+import React from "react";
 import PropTypes from "prop-types";
 
-import useComponentData from "../Hooks/useComponentData";
-// import { DroppablesDataContext } from "./DroppablesData";
-// import { DroppablesData } from "./DroppablesData";
+import { FlatList } from "react-native";
+import { ButchObj } from "src/Butch/ButchObj";
+import createProgramBlock from "src/Utilities/ProgramBlockLayout";
 
 declare interface DroppableProps {
-  style?: Array<object> | object;
-  children?: React.ReactNode | undefined;
+  content: ButchObj[];
 }
 
-//
-// Структура хранения данных droppable и draggable компонент
-// const obj = [
-//   {
-//     coordinates: { x: 0, y: 0 },
-//     size: { width: 100, height: 300 },
-//     children: [
-//       {
-//         coordinates: { x: 10, y: 20 },
-//         size: { width: 80, height: 280 },
-//       },
-//     ],
-//   },
-//   {
-//     coordinates: { x: 0, y: 320 },
-//     size: { width: 100, height: 100 },
-//     children: [
-//       { coordinates: { x: 10, y: 340 }, size: { width: 80, height: 30 } },
-//       { coordinates: { x: 10, y: 360 }, size: { width: 80, height: 30 } },
-//     ],
-//   },
-// ];
-
-// // 0-0
-// obj[0].children[0];
-
-//console.log(obj[0].children[0]);
-
-function Droppable({ style, children }: DroppableProps) {
-  const reference = useRef(null);
-
-  const logPropsChildrens = () => {
-    console.log();
-  };
-
-  const logRef = () => {
-    // console.log(
-    //   reference.current._children[0].measure((fx, fy, width, height, px, py) => {
-    //     console.log({ fx, fy, width, height, px, py });
-    //   }),
-    // );
-
-    // console.log(reference.current);
-    console.log(React.Children.toArray(children));
-  };
-
-  const renderChildren = () => {
-    const newPositions: Array<React.ReactNode> = [];
-
-    React.Children.map(children, children => {
-      newPositions.push(
-        // React.createElement(children.type.displayName, children.props,),
-        children,
-      );
-    });
-
-    console.log(newPositions);
-
-    return newPositions;
-  };
-
-  return (
-    <View ref={reference} onTouchStart={logRef} style={style}>
-      {renderChildren()}
-    </View>
-  );
+function Droppable({ content }: DroppableProps) {
+  return <FlatList data={content} renderItem={item => createProgramBlock(item.item)} />;
 }
 
-// Droppable.defaultProps = {
-//   style: {
-//     justifyContent: "center",
-//     alignSelf: "center",
-//     padding: 20,
-//     backgroundColor: "#f58181",
-//     width: 300,
-//     height: 200,
-//   },
-// };
 Droppable.propTypes = {
-  children: PropTypes.any,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  items: PropTypes.array,
 };
 
 export default Droppable;

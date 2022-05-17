@@ -11,6 +11,7 @@ import {
 } from "../Modules/ProgramBlocks";
 import { ButchObj } from "src/Butch/ButchObj";
 import createProgramBlock from "src/Utilities/ProgramBlockLayout";
+import Droppable from "./Droppable";
 
 const plug = new ButchObj({}, {});
 const DNDElementsContext = React.createContext<ButchObj>(plug);
@@ -79,6 +80,7 @@ const ProgramBlocks = {
 function DNDElementsProvider({ programData }: DNDElementsProviderProps) {
   return (
     <DNDElementsContext.Provider value={programData}>
+      <Droppable data={programData.content} inputsCount={3} />
       <FlatList data={programData.content} renderItem={item => createProgramBlock(item.item)} />
     </DNDElementsContext.Provider>
   );
