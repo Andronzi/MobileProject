@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 
 import { ProgramData } from "../types/Types";
 import {
-  ConditionalComponent,
-  ForLoopComponent,
-  FunctionComponent,
-  DeclarationComponent,
-  WhileLoopComponent,
+  ConditionalBlock,
+  ForLoopBlock,
+  FunctionBlock,
+  DeclarationBlock,
+  WhileLoopBlock,
 } from "../Modules/ProgramBlocks";
 import { CButchObj } from "src/Butch/ButchObj";
 import createProgramBlock from "src/Utilities/ProgramBlockLayout";
@@ -54,8 +54,8 @@ interface DNDElementsProviderProps {
 }
 
 const ProgramBlocks = {
-  declare: DeclarationComponent,
-  function: FunctionComponent,
+  declare: DeclarationBlock,
+  function: FunctionBlock,
   // invoker:,
   // deref:,
   // type:,
@@ -68,9 +68,9 @@ const ProgramBlocks = {
   // return:,
   // break:,
   // log:,
-  while: WhileLoopComponent,
-  for: ForLoopComponent,
-  if: ConditionalComponent,
+  while: WhileLoopBlock,
+  for: ForLoopBlock,
+  if: ConditionalBlock,
   // container:,
   // set:,
   // print:

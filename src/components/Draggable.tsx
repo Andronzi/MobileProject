@@ -1,13 +1,8 @@
 import React, { useRef } from "react";
-import {
-  View,
-  Animated,
-  PanResponder,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { View, Animated, PanResponder, TouchableWithoutFeedback } from "react-native";
 
-import { Children, IStyle } from "../types/Types";
-import useStateCallback from "../hooks/useStateCallback";
+import { Children, IStyle } from "../Types/Types";
+import useStateCallback from "../Hooks/useStateCallback";
 // import { DroppablesDataContext } from "./DroppablesData";
 // import AnimatedTouchable from "./AnimatedTouchable";
 
@@ -22,13 +17,7 @@ interface IDraggableProps {
 
 const inputRange = [0, 0.5, 0.6, 1];
 const outputRange = [1, 0.97, 0.96, 1.05];
-const margins = [
-  "margin",
-  "marginBottom",
-  "marginTop",
-  "marginEnd",
-  "marginStart",
-];
+const margins = ["margin", "marginBottom", "marginTop", "marginEnd", "marginStart"];
 const createMargins = (styles: IStyle = {}) => {
   const stylesMargins: IStyle = {};
   margins.forEach(margin => {
@@ -59,8 +48,7 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
   pan.y.addListener(value => (_animatedValueY = value.value));
 
   const panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: () =>
-      !state.isAnimating && (state.isDragging || state.isPicked),
+    onMoveShouldSetPanResponder: () => !state.isAnimating && (state.isDragging || state.isPicked),
 
     onPanResponderGrant: () => {
       console.log("pan grant: ", +pan.x, +pan.y);
@@ -105,14 +93,7 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
       } else {
         pan.flattenOffset();
         pan.setOffset({ x: 0, y: 0 });
-        console.log(
-          "After flattening: ",
-          _animatedValueX,
-          _animatedValueY,
-          "x, y: ",
-          pan.x,
-          pan.y,
-        );
+        console.log("After flattening: ", _animatedValueX, _animatedValueY, "x, y: ", pan.x, pan.y);
         setState({ ...state, isDragging: false });
       }
     },
@@ -145,23 +126,14 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
     <Animated.View
       style={[
         {
-          transform: [
-            { scale: scaleEaseIn },
-            { translateX: pan.x },
-            { translateY: pan.y },
-          ],
+          transform: [{ scale: scaleEaseIn }, { translateX: pan.x }, { translateY: pan.y }],
           zIndex: state.isAnimating || state.isDragging ? 100 : 1,
         },
         createMargins(style),
       ]}
       {...panResponder.panHandlers}>
-      <TouchableWithoutFeedback
-        delayLongPress={delayLongPress}
-        onLongPress={onLongPress}>
-        <View
-          style={[style, createMargins()]}
-          onTouchStart={onPressIn}
-          onTouchEnd={onTouchEnd}>
+      <TouchableWithoutFeedback delayLongPress={delayLongPress} onLongPress={onLongPress}>
+        <View style={[style, createMargins()]} onTouchStart={onPressIn} onTouchEnd={onTouchEnd}>
           {children}
         </View>
       </TouchableWithoutFeedback>

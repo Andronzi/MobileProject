@@ -1,5 +1,8 @@
+// TODO: think about logging erros, not invoking them
 export default class DRErrors {
-    static incorrectType(message?: string): never {
-        throw new Error(message ?? "Incorrect type was encountered");
+    static incorrectType(type?: any, message?: string): never {
+        throw new Error(
+            message ?? `Incorrect type ${type ? '"' + typeof type + '"' : ""} was encountered`,
+        );
     }
 }

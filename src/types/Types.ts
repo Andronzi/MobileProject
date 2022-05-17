@@ -28,8 +28,8 @@ export interface LoopBlock {
 }
 
 export interface DeclarationBlock {
-    name: string;
-    expression: string;
+    name?: string;
+    expression?: string;
 }
 
 // enum Conditionals {

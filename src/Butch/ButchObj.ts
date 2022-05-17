@@ -1,9 +1,32 @@
+import { ThemeConsumer } from "react-native-elements";
+
 /**
  * wraper of encoded object
  * gives easier interaction with it
  */
 export type B_ObjPayload = string | string[] | { [key: string]: B_ObjPayload }[];
 export type B_Obj = { [key: string]: B_ObjPayload };
+
+const stringFields = ["type", "name", "value"] as const;
+type StringField = typeof stringFields[number];
+
+const stringArrayFields = ["nameSeq"] as const;
+type StringArrayField = typeof stringArrayFields[number];
+
+const recursiveFields = ["content"];
+type RecursiveField = typeof recursiveFields[number];
+
+function isStringField(value: any): value is StringField {
+    return stringFields.includes(value);
+}
+
+function isStringArrayField(value: any): value is StringArrayField {
+    return stringArrayFields.includes(value);
+}
+
+function isRecursiveField(value: any): value is RecursiveField {
+    return recursiveFields.includes(value);
+}
 
 export default class ButchObj {
     public data: B_Obj;
@@ -82,6 +105,51 @@ export class CButchObj extends ButchObj {
         this.coordinates = {};
         // Возможно этот конструктор не работает
         this.cContent = super.content()?.map(item => new CButchObj(item, codes));
+    }
+
+    private getStringType(field: StringField): string {
+        const value = this.data[this.codes.field];
+        return typeof value === "string"
+            ? value
+            : (() => {
+                  throw new Error(`"${field}" is invalid or undefined`);
+              })();
+    }
+
+    public get type(): string {
+        return this.getStringType("type");
+    }
+    public set type(value: string) {
+        this.data[this.codes.type] = value;
+    }
+
+    public get name(): string {
+        return this.getStringType("name");
+    }
+    public set name(value: string) {
+        this.data[this.codes.name] = value;
+    }
+
+    public get value(): string {
+        return this.getStringType("value");
+    }
+    public set value(value: string) {
+        this.data[this.codes.value] = value;
+    }
+
+    public get nameSeq(): string[] {
+        return [""];
+    }
+    public set nameSeq(value: string[]) {
+        return;
+    }
+
+    s(haha: string): number {
+        return 3;
+    }
+
+    s(hah: string, a: number) {
+        return;
     }
 
     /**
