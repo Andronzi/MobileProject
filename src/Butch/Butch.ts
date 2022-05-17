@@ -239,6 +239,10 @@ export class ButchBuilder {
     };
 
     private buildFunction = (info: BlockInfo): FuncBlock => {
+        if (!info.obj.has("nameSeq")) {
+            console.log(info);
+            
+        }
         return new FuncBlock(info.obj.extension.builtContent, info.obj.get("nameSeq"));
     };
 

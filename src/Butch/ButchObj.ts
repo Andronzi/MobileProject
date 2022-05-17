@@ -54,16 +54,20 @@ export default class ButchObjBase {
         if (isStringField(key)) {
             return typeof value === "string" ? value : BObjError.throwInvalidField(key);
         } else if (isStringArrayField(key)) {
-            return value instanceof Array && typeof value.at(0) === "string"
+            return value instanceof Array && (!value.length || typeof value[0] === "string")
                 ? value
                 : BObjError.throwInvalidField(key);
         } else if (isRecursiveField(key)) {
-            return value instanceof Array && typeof value.at(0) === "object"
+            return value instanceof Array && (!value.length || typeof value[0] === "object")
                 ? value
-                : BObjError.throwInvalidField(key);
+                : BObjError.throwInvalidField(key); 
         }
 
         BObjError.throwInvalidField(key);
+    }
+
+    has(key: string): boolean {
+        return !!this.data[this.codes[key]];
     }
 
     getContent(): BObj[] | undefined {

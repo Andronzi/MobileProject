@@ -6,8 +6,8 @@ import { Block } from "./base"
 
 export const syntaxCheck: Bch.Middleware = 
     function(info: Bch.BlockInfo) {
-        if (info.obj.get("name") && !verifyVariableName(info.obj.get("name")) || 
-            info.obj.get("nameSeq") && !info.obj.get("nameSeq").every(verifyVariableName)) 
+        if (info.obj.has("name") && !verifyVariableName(info.obj.get("name")) || 
+            info.obj.has("nameSeq") && !info.obj.get("nameSeq").every(verifyVariableName)) 
         {
             CompilationError.throwSyntax(info);  
         }
