@@ -1,35 +1,21 @@
-import { ThemeConsumer } from "react-native-elements";
+import { BObjError } from "./errors";
+import {
+    BObjPayload,
+    BObj,
+    StringArrayField,
+    StringField,
+    RecursiveField,
+    isRecursiveField,
+    isStringArrayField,
+    isStringField,
+} from "src/Types/BObjFields";
 
 /**
  * wraper of encoded object
  * gives easier interaction with it
  */
-export type B_ObjPayload = string | string[] | { [key: string]: B_ObjPayload }[];
-export type B_Obj = { [key: string]: B_ObjPayload };
-
-const stringFields = ["type", "name", "value"] as const;
-type StringField = typeof stringFields[number];
-
-const stringArrayFields = ["nameSeq"] as const;
-type StringArrayField = typeof stringArrayFields[number];
-
-const recursiveFields = ["content"];
-type RecursiveField = typeof recursiveFields[number];
-
-function isStringField(value: any): value is StringField {
-    return stringFields.includes(value);
-}
-
-function isStringArrayField(value: any): value is StringArrayField {
-    return stringArrayFields.includes(value);
-}
-
-function isRecursiveField(value: any): value is RecursiveField {
-    return recursiveFields.includes(value);
-}
-
-export default class ButchObj {
-    public data: B_Obj;
+export default class ButchObjBase {
+    public data: BObj;
     public codes: { [key: string]: string };
     // any extension your middleware could apply
     public extension: { [key: string]: any } = {};
@@ -42,11 +28,11 @@ export default class ButchObj {
     /**
      * recursive ButchObj finder
      */
-    static goToNode(
-        obj: B_Obj,
+    static _goToNode(
+        obj: BObj,
         path: number[],
         codes: { [key: string]: string },
-    ): B_Obj | undefined {
+    ): BObj | undefined {
         let node: any = obj;
         for (let i = 0; i < path.length; ++i) {
             if (!(node[codes.content] instanceof Array)) {
@@ -58,108 +44,65 @@ export default class ButchObj {
         return node;
     }
 
-    // __getString(key: string): string {
-    //     const item = this.data[this.codes[key]];
-    //     return typeof item === "string" ? item : "";
-    // }
+    get(key: StringField): string;
+    get(key: StringArrayField): string[];
+    get(key: RecursiveField): BObj[];
 
-    // __getStringArray(key: string): string[] {
-    //     const item = this.data[this.codes[key]];
-    //     return Array.isArray(item) ? item : [""];
-    // }
+    get(key: string): BObjPayload {
+        const value: BObjPayload = this.data[this.codes[key]];
 
-    get(key: string): B_ObjPayload {
-        return this.data[this.codes[key]];
+        if (isStringField(key)) {
+            return typeof value === "string" ? value : BObjError.throwInvalidField(key);
+        } else if (isStringArrayField(key)) {
+            return value instanceof Array && typeof value.at(0) === "string"
+                ? value
+                : BObjError.throwInvalidField(key);
+        } else if (isRecursiveField(key)) {
+            return value instanceof Array && typeof value.at(0) === "object"
+                ? value
+                : BObjError.throwInvalidField(key);
+        }
+
+        BObjError.throwInvalidField(key);
     }
 
-    content(): B_Obj[] | undefined {
+    getContent(): BObj[] | undefined {
         const content: any = this.data[this.codes.content];
         return content instanceof Array ? content : undefined;
     }
 
-    set(key: string, value: B_ObjPayload) {
+    set(key: string, value: BObjPayload) {
         this.data[this.codes[key]] = value;
     }
 
-    goTo(...indexes: number[]): ButchObj {
-        const obj = ButchObj.goToNode(this.data, indexes, this.codes);
+    goTo(...indexes: number[]): ButchObjBase {
+        const obj = ButchObjBase._goToNode(this.data, indexes, this.codes);
         if (!obj) {
             throw Error("Invalid path to find block");
         }
-        return new ButchObj(obj, this.codes);
+        return new ButchObjBase(obj, this.codes);
     }
 }
 
-interface Coordinates {
-    x?: number;
-    y?: number;
-}
-
-export class CButchObj extends ButchObj {
-    public cContent: CButchObj[] | undefined;
-    public coordinates: Coordinates;
+export class ButchObj extends ButchObjBase {
+    // eslint-disable-next-line no-use-before-define
+    public content: ButchObj[] | undefined;
 
     constructor(obj: { [key: string]: any }, codes: { [key: string]: string }) {
         super(obj, codes);
 
-        this.coordinates = {};
         // Возможно этот конструктор не работает
-        this.cContent = super.content()?.map(item => new CButchObj(item, codes));
-    }
-
-    private getStringType(field: StringField): string {
-        const value = this.data[this.codes.field];
-        return typeof value === "string"
-            ? value
-            : (() => {
-                  throw new Error(`"${field}" is invalid or undefined`);
-              })();
-    }
-
-    public get type(): string {
-        return this.getStringType("type");
-    }
-    public set type(value: string) {
-        this.data[this.codes.type] = value;
-    }
-
-    public get name(): string {
-        return this.getStringType("name");
-    }
-    public set name(value: string) {
-        this.data[this.codes.name] = value;
-    }
-
-    public get value(): string {
-        return this.getStringType("value");
-    }
-    public set value(value: string) {
-        this.data[this.codes.value] = value;
-    }
-
-    public get nameSeq(): string[] {
-        return [""];
-    }
-    public set nameSeq(value: string[]) {
-        return;
-    }
-
-    s(haha: string): number {
-        return 3;
-    }
-
-    s(hah: string, a: number) {
-        return;
+        this.content = super.getContent()?.map(item => new ButchObj(item, codes));
     }
 
     /**
      * recursive ButchObj finder
      */
-    static cGoToNode(
-        obj: CButchObj,
+    static goToNode(
+        obj: ButchObj,
         path: number[],
         codes: { [key: string]: string },
-    ): CButchObj | undefined {
+    ): ButchObj | undefined {
         let node: any = obj;
         for (let i = 0; i < path.length; ++i) {
             if (!(node[codes.content] instanceof Array)) {
@@ -173,7 +116,7 @@ export class CButchObj extends ButchObj {
 
     goTo(...indexes: number[]): ButchObj {
         return (
-            CButchObj.cGoToNode(this, indexes, this.codes) ??
+            ButchObj.goToNode(this, indexes, this.codes) ??
             (() => {
                 throw new Error("Invalid path to find block");
             })()

@@ -23,7 +23,7 @@ import ExpressionBlock from "./ExpressionBlock";
 import { RuntimeError, CompilationError } from "./errors";
 import { createButchCodesFile, readButchCodes, readButchCodesSetAssets } from "./utils";
 import { syntaxCheck, prebuildInternalBlocks } from "./middleware.bch";
-import ButchObj from "./ButchObj";
+import ButchObjBase from "./ButchObj";
 
 import * as rnfs from "react-native-fs";
 import { v4 } from "uuid";
@@ -74,7 +74,7 @@ export class Program extends Block {
     }
 }
 
-export type BlockInfo = { obj: ButchObj; location: number[] };
+export type BlockInfo = { obj: ButchObjBase; location: number[] };
 
 export type Middleware = (info: BlockInfo, app: ButchBuilder) => void;
 
@@ -242,13 +242,13 @@ export class ButchBuilder {
         CompilationError.throwUnknownBlock(info);
     }
 
-    build(programObj: ButchObj): Program {
+    build(programObj: ButchObjBase): Program {
         const prog = new Program();
-        const content = programObj.content() ?? CompilationError.throwInvalidFile();
+        const content = programObj.getContent() ?? CompilationError.throwInvalidFile();
 
         for (let i = 0; i < content.length; ++i) {
             const info: BlockInfo = {
-                obj: new ButchObj(content[i], this.c),
+                obj: new ButchObjBase(content[i], this.c),
                 location: [i],
             };
 
@@ -270,7 +270,7 @@ export class ButchBuilder {
         return prog;
     }
 
-    rebuild(prog: Program, programObj: ButchObj, targetPathes: number[][]) {
+    rebuild(prog: Program, programObj: ButchObjBase, targetPathes: number[][]) {
         targetPathes.forEach(path => {
             const block = this.buildBlock({
                 obj: programObj.goTo(...path),

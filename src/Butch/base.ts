@@ -43,7 +43,7 @@ export class Value {
         );
     }
 
-    evaluate(env: Environment, expectedTypeName: TypeNames, strict: boolean = false): Object {
+    evaluate(env: Environment, expectedTypeName: TypeNames, strict: boolean = false): any {
         if (Value.isCompatible(this.typeName, expectedTypeName, strict)) {
             return this.value;
         } else {
@@ -55,8 +55,8 @@ export class Value {
         }
     }
 
-    getType() {
-        return this.typeName;
+    public get type() {
+        return this.typeName
     }
 
     assign(value: Value): Value {
@@ -225,3 +225,4 @@ export class ContainerBlock extends ScopeBlock {
         return Value.Undefined;
     }
 }
+
