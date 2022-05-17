@@ -12,7 +12,7 @@
                     [ {"type": "deref", "name": "i" } ]},
                 {
                     "type": "while", "content": [
-                        { "type": "expression", "value": "i < 10000" },
+                        { "type": "expression", "value": "i < 10" },
                         { "type": "container", "content": [
                             { "type": "set", "content": [
                                 { "type": "expression", "value": "i" },

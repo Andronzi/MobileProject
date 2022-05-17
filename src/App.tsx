@@ -12,6 +12,17 @@ import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
 
 type AppData = { builder: ButchBuilder, new?: string }; 
 
+function createDisposableTrueCallback() {
+  let flag = true;
+  return () => {
+    if (flag) {
+      flag = false;
+      return true;
+    }
+    return false;
+  }
+}
+
 function initApp(): Promise<AppData> {
   let appData: AppData;
   const tasks = [
@@ -55,7 +66,7 @@ export const App: React.FC = () => {
                 <Button title="Launch" onPress={() => { 
                   testBchFile(appData.builder); 
                   // manualTest();
-                  navigator.goTo("console", { reset: true });
+                  navigator.goTo("console", { doClearing: createDisposableTrueCallback()})
                 }} />
                 <Button title="Console" onPress={() => { navigator.goTo("console") }} />
               </ToolBar>
