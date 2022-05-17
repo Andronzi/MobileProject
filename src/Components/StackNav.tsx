@@ -1,4 +1,5 @@
 import React, { ReactNode, useState } from "react"
+import { useMemo } from "react"
 import { useContext } from "react"
 import { View } from "react-native"
 
@@ -9,8 +10,8 @@ export type NavScreenComp = React.FC<{
 }>
 
 export type Navigator = {
-  goTo: (name: string, transProps?: {[key: string]: any}) => void,
-  goBack: (transProps?: {[key: string]: any}) => void;
+  goTo: (name: string, transProps?: ({[key: string]: any}) | null) => void,
+  goBack: (transProps?: ({[key: string]: any}) | null) => void;
 }
 
 export type NavContainer = { 
@@ -24,7 +25,8 @@ export function createNavContainer(): NavContainer
   const screenStackContext = 
     React.createContext<screenStackContextType>({ stack: [], setStack: () => {} });
 
-  const tempTransPropsContext = React.createContext({ props: {} });
+  const tempTransPropsContext = 
+    React.createContext<{ props: null | object}>({ props: null });
 
   const Stack: React.FC<{ children: ReactNode}> = ({ children }) => {
     const [context, setContext] = useState<screenStackContextType>({ stack: [], setStack: () => {} })
@@ -41,31 +43,21 @@ export function createNavContainer(): NavContainer
     return <View>
       <tempTransPropsContext.Provider value={useContext(tempTransPropsContext)}>
         <screenStackContext.Provider value={context}>
-          {/* { 
-            Children.toArray(children).find(item => {
-              if (React.isValidElement(item)) {
-                return item.props.name === context.stack[context.stack.length - 1];
-              }
-              return false;
-            })
-          } */}
           { children }
         </screenStackContext.Provider>
       </tempTransPropsContext.Provider>
     </View>
-  }
+  };
 
   const Screen: NavScreenComp = ({ name, component, transProps }) => {
     const { stack, setStack } = useContext(screenStackContext);
-    let tempTransProps = useContext(tempTransPropsContext);
-    
-    
+    const tempTransProps = useContext(tempTransPropsContext);
     const navigator: Navigator = {
-      goTo: (name, _transProps = {}) => {
+      goTo: (name, _transProps = null) => {
         tempTransProps.props = _transProps;
         setStack(stack.concat(name));
       },
-      goBack: (_transProps = {}) => {
+      goBack: (_transProps = null) => {
         if (stack.length > 1) {
           tempTransProps.props = _transProps;
           setStack(stack.slice(0, -1));
@@ -73,16 +65,23 @@ export function createNavContainer(): NavContainer
       }
     }
 
-    const element = component({ 
-      ...transProps,
-      ...(name === stack[stack.length - 1] ? tempTransProps.props : {}),
-      navigator
-    })
-    tempTransProps.props = {};
+    const isTopElement = name === stack[stack.length - 1];
+    let tempProps: object | null = null;
+    if (isTopElement) {
+      tempProps = tempTransProps.props;
+      tempTransProps.props = null;
+    }
+
+    const element = useMemo(() =>
+      React.createElement(
+        component, { 
+          ...transProps,
+          navigator 
+        }),
+      [ component, transProps, tempProps, navigator ]
+    );
     
-    return <View style={{
-      display: name === stack[stack.length - 1] ? "flex" : "none"
-    }}>
+    return <View style={{ display: isTopElement ? "flex" : "none" }}>
       { element }
     </View>
   }

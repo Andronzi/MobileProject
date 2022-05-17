@@ -9,21 +9,22 @@ import { makeStyles, useTheme } from "@rneui/themed"
 import { ButchBuilder } from "src/Butch/Butch";
 import { Navigator } from "./StackNav"
 import ToolBar, { LeftArrow } from "./SimpleToolbar"
+import { useMemo } from "react";
 
 type props = {
 	builder: ButchBuilder,
 	navigator: Navigator,
-	reset?: boolean 
+	doClearing?: () => boolean 
 }
 
 const ConsoleScreen: React.FC<props> = ({ 
 	builder, 
 	navigator,
-	reset
+	doClearing
 }) => {	
 	const scrollView = useRef<ScrollView>(null)
 	const [textStream, setTextStream] = useState({ id: "", value: "" });
-	if (reset) {
+	if (doClearing && doClearing()) {
 		console.log("cleared");
 		setTextStream(prev => ({ ...prev, value: "" }));
 	}
@@ -37,9 +38,14 @@ const ConsoleScreen: React.FC<props> = ({
 		}});
 	}
 
-	console.log("updated");
-	
 	const { theme } = useTheme(), styles = useStyles(theme);
+
+	const textContent = useMemo(() => { console.log(textStream); return (
+			<Text style={styles.text}>
+				{textStream.value}  
+			</Text>
+		)}, [ textStream ]
+	)
 	
 	return (
 		<View>
@@ -53,9 +59,10 @@ const ConsoleScreen: React.FC<props> = ({
 					scrollView.current?.scrollToEnd();
 				}}
 			>
-				<Text style={styles.text}>
+				{/* <Text style={styles.text}>
 					{textStream.value}  
-				</Text>
+				</Text> */}
+				{ textContent }
 		</ScrollView> 
 		</View>
 	)

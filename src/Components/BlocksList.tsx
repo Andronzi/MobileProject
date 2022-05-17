@@ -24,7 +24,7 @@ export const BlocksList: React.FC = () => {
   const [blockName, setBlockName] = useState('');
   const [blockValue, setBlockValue] = useState('');
 
-  const selfRef = useRef(null);
+  const selfRef = useRef<View>(null);
 
   const block: any = blocksState;
 
@@ -51,7 +51,7 @@ export const BlocksList: React.FC = () => {
   useEffect(() => {
     setBlockName('');
     setBlockValue('');
-    console.log(block);
+    // console.log(block);
   }, [block]) 
 
   return (
