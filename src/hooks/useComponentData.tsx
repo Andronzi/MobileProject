@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { LayoutChangeEvent } from "react-native";
 
 type MeasureData =
@@ -18,5 +18,5 @@ export default function useComponentData() {
     setData({ x, y, width, height });
   }, []);
 
-  return [data, onLayout];
+  return [data, onLayout] as const;
 }

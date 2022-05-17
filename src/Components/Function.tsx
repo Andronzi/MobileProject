@@ -20,20 +20,12 @@ function FunctionBlock({ item }: FunctionalBlockProps) {
   item.extension.coords = { ...data };
 
   return (
-    // <View onLayout={onLayout}>
-    //   {/* <Title></Title> */}
-    //   <FlatList
-    //     style={styles.container}
-    //     data={item.content}
-    //     renderItem={item => createProgramBlock(item.item)}
-    //   />
-    // </View>
-    <View onLayout={onLayout}>
+    <View onLayout={onLayout} style={styles.container}>
       <Droppable content={item.content} />
     </View>
   );
 }
 
 const useStyles = makeStyles(theme => ({
-  container: {},
+  container: { marginBottom: 10 },
 }));
