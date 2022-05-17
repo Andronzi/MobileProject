@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { FlatList } from "react-native";
 import PropTypes from "prop-types";
 
-import { ProgramData } from "../types/Types";
 import {
   ConditionalBlock,
   ForLoopBlock,
@@ -10,10 +9,11 @@ import {
   DeclarationBlock,
   WhileLoopBlock,
 } from "../Modules/ProgramBlocks";
-import { CButchObj } from "src/Butch/ButchObj";
+import { ButchObj } from "src/Butch/ButchObj";
 import createProgramBlock from "src/Utilities/ProgramBlockLayout";
 
-const DNDElementsContext = React.createContext<ProgramData>(undefined);
+const plug = new ButchObj({}, {});
+const DNDElementsContext = React.createContext<ButchObj>(plug);
 
 export function useDNDElements() {
   return useContext(DNDElementsContext);
@@ -50,7 +50,7 @@ export function useDNDElements() {
 но уменьшает гибкость блока Droppable и влечёт ненужное копироване данных (но можно и подумать над этим)
 */
 interface DNDElementsProviderProps {
-  programData?: ProgramData;
+  programData: ButchObj;
 }
 
 const ProgramBlocks = {
@@ -76,11 +76,10 @@ const ProgramBlocks = {
   // print:
 };
 
-// TODO: удалить всё нахуй.
 function DNDElementsProvider({ programData }: DNDElementsProviderProps) {
   return (
     <DNDElementsContext.Provider value={programData}>
-      <FlatList data={programData?.cContent} renderItem={item => createProgramBlock(item.item)} />
+      <FlatList data={programData.content} renderItem={item => createProgramBlock(item.item)} />
     </DNDElementsContext.Provider>
   );
 }

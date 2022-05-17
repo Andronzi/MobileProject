@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useRef, useContext } from "react";
 import { View, Text } from "react-native";
 import PropTypes from "prop-types";
+
+import useComponentData from "../Hooks/useComponentData";
 // import { DroppablesDataContext } from "./DroppablesData";
 // import { DroppablesData } from "./DroppablesData";
 
@@ -8,24 +10,6 @@ declare interface DroppableProps {
   style?: Array<object> | object;
   children?: React.ReactNode | undefined;
 }
-
-type MeasureData = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-} | null;
-
-const useComponentData = () => {
-  const [data, setData] = useState<MeasureData>(null);
-
-  const onLayout = useCallback((event: any) => {
-    const { x, y, width, height } = event.nativeEvent.layout;
-    setData({ x, y, width, height });
-  }, []);
-
-  return [data, onLayout];
-};
 
 //
 // Структура хранения данных droppable и draggable компонент
