@@ -1,5 +1,6 @@
 {
   "type": "program",
+  "__codesHash": 123,
   "content": [
     {
         "type": "function", "name": "main", "nameSeq": [],

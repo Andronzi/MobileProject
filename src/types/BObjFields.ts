@@ -1,7 +1,7 @@
 export type BObjPayload = string | string[] | { [key: string]: BObjPayload }[];
 export type BObj = { [key: string]: BObjPayload };
 
-const stringFields = ["type", "name", "value"] as const;
+const stringFields = ["type", "name", "value", "__codesHash"] as const;
 export type StringField = typeof stringFields[number];
 
 const stringArrayFields = ["nameSeq"] as const;

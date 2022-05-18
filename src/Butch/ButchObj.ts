@@ -9,18 +9,19 @@ import {
     isStringArrayField,
     isStringField,
 } from "../types/BObjFields";
+import { ButchCodes } from "src/types/Types"
 
 /**
  * wraper of encoded object
  * gives easier interaction with it
  */
-export default class ButchObjBase {
+export class ButchObjBase {
     public data: BObj;
-    public codes: { [key: string]: string };
+    public codes: ButchCodes;
     // any extension your middleware could apply
     public extension: { [key: string]: any } = {};
 
-    constructor(obj: { [key: string]: any }, codes: { [key: string]: string }) {
+    constructor(obj: { [key: string]: any }, codes: ButchCodes) {
         this.codes = codes;
         this.data = obj;
     }
@@ -31,7 +32,7 @@ export default class ButchObjBase {
     static _goToNode(
         obj: BObj,
         path: number[],
-        codes: { [key: string]: string },
+        codes: ButchCodes,
     ): BObj | undefined {
         let node: any = obj;
         for (let i = 0; i < path.length; ++i) {
@@ -86,13 +87,20 @@ export default class ButchObjBase {
         }
         return new ButchObjBase(obj, this.codes);
     }
+
+    public static readonly createEmptyProgram = (codes: ButchCodes) =>
+        new ButchObjBase({
+            [codes["type"]]: codes["program"],
+            [codes["__hash"]]: codes.__hash,
+            [codes["content"]]: []
+        }, codes);
 }
 
 export class ButchObj extends ButchObjBase {
     // eslint-disable-next-line no-use-before-define
     public content: ButchObj[] | undefined;
 
-    constructor(obj: { [key: string]: any }, codes: { [key: string]: string }) {
+    constructor(obj: { [key: string]: any }, codes: ButchCodes) {
         super(obj, codes);
 
         // Возможно этот конструктор не работает
@@ -105,7 +113,7 @@ export class ButchObj extends ButchObjBase {
     static goToNode(
         obj: ButchObj,
         path: number[],
-        codes: { [key: string]: string },
+        codes: ButchCodes,
     ): ButchObj | undefined {
         let node: any = obj;
         for (let i = 0; i < path.length; ++i) {
@@ -127,3 +135,5 @@ export class ButchObj extends ButchObjBase {
         );
     }
 }
+
+export default ButchObjBase;

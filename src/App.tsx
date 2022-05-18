@@ -1,50 +1,49 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ActivityIndicator, View, Text, Button } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed"
 
 import { BlocksList } from './Components/BlocksList';
 import ConsoleScreen from "./Components/ConsoleScreen";
 import { createNavContainer } from "./Components/StackNav";
+import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
+
+import { butchGlobContext } from "./Contexts/AppContexts";
 
 import { testBchFile, manualTest } from "./Butch/main"
 import { ButchBuilder } from "./Butch/Butch";
-import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
+import { disposableCallback } from "./Utilities/tools"
+import ButchObjBase from "./Butch/ButchObj";
 
-type AppData = { builder: ButchBuilder; new?: string };
+type AppData = { builder: ButchBuilder } | undefined;
 
-function createDisposableTrueCallback() {
-  let flag = true;
-  return () => {
-    if (flag) {
-      flag = false;
-      return true;
-    }
-    return false;
-  }
+function initButchGlobals(): Promise<{
+  builder: ButchBuilder,
+  programObj: ButchObjBase
+}> {
+  return ButchBuilder.initDefaultBuilder().then(builder => ({
+    builder,
+    programObj: ButchObjBase.createEmptyProgram(builder.getCodes())
+  }))
 }
 
-function initApp(): Promise<AppData> {
-  let appData: AppData;
-  const tasks = [
-    ButchBuilder.initDefaultBuilder().then(builder => {
-      appData = { ...appData, builder };
-    }),
-  ];
 
-  return Promise.all(tasks).then(() => appData);
-}
 
 const Nav = createNavContainer();
 
 export const App: React.FC = () => {
-  const [appData, setAppData] = useState<AppData | undefined>();
+  const butchGlogals = useContext(butchGlobContext);
+  const [appData, setAppData] = useState<AppData>();
 
   const { theme } = useTheme();
   const styles = useStyles(theme);
-
+  
   if (!appData) {
-    initApp().then(data => {
-      setAppData(data);
+    initButchGlobals().then(_butchGlobals => {
+      setAppData(prev => {
+        butchGlogals.builder = _butchGlobals.builder;
+        butchGlogals.programObj = _butchGlobals.programObj;
+        return { ...prev, builder: _butchGlobals.builder };
+      });
     }) 
 
     return <View style={styles.loadScreen}>
@@ -66,7 +65,7 @@ export const App: React.FC = () => {
                 <Button title="Launch" onPress={() => { 
                   testBchFile(appData.builder); 
                   // manualTest();
-                  navigator.goTo("console", { doClearing: createDisposableTrueCallback()})
+                  navigator.goTo("console", { doClearing: disposableCallback(() => true)})
                 }} />
                 <Button title="Console" onPress={() => { navigator.goTo("console") }} />
               </ToolBar>

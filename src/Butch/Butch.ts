@@ -27,6 +27,7 @@ import ButchObjBase from "./ButchObj";
 
 import * as rnfs from "react-native-fs";
 import { v4 } from "uuid";
+import { ButchCodes } from "src/types/Types";
 
 export class Program extends Block {
     private globalEnv: Environment;
@@ -106,7 +107,7 @@ export class ButchBuilder {
     static unknownBlockError: Error = new Error("Unknown block type to build");
 
     // codes dictionary
-    private c: { [key: string]: string };
+    private c: ButchCodes;
     private builders: Map<string, Builder>;
     private exBuilders: Map<string, ExBuilder>;
     private middlewares: Middleware[];
@@ -119,7 +120,7 @@ export class ButchBuilder {
     }
     private pushBuffer = (str: string) => { this.outPutBuffer += str; };
 
-    constructor(codes: { [key: string]: string }) {
+    constructor(codes: ButchCodes) {
         this.c = codes;
 
         // bind default builders
@@ -239,10 +240,6 @@ export class ButchBuilder {
     };
 
     private buildFunction = (info: BlockInfo): FuncBlock => {
-        if (!info.obj.has("nameSeq")) {
-            console.log(info);
-            
-        }
         return new FuncBlock(info.obj.extension.builtContent, info.obj.get("nameSeq"));
     };
 
@@ -260,6 +257,10 @@ export class ButchBuilder {
     }
 
     build(programObj: ButchObjBase, autoFlushInterval: number = NaN): Program {
+        // if (programObj.get("__codesHash") !== this.c.__hash) 
+        //     new CompilationError(`Invalid program encoding; builder expects hash : 
+        //         ${this.c.__hash}, but had hash ${programObj.get("__codesHash")}`)
+
         const prog = new Program(); 
         const content = programObj.getContent() ?? CompilationError.throwInvalidFile();
 
@@ -302,7 +303,7 @@ export class ButchBuilder {
         });
     }
 
-    getCodes(): { [key: string]: string } {
+    getCodes(): ButchCodes {
         return { ...this.c };
     }
 

@@ -40,11 +40,11 @@ const ConsoleScreen: React.FC<props> = ({
 
 	const { theme } = useTheme(), styles = useStyles(theme);
 
-	const textContent = useMemo(() => { console.log(textStream); return (
+	const textContent = useMemo(() => (
 			<Text style={styles.text}>
 				{textStream.value}  
 			</Text>
-		)}, [ textStream ]
+		), [ textStream ]
 	)
 	
 	return (
