@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 
 import { ButchObj } from "../Butch/ButchObj";
-import useStateCallback from "src/Hooks/useStateCallback";
 import useComponentData from "src/Hooks/useComponentData";
 import { View } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
