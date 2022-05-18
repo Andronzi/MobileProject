@@ -150,7 +150,7 @@ function parseIdentifier(env: Environment, identifier: string): Value {
 export default class ExpressionBlock extends Block 
 {
     public expression: string;
-    private parsed: any[] | undefined;
+    private parsed: { data: any[], id: string} | undefined;
 
     constructor(expression: string) {
         super();
@@ -297,8 +297,12 @@ export default class ExpressionBlock extends Block
     }
 
     protected logicsBody(env: Environment): Value {
-        const parsed = this.parsed ? this.parsed : this.parsed = this.parseExpression(env);
+        if (!this.parsed || this.parsed.id !== env.id) {
+            this.parsed = { data: this.parseExpression(env), id: env.id }
+        }
+        const parsed = this.parsed.data;
         const stack: Value[] = [];
+        
         for (let i = 0; i < parsed.length; ++i) {
             if (parsed[i] instanceof Value) {
                 stack.push(parsed[i]);

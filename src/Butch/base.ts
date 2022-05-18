@@ -88,6 +88,7 @@ export class Environment {
     private localVariables: Map<string, Value> = new Map<string, Value>();
 
     public readonly parenEnv: Environment | undefined;
+    public readonly id: string = idv4();
     public signal: Signal = Signal.Default;
     public curBlock: Block;
 

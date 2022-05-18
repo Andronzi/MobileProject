@@ -88,12 +88,11 @@ export class ButchObjBase {
         return new ButchObjBase(obj, this.codes);
     }
 
-    public static readonly createEmptyProgram = (codes: ButchCodes) =>
-        new ButchObjBase({
-            [codes["type"]]: codes["program"],
-            [codes["__hash"]]: codes.__hash,
-            [codes["content"]]: []
-        }, codes);
+    public static readonly createEmptyBObj = (codes: ButchCodes) => ({
+        [codes["type"]]: codes["program"],
+        [codes["__hash"]]: codes.__hash,
+        [codes["content"]]: []
+    });
 }
 
 export class ButchObj extends ButchObjBase {

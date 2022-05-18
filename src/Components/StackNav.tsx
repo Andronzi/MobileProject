@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react"
+import React, { ReactNode, useEffect, useState } from "react"
 import { useMemo } from "react"
 import { useContext } from "react"
 import { View } from "react-native"
@@ -10,8 +10,14 @@ export type NavScreenComp = React.FC<{
 }>
 
 export type Navigator = {
-  goTo: (name: string, transProps?: ({[key: string]: any}) | null) => void,
-  goBack: (transProps?: ({[key: string]: any}) | null) => void;
+  goTo: (name: string, 
+    transProps?: ({[key: string]: any}) | null,
+    callback?: (() => void) | null
+  ) => void,
+  goBack: (
+    transProps?: ({[key: string]: any}) | null,
+    callback?: (() => void) | null
+  ) => void
 }
 
 export type NavContainer = { 
@@ -25,8 +31,11 @@ export function createNavContainer(): NavContainer
   const screenStackContext = 
     React.createContext<screenStackContextType>({ stack: [], setStack: () => {} });
 
-  const tempTransPropsContext = 
-    React.createContext<{ props: null | object}>({ props: null });
+  const tempOptionsContext = React.createContext<{ 
+    props: null | object, 
+    callback: (() => void) | null 
+  }>
+  ({ props: null, callback: null });
 
   const Stack: React.FC<{ children: ReactNode}> = ({ children }) => {
     const [context, setContext] = useState<screenStackContextType>({ stack: [], setStack: () => {} })
@@ -41,25 +50,27 @@ export function createNavContainer(): NavContainer
     }
 
     return <View>
-      <tempTransPropsContext.Provider value={useContext(tempTransPropsContext)}>
+      <tempOptionsContext.Provider value={useContext(tempOptionsContext)}>
         <screenStackContext.Provider value={context}>
           { children }
         </screenStackContext.Provider>
-      </tempTransPropsContext.Provider>
+      </tempOptionsContext.Provider>
     </View>
   };
 
   const Screen: NavScreenComp = ({ name, component, transProps }) => {
     const { stack, setStack } = useContext(screenStackContext);
-    const tempTransProps = useContext(tempTransPropsContext);
+    const tempOptions = useContext(tempOptionsContext);
     const navigator: Navigator = {
-      goTo: (name, _transProps = null) => {
-        tempTransProps.props = _transProps;
+      goTo: (name, transProps = null, callback = null) => {
+        tempOptions.props = transProps;
+        tempOptions.callback = callback;
         setStack(stack.concat(name));
       },
-      goBack: (_transProps = null) => {
+      goBack: (transProps = null, callback = null) => {
         if (stack.length > 1) {
-          tempTransProps.props = _transProps;
+          tempOptions.props = transProps;
+          tempOptions.callback = callback;
           setStack(stack.slice(0, -1));
         }
       }
@@ -67,19 +78,25 @@ export function createNavContainer(): NavContainer
 
     const isTopElement = name === stack[stack.length - 1];
     let tempProps: object | null = null;
+    let callback: (() => void) | null = null;
     if (isTopElement) {
-      tempProps = tempTransProps.props;
-      tempTransProps.props = null;
+      tempProps = tempOptions.props;
+      callback = tempOptions.callback;
     }
 
     const element = useMemo(() =>
       React.createElement(
         component, { 
           ...transProps,
+          ...tempProps,
           navigator 
         }),
       [ component, transProps, tempProps, navigator ]
     );
+
+    useEffect(() => { 
+      if (callback) callback();
+    }, [callback]);
     
     return <View style={{ display: isTopElement ? "flex" : "none" }}>
       { element }

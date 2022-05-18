@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { 
   Modal, 
   View, 
@@ -6,7 +6,6 @@ import {
   TouchableOpacity, 
   TextInput, 
   ScrollView,
-  Button,
   Pressable
 } from "react-native";
 import { useTheme, makeStyles, Icon } from '@rneui/themed';
@@ -14,17 +13,18 @@ import { useTheme, makeStyles, Icon } from '@rneui/themed';
 import blocksState from "../Data/blocksState"; 
 import { RenderObj } from "./RenderObj";
 import { Dimensions } from "react-native";
+import { ButchObj } from "src/Butch/ButchObj";
 
 const addButtonSize = 60;
 
-export const BlocksList: React.FC = () => {
+export const BlocksList: 
+  React.FC<{ objToRender: ButchObj }> = ({ objToRender }) => 
+{
   const [addButtonPos, setAddButtonPos] = useState({ right: 20, bottom: 20 })
   const [isVisible, setVisible] = useState(false);
   const [blockType, setBlockType] = useState('');
   const [blockName, setBlockName] = useState('');
   const [blockValue, setBlockValue] = useState('');
-
-  const selfRef = useRef<View>(null);
 
   const block: any = blocksState;
 
@@ -51,11 +51,10 @@ export const BlocksList: React.FC = () => {
   useEffect(() => {
     setBlockName('');
     setBlockValue('');
-    // console.log(block);
   }, [block]) 
 
   return (
-    <View ref={selfRef}
+    <View
       onLayout={({ nativeEvent }) => {
         setAddButtonPos(prev => ({ 
           ...prev, 
@@ -75,6 +74,7 @@ export const BlocksList: React.FC = () => {
           </View>
         ) : undefined }
 
+      {/* This Modal must be redone after component builder apear */}
       <Modal
         animationType = {"fade"}
         transparent={true}
@@ -106,7 +106,11 @@ export const BlocksList: React.FC = () => {
           </Pressable>
         </View>
       </Modal>
+      {/* Vlad create cool component, so instead ScrollView:
+          <CoolComponent obj={objToRender} />
+         */}
       <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
+        <Text>{ String(objToRender) }</Text>
         <RenderObj/>
       </ScrollView>
     </View>  

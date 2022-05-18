@@ -5,6 +5,10 @@ import { cyrb53 } from '../Utilities/tools'
 const variableCheck = /^[a-zA-Z_]\w*/;
 const defaultCodesPath = rnfs.DocumentDirectoryPath + "/bch/codes.json";
 
+export function verifyVariableName(name: string): boolean {
+  return variableCheck.exec(name) !== null;
+}
+
 function indexCodeNames(codeNames: string[]) {
   const obj: { [key: string]: string } = {};
   codeNames.forEach((name, index) => {
@@ -17,10 +21,6 @@ export function createBchFolder() {
   return rnfs.exists(rnfs.DocumentDirectoryPath + "/bch").then(res => {
     if (!res) rnfs.mkdir(rnfs.DocumentDirectoryPath + "/bch");
   });
-}
-
-export function verifyVariableName(name: string): boolean {
-  return variableCheck.exec(name) !== null;
 }
 
 export const readButchCodesSet = (path: string) =>

@@ -79,7 +79,7 @@ export class Program extends Block {
         const flushInterval = this.flusher && Number.isFinite(this.flusher.interval)
             ? setInterval(this.flusher.flush, this.flusher.interval)
             : undefined;
-        
+
         super.execute(this.globalEnv);
 
         if (flushInterval) 
@@ -260,7 +260,6 @@ export class ButchBuilder {
         // if (programObj.get("__codesHash") !== this.c.__hash) 
         //     new CompilationError(`Invalid program encoding; builder expects hash : 
         //         ${this.c.__hash}, but had hash ${programObj.get("__codesHash")}`)
-
         const prog = new Program(); 
         const content = programObj.getContent() ?? CompilationError.throwInvalidFile();
 

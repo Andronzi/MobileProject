@@ -4,5 +4,5 @@ import { ButchGlobals } from "src/types/Types"
 export const butchGlobContext = createContext<ButchGlobals>({
   builder: null,
   programObj: null,
-  executable: null
+  program: { executable: null, isChanged: false }
 })

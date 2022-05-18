@@ -1,7 +1,7 @@
 // import { ImageStyle, StyleProp, TextStyle, ViewStyle } from "react-native";
 
 import Program, { ButchBuilder } from "src/Butch/Butch";
-import ButchObjBase from "src/Butch/ButchObj";
+import { ButchObj } from "src/Butch/ButchObj";
 
 // type StyleType =
 //   | StyleProp<ViewStyle>
@@ -22,6 +22,6 @@ export type ButchCodes = { __hash: string, [key: string]: string }
 
 export type ButchGlobals = {
     builder: ButchBuilder | null,
-    programObj: ButchObjBase | null,
-    executable: Program | null
+    programObj: ButchObj | null,
+    program: { executable: Program | null, isChanged: boolean }
 }

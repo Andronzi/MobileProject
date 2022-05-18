@@ -1,32 +1,35 @@
 import React, { useContext, useState } from "react";
-import { ActivityIndicator, View, Text, Button } from "react-native";
+import { ActivityIndicator, View, Text} from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed"
+import rnfs from "react-native-fs"
 
-import { BlocksList } from './Components/BlocksList';
-import ConsoleScreen from "./Components/ConsoleScreen";
+import ConsoleScreen from "./Components/Screens/Console";
 import { createNavContainer } from "./Components/StackNav";
 import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
 
 import { butchGlobContext } from "./Contexts/AppContexts";
 
-import { testBchFile, manualTest } from "./Butch/main"
 import { ButchBuilder } from "./Butch/Butch";
-import { disposableCallback } from "./Utilities/tools"
-import ButchObjBase from "./Butch/ButchObj";
+import { ButchObj } from "./Butch/ButchObj";
+import WorkSpaceScreen from "./Components/Screens/Workspace";
 
 type AppData = { builder: ButchBuilder } | undefined;
 
 function initButchGlobals(): Promise<{
   builder: ButchBuilder,
-  programObj: ButchObjBase
+  programObj: ButchObj,
 }> {
-  return ButchBuilder.initDefaultBuilder().then(builder => ({
-    builder,
-    programObj: ButchObjBase.createEmptyProgram(builder.getCodes())
-  }))
+  return Promise.all([
+    ButchBuilder.initDefaultBuilder(), 
+    rnfs.readFileAssets("bch/testProgram.json")
+  ]).then(([builder, namedProg]) => {
+    const encoded = builder.encodeNamedProgram(namedProg);
+    const programObj = new ButchObj(JSON.parse(encoded), builder.getCodes());
+    
+    return { builder, programObj };
+  })
+  
 }
-
-
 
 const Nav = createNavContainer();
 
@@ -57,8 +60,8 @@ export const App: React.FC = () => {
           component={ConsoleScreen} 
           transProps={{ builder: appData.builder }} 
         />
-        <Nav.Screen name={"default"} component={ 
-          ({ navigator }) => (
+        <Nav.Screen name={"default"} component={ WorkSpaceScreen } transProps />
+        {/* ({ navigator, objToRender }) => (
             <View>
               <ToolBar>
                 <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
@@ -69,10 +72,9 @@ export const App: React.FC = () => {
                 }} />
                 <Button title="Console" onPress={() => { navigator.goTo("console") }} />
               </ToolBar>
-              <BlocksList />
+              <BlocksList objToRender={objToRender}/>
             </View>
-          )
-        } />
+          ) */}
         <Nav.Screen name="globals" component={ ({ navigator }) => <>
             <ToolBar>
               <LeftArrow onPress={() => navigator.goBack()}/>

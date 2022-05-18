@@ -7,13 +7,14 @@ import {
 import { makeStyles, useTheme } from "@rneui/themed"
 
 import { ButchBuilder } from "src/Butch/Butch";
-import { Navigator } from "./StackNav"
-import ToolBar, { LeftArrow } from "./SimpleToolbar"
+import { Navigator } from "../StackNav"
+import ToolBar, { LeftArrow } from "../SimpleToolbar"
 import { useMemo } from "react";
 
 type props = {
 	builder: ButchBuilder,
 	navigator: Navigator,
+	callback?: () => void,
 	doClearing?: () => boolean 
 }
 
