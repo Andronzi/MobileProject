@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
 
-import Colors from "../config/colors";
+import Colors from "../Config/colors";
 import Draggable from "./Draggable";
 
 const LONG_PRESS_DELAY = 350;

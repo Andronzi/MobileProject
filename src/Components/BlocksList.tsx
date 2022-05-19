@@ -4,10 +4,10 @@ import { useTheme, makeStyles, Icon, Button } from "@rneui/themed";
 import blocksState from "../Data/blocksState";
 import { RenderObj } from "./RenderObj";
 
-const ScrollViewRefContext = React.createContext<React.MutableRefObject<null> | null>(null);
+const ScrollViewRefContext = React.createContext<React.RefObject<ScrollView> | null>(null);
 
-export function useScrollViewRef() {
-  useContext(ScrollViewRefContext);
+function useScrollViewRef(): React.RefObject<ScrollView> | null {
+  return useContext(ScrollViewRefContext);
 }
 
 export const BlocksList: React.FC = () => {
@@ -22,7 +22,7 @@ export const BlocksList: React.FC = () => {
   const { theme } = useTheme();
   const styles = useStyles(theme);
 
-  const scrollViewRef = useRef(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const onPressEvent = (content: {
     id: number | string;
