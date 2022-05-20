@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useContext, useRef } from "react";
-import { View, StyleSheet, ScrollView, FlatList } from "react-native";
+import { View, StyleSheet, ScrollView, FlatList, ListRenderItem } from "react-native";
 
 import Task from "./Components/Task";
 import TasksTitle from "./Components/TasksTitle";
@@ -17,7 +17,7 @@ export function useScrollViewRef(): React.RefObject<FlatList> | null {
 }
 
 const App = () => {
-  const [taskList, setTaskList] = useState<Array<{ text: string; id: number }>>([
+  const [taskList, setTaskList] = useState<{ text: string; id: number }[]>([
     { text: "Implement drag and drop 🤯", id: 1 },
     { text: "Do something cool 😎", id: 2 },
     { text: "This block needs to check blocks collision 🤣", id: 3 },
@@ -40,15 +40,20 @@ const App = () => {
 
   const scrollViewRef = useRef<FlatList>(null);
 
+  const renderTask: ListRenderItem<{ text: string; id: number }> = ({ item }) => (
+    <Task key={item.id} text={item.text}></Task>
+  );
+
   return (
     <View style={styles.background}>
       <View style={styles.tasksTitleAndTasks}>
         <TasksTitle />
         <FlatListRefContext.Provider value={scrollViewRef}>
           <FlatList
+            style={{ borderBottomWidth: 0 }}
             ref={scrollViewRef}
             data={taskList}
-            renderItem={item => <Task key={item.item.id} text={item.item.text}></Task>}
+            renderItem={renderTask}
           />
         </FlatListRefContext.Provider>
         {/* {taskList.map(task => (
