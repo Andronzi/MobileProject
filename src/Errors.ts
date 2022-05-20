@@ -5,4 +5,8 @@ export default class DRErrors {
             message ?? `Incorrect type ${type ? '"' + typeof type + '"' : ""} was encountered`,
         );
     }
+
+    static unexpectedUndefined(name?: string, message?: string): never {
+        throw new Error(message ?? `Unexpected undefined ${name ?? ""} appeared`);
+    }
 }

@@ -12,13 +12,23 @@ import { ButchObj } from "src/Butch/ButchObj";
 //   | Record<string, unknown>;
 // export default StyleType;
 
+export interface Coordinates {
+    x: number;
+    y: number;
+}
+
+export interface Size {
+    width: number;
+    height: number;
+}
+
 // TODO: test React.Attributes for props
 export interface IStyle {
     [key: string]: unknown | undefined;
 }
 export type Children = React.ReactNode[] | undefined;
 
-export type ButchCodes = { __hash: string, [key: string]: string }
+export type ButchCodes = { __hash: string; [key: string]: string };
 
 export type ButchGlobals = {
     builder: ButchBuilder | null,
