@@ -1,11 +1,13 @@
 import React, { useContext } from "react";
+import { View } from "react-native";
+import { useTheme, makeStyles } from "@rneui/themed";
 
 import { ButchObj } from "../Butch/ButchObj";
 import useComponentData from "src/hooks/useComponentData";
-import { View } from "react-native";
-import { useTheme, makeStyles } from "@rneui/themed";
 import Droppable from "./Droppable";
 import { useDNDElements } from "./DroppablesData";
+// import { Title } from "../Components/Title";
+import { Block } from "../Components/Block";
 
 interface FunctionalBlockProps {
   item: ButchObj;
@@ -19,7 +21,8 @@ function FunctionBlock({ item }: FunctionalBlockProps) {
 
   return (
     <View onLayout={onLayout} style={styles.container}> 
-      <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")}></Title>
+      {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
+      <Block children={["function", item.get("name"), item.get("nameSeq")]} style={{margin: 0, color: "white"}}/>
       <Droppable content={item.content} />
     </View>
   );

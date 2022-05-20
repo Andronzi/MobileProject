@@ -27,7 +27,7 @@ import ButchObjBase from "./ButchObj";
 
 import * as rnfs from "react-native-fs";
 import { v4 } from "uuid";
-import { ButchCodes } from "src/types/Types";
+import { ButchCodes } from "src/Types/Types";
 
 export class Program extends Block {
     private globalEnv: Environment;
