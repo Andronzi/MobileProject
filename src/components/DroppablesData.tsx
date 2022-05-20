@@ -26,9 +26,10 @@ interface DNDElementsProviderProps {
   programData: ButchObj;
 }
 
-function DNDElementsProvider({ programData }: DNDElementsProviderProps) {
+export function DNDElementsProvider({ programData }: DNDElementsProviderProps) {
   return (
     <DNDElementsContext.Provider value={programData}>
+      {/* <FlatList data={programData.content} renderItem={}></FlatList> */}
       <Droppable content={programData.content} />
     </DNDElementsContext.Provider>
   );

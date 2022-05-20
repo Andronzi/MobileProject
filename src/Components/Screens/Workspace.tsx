@@ -1,12 +1,12 @@
-import React, { useContext } from "react"
-import { TouchableNativeFeedback, View, Text } from "react-native"
-import { ButchObj } from "../../Butch/ButchObj"
-import ToolBar from "../SimpleToolbar"
-import { Navigator } from "../StackNav"
-import { disposableCallback } from "../../Utilities/tools"
-import { BlocksList } from "../BlocksList"
-import { butchGlobContext } from "../../Contexts/AppContexts"
-import { makeStyles, useTheme } from "@rneui/themed"
+import React, { useContext } from "react";
+import { TouchableNativeFeedback, View, Text } from "react-native";
+import { ButchObj } from "../../Butch/ButchObj";
+import ToolBar from "../SimpleToolbar";
+import { Navigator } from "../StackNav";
+import { disposableCallback } from "../../Utilities/tools";
+import { BlocksList } from "../BlocksList";
+import { butchGlobContext } from "../../Contexts/AppContexts";
+import { makeStyles, useTheme } from "@rneui/themed";
 
 /**
  * TODO: that function must assemble array of index-pathes to blocks, which need rebuilding
@@ -14,75 +14,75 @@ import { makeStyles, useTheme } from "@rneui/themed"
 declare function assembleChanges(obj: ButchObj): number[][];
 
 const WorkSpaceScreen: React.FC<{
-  navigator: Navigator,
-  target: ButchObj
+  navigator: Navigator;
+  target: ButchObj;
 }> = ({ navigator, target }) => {
-  const butchGlobals = useContext(butchGlobContext)
+  const butchGlobals = useContext(butchGlobContext);
 
   const onLaunch = () => {
     if (butchGlobals.builder === null || butchGlobals.programObj === null) return;
-    
+
     if (butchGlobals.program.executable === null || butchGlobals.program.isChanged) {
-      butchGlobals.program.executable = butchGlobals.builder?.build(butchGlobals.programObj)
-    } 
+      butchGlobals.program.executable = butchGlobals.builder?.build(butchGlobals.programObj);
+    }
     // else if (butchGlobals.program.isChanged) {
     //   butchGlobals.builder?.rebuild(
-    //     butchGlobals.program.executable, 
-    //     butchGlobals.programObj, 
+    //     butchGlobals.program.executable,
+    //     butchGlobals.programObj,
     //     assembleChanges(butchGlobals.programObj));
     // }
-    
+
     butchGlobals.program.isChanged = false;
-    
-    navigator.goTo(
-      "console", 
-      { doClearing: disposableCallback(() => true) }, 
-      () => {
-        if (butchGlobals.program.executable)
-          butchGlobals.program.executable.execute();
-      })
-  } 
 
-  const { theme } = useTheme(), styles = useStyles(theme);
+    navigator.goTo("console", { doClearing: disposableCallback(() => true) }, () => {
+      if (butchGlobals.program.executable) butchGlobals.program.executable.execute();
+    });
+  };
 
-  return <View>
-    <ToolBar>
-      <TouchableNativeFeedback onPress={() => navigator.goTo("globals")}>
-        <View style={styles.buttonView}>
-          <Text style={styles.buttonText}>Globals</Text>
-        </View>
-      </TouchableNativeFeedback>
-      <TouchableNativeFeedback onPress={() => onLaunch()}>
-        <View style={styles.buttonView}>
-          <Text style={styles.buttonText}>Launch</Text>
-        </View>
-      </TouchableNativeFeedback>
-      <TouchableNativeFeedback onPress={() => navigator.goTo("console")}>
-        <View style={styles.buttonView}>
-          <Text style={styles.buttonText}>Console</Text>
-        </View>
-      </TouchableNativeFeedback>
+  const { theme } = useTheme(),
+    styles = useStyles(theme);
 
-      {/* <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
+  return (
+    <View>
+      <ToolBar>
+        <TouchableNativeFeedback onPress={() => navigator.goTo("globals")}>
+          <View style={styles.buttonView}>
+            <Text style={styles.buttonText}>Globals</Text>
+          </View>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback onPress={() => onLaunch()}>
+          <View style={styles.buttonView}>
+            <Text style={styles.buttonText}>Launch</Text>
+          </View>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback onPress={() => navigator.goTo("console")}>
+          <View style={styles.buttonView}>
+            <Text style={styles.buttonText}>Console</Text>
+          </View>
+        </TouchableNativeFeedback>
+
+        {/* <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
       <Button title="Launch" onPress={() => onLaunch()} />
       <Button title="Console" onPress={() => { navigator.goTo("console") }} /> */}
-    </ToolBar> 
-    <BlocksList objToRender={target}/>
-  </View>
-}
+      </ToolBar>
+
+      {target !== undefined ? <BlocksList objToRender={target} /> : undefined}
+    </View>
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   buttonView: {
     padding: 10,
-    height: "100%", 
+    height: "100%",
     justifyContent: "center",
-    flex: 1
+    flex: 1,
   },
   buttonText: {
     alignSelf: "center",
-    fontSize: 18, 
-    color: "white"
-  }
-})); 
+    fontSize: 18,
+    color: "white",
+  },
+}));
 
-export default WorkSpaceScreen
+export default WorkSpaceScreen;

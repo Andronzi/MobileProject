@@ -1,0 +1,12 @@
+{
+  "type": "program",
+  "__codesHash": 123,
+  "content": [
+    {
+      "type": "function",
+      "name": "foo",
+      "nameSeq": ["a"],
+      "content": []
+    }
+  ]
+}

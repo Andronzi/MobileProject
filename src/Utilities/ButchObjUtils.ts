@@ -140,11 +140,39 @@ function findInsertionPosition(
     return result;
 }
 
-function findElementParent(globalBObj: ButchObj, deletableElement: ButchObj) {
-    for (let i = 0; i < globalBObj.content?.length; i++) {}
-}
-
 export function deleteElement(globalBObj: ButchObj, deletableElement: ButchObj) {
+    if (deletableElement.parent === undefined) {
+        if (globalBObj.content === undefined) {
+            DRErrors.unexpectedUndefined("deleteElement->globalBObj.content");
+        }
+
+        for (let i = 0; i < globalBObj.content.length; i++) {
+            if (globalBObj.content[i] == deletableElement) {
+                // for (let j = 0; j < i; j++) {
+
+                // }
+
+                // Возможно это не работает
+
+                globalBObj.content.splice(i, 1);
+                globalBObj.content = globalBObj.content;
+                return;
+            }
+        }
+
+        return;
+    } else if (deletableElement.parent.content === undefined) {
+        DRErrors.unexpectedUndefined("deleteElement->deletableElement.parent.content");
+    }
+
+    for (let i = 0; i < deletableElement.parent.content.length; i++) {
+        if (deletableElement.parent.content[i] == deletableElement) {
+            deletableElement.parent.content.splice(i, 1);
+            deletableElement.parent.content = deletableElement.parent.content;
+            return;
+        }
+    }
+
     return;
 }
 

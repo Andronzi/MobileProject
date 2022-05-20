@@ -40,9 +40,6 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
 
   let isScrolling = useRef(false).current;
 
-  useEffect(() => {
-    console.log();
-  });
   const svRef = useScrollViewRef();
 
   const animationValue = useRef(new Animated.Value(0)).current;

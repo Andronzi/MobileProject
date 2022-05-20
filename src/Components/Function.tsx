@@ -7,6 +7,8 @@ import useComponentData from "../hooks/useComponentData";
 import Droppable from "./Droppable";
 import { useDNDElements } from "./DroppablesData";
 import { Block } from "../Components/Block";
+import { DataPicker } from "./DataPicker";
+import Draggable from "./Draggable";
 
 interface FunctionalBlockProps {
   item: ButchObj;
@@ -27,23 +29,25 @@ export function FunctionBlock({ item }: FunctionalBlockProps) {
   });
 
   return (
-    <View ref={selfRef} onLayout={onLayout} style={styles.container}>
-      {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
-      <Block
-        // children={["function", item.get("name"), item.get("nameSeq")]}
-        style={{ margin: 0, color: "white" }}>
-        <Text style={styles.blockText}>function</Text>
-        <TextInput style={styles.inputText} placeholder="name" value={item.get("name")} />
-        {item.get("nameSeq").map(item => {
-          return (
-            <>
-              <TextInput style={styles.inputText} placeholder="argument" value={item} />
-            </>
-          );
-        })}
-      </Block>
-      <Droppable content={item.content} />
-    </View>
+    <Draggable>
+      <DataPicker item={item} style={styles.container}>
+        {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
+        <Block
+          // children={["function", item.get("name"), item.get("nameSeq")]}
+          style={{ margin: 0, color: "white" }}>
+          <Text style={styles.blockText}>function</Text>
+          <TextInput style={styles.inputText} placeholder="name" value={item.get("name")} />
+          {item.get("nameSeq").map(item => {
+            return (
+              <>
+                <TextInput style={styles.inputText} placeholder="argument" value={item} />
+              </>
+            );
+          })}
+        </Block>
+        <Droppable content={item.content} />
+      </DataPicker>
+    </Draggable>
   );
 }
 

@@ -21,11 +21,10 @@ function initButchGlobals(): Promise<{
 }> {
   return Promise.all([
     ButchBuilder.initDefaultBuilder(),
-    rnfs.readFileAssets("bch/testProgram.json"),
+    rnfs.readFileAssets("bch/functionCheck.json"),
   ]).then(([builder, namedProg]) => {
     const encoded = builder.encodeNamedProgram(namedProg);
-    const programObj = new ButchObj(
-      JSON.parse(encoded), builder.getCodes(), builder.getRCodes());
+    const programObj = new ButchObj(JSON.parse(encoded), builder.getCodes(), builder.getRCodes());
 
     return { builder, programObj };
   });
@@ -48,7 +47,8 @@ export const App: React.FC = () => {
           butchGlogals.programObj = _butchGlobals.programObj;
           return { ...prev, builder: _butchGlobals.builder };
         });
-      }).catch(e => console.log(e));
+      })
+      .catch(e => console.log(e));
 
     return (
       <View style={styles.loadScreen}>
