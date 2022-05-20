@@ -58,11 +58,13 @@ function binarySearch(content: ButchObj[], landingСoords: Coordinates): BinaryS
 }
 
 export function findCoordinates(bObj: ButchObj, landingСoords: Coordinates) {
-    for (let i = 0; i < (bObj.content?.length ?? 0); i++) {
-        const bObjCoords =
-            (bObj.extension.coordinates as Coordinates) ??
-            DRErrors.unexpectedUndefined("bObj.extension.coordinates");
-        const bObjSize =
-            (bObj.extension.size as Size) ?? DRErrors.unexpectedUndefined("bObj.extension.size");
-    }
+    if (bObj.content === undefined) return;
+    
+    // const bObjCoords =
+    //     (bObj?.extension.coordinates as Coordinates) ??
+    //     DRErrors.unexpectedUndefined("bObj.extension.coordinates");
+    // const bObjSize =
+    //     (bObj?.extension.size as Size) ?? DRErrors.unexpectedUndefined("bObj.extension.size");
+
+    const bsResult = binarySearch(bObj.content, landingСoords);
 }

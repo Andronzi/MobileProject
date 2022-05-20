@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 
 import { ButchObj } from "../Butch/ButchObj";
-import useComponentData from "src/Hooks/useComponentData";
+import useComponentData from "src/hooks/useComponentData";
 import { View } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 import Droppable from "./Droppable";
@@ -15,11 +15,11 @@ function FunctionBlock({ item }: FunctionalBlockProps) {
   const theme = useTheme();
   const styles = useStyles(theme);
   const context = useDNDElements();
-  const [data, onLayout] = useComponentData();
-  item.extension.coords = { ...data };
+  const [sizeAndCoords, onLayout] = useComponentData(item);
 
   return (
-    <View onLayout={onLayout} style={styles.container}>
+    <View onLayout={onLayout} style={styles.container}> 
+      <Title title={item.codes} name=""></Title>
       <Droppable content={item.content} />
     </View>
   );

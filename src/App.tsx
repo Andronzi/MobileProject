@@ -31,6 +31,10 @@ function initButchGlobals(): Promise<{
   
 }
 
+function initCodesRessss() {
+  const codesMap = new Map();
+}
+
 const Nav = createNavContainer();
 
 export const App: React.FC = () => {
