@@ -1,5 +1,5 @@
 import rnfs from "react-native-fs";
-import { ButchCodes } from "../Types/Types";
+import { ButchCodes } from "../types/Types";
 import { cyrb53 } from "../Utilities/tools";
 
 const variableCheck = /^[a-zA-Z_]\w*/;
@@ -35,18 +35,24 @@ export function createButchCodesFile(codesSet: string[], outPath = "") {
     );
 }
 
-function parseButchCodes(data: string) {
+function parseButchCodes(data: string): [ButchCodes, ButchCodes] {
     const parsed = JSON.parse(data) as { [key: string]: string };
-    Object.entries(parsed).forEach(([name, code]) => (parsed[code] = name));
+    
+    const reversed: {[key: string]: string} = {};
+    Object.entries(parsed).forEach(([name, code]) => reversed[code] = name);
+
     parsed.__hash = cyrb53(data).toString();
-    return parsed as ButchCodes;
+    reversed.__hash = parsed.__hash;
+
+    return [parsed as ButchCodes, reversed as ButchCodes];
 }
 
-export function readButchCodes(path = ""): Promise<ButchCodes> {
+export function readButchCodes(path = ""): Promise<[ButchCodes, ButchCodes]> {
     return createBchFolder().then(() =>
         rnfs.readFile(path || defaultCodesPath).then(parseButchCodes),
     );
 }
 
-export const readButchCodesAssets = () =>
-    rnfs.readFileAssets("bch/codes.json").then(parseButchCodes);
+export function readButchCodesAssets(): Promise<[ButchCodes, ButchCodes]> {
+    return rnfs.readFileAssets("bch/codes.json").then(parseButchCodes);
+}

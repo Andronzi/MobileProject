@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { ActivityIndicator, View, Text } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 import rnfs from "react-native-fs";
 
@@ -24,7 +24,8 @@ function initButchGlobals(): Promise<{
     rnfs.readFileAssets("bch/testProgram.json"),
   ]).then(([builder, namedProg]) => {
     const encoded = builder.encodeNamedProgram(namedProg);
-    const programObj = new ButchObj(JSON.parse(encoded), builder.getCodes());
+    const programObj = new ButchObj(
+      JSON.parse(encoded), builder.getCodes(), builder.getRCodes());
 
     return { builder, programObj };
   });
@@ -47,10 +48,7 @@ export const App: React.FC = () => {
           butchGlogals.programObj = _butchGlobals.programObj;
           return { ...prev, builder: _butchGlobals.builder };
         });
-      })
-      .catch(e => {
-        console.log(e);
-      });
+      }).catch(e => console.log(e));
 
     return (
       <View style={styles.loadScreen}>

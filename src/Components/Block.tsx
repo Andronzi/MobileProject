@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import PropTypes from "prop-types";
 
 import { makeStyles, useTheme } from "@rneui/themed";
-import { Children, IStyle } from "../Types/Types";
+import { Children, IStyle } from "../types/Types";
 
 interface BlockProps {
   children: Children;

@@ -8,8 +8,8 @@ import {
     isRecursiveField,
     isStringArrayField,
     isStringField,
-} from "../Types/BObjFields";
-import { ButchCodes } from "../Types/Types";
+} from "../types/BObjFields";
+import { ButchCodes } from "../types/Types";
 
 /**
  * wraper of encoded object
@@ -17,7 +17,7 @@ import { ButchCodes } from "../Types/Types";
  */
 export class ButchObjBase {
     public data: BObj;
-    public codes: ButchCodes;
+    public readonly codes: ButchCodes;
     // any extension your middleware could apply
     public extension: { [key: string]: any } = {};
 
@@ -109,12 +109,14 @@ export class ButchObj extends ButchObjBase {
     }
 
     public readonly type: string;
+    public readonly rCodes: ButchCodes;
 
-    constructor(obj: { [key: string]: any }, codes: ButchCodes) {
+    constructor(obj: { [key: string]: any }, codes: ButchCodes, rCodes: ButchCodes) {
         super(obj, codes);
 
-        this.type = this.data[this.codes.type] as string;
-        this._content = super.getContent()?.map(item => new ButchObj(item, codes));
+        this.rCodes = rCodes;
+        this.type = rCodes[this.data[this.codes.type] as string];
+        this._content = super.getContent()?.map(item => new ButchObj(item, codes, rCodes));
     }
 
     /**
@@ -142,4 +144,3 @@ export class ButchObj extends ButchObjBase {
 
 export default ButchObjBase;
 
-new ButchObj({}, { __hash: "1" }).content?.push(new ButchObj({}, { __hash: "1" }));
