@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { ButchObj } from "../Butch/ButchObj";
 import Droppable from "./Droppable";
 
-const plug = new ButchObj({}, { __hash: "", k: "" });
+const plug = new ButchObj({}, { __hash: "", k: "" }, { __hash: "", k: "" });
 const DNDElementsContext = React.createContext<ButchObj>(plug);
 
 export function useDNDElements() {

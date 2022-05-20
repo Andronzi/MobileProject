@@ -59,6 +59,8 @@ function binarySearch(content: ButchObj[], landingСoords: Coordinates): BinaryS
 
 function findCurrentElement(content: ButchObj[], landingСoords: Coordinates): BinarySearchReturn {
     let result: BinarySearchReturn;
+    let prevBlockCoords: Coordinates = {x: -1, y: -1};
+    const index = 0;
 
     for (let i = 0; i < content.length; i++) {
         if (content[i].extension.coordinates === undefined) {
@@ -67,10 +69,22 @@ function findCurrentElement(content: ButchObj[], landingСoords: Coordinates): B
 
         const bObjCoords = content[i].extension.coordinates as Coordinates;
         const bObjSize = content[i].extension.size as Size;
+        
+        if (prevBlockCoords.y !== -1) {
+            if (bObjCoords.y > ) {
+
+            }
+        }
 
         if (isIntersects(bObjCoords, bObjSize, landingСoords)) {
             result = { position: RelativePosition.IN, index: i };
+        } else if (landingСoords.y > bObjCoords.y) {
+            result = { position: RelativePosition.AFTER, index: i };
+        } else {
+            result = { position: RelativePosition.BEFORE, index: i };
         }
+
+        prevBlockCoords = { x: bObjCoords.x, y: bObjCoords.y };
     }
 }
 

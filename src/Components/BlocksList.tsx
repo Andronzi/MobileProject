@@ -17,7 +17,7 @@ import AddButton from "./BlockUI/AddButton";
 
 import { FunctionBlock } from "../Components/Function";
 
-import { ButchObj } from "src/Butch/ButchObj";
+import { ButchObj } from "../Butch/ButchObj";
 
 const ScrollViewRefContext = React.createContext<React.RefObject<ScrollView> | null>(null);
 
@@ -129,8 +129,8 @@ export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender })
          */}
       <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
         <ScrollViewRefContext.Provider value={scrollViewRef}>
-          {/* <FunctionBlock> */}
           <Text>{JSON.stringify(objToRender)}</Text>
+          <FunctionBlock item={objToRender} />
           <RenderObj />
         </ScrollViewRefContext.Provider>
       </ScrollView>
