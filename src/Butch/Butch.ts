@@ -27,11 +27,11 @@ import ButchObjBase from "./ButchObj";
 
 import * as rnfs from "react-native-fs";
 import { v4 } from "uuid";
-import { ButchCodes } from "src/Types/Types";
+import { ButchCodes } from "../Types/Types";
 
 export class Program extends Block {
     private globalEnv: Environment;
-    private flusher: { flush: () => void, interval: number } | undefined;
+    private flusher: { flush: () => void; interval: number } | undefined;
 
     constructor() {
         super();
@@ -76,14 +76,14 @@ export class Program extends Block {
     }
 
     execute(): Value {
-        const flushInterval = this.flusher && Number.isFinite(this.flusher.interval)
-            ? setInterval(this.flusher.flush, this.flusher.interval)
-            : undefined;
+        const flushInterval =
+            this.flusher && Number.isFinite(this.flusher.interval)
+                ? setInterval(this.flusher.flush, this.flusher.interval)
+                : undefined;
 
         super.execute(this.globalEnv);
 
-        if (flushInterval) 
-            clearInterval(flushInterval);
+        if (flushInterval) clearInterval(flushInterval);
 
         this.flusher?.flush();
 
@@ -112,13 +112,15 @@ export class ButchBuilder {
     private exBuilders: Map<string, ExBuilder>;
     private middlewares: Middleware[];
 
-    private streams: { id: string, write: Function }[] = [];
+    private streams: { id: string; write: (str: string) => void }[] = [];
     private outPutBuffer = "";
-    private flushBuffer = () =>  {
-        this.streams.forEach(({write}) => write(this.outPutBuffer));
+    private flushBuffer = () => {
+        this.streams.forEach(({ write }) => write(this.outPutBuffer));
         this.outPutBuffer = "";
-    }
-    private pushBuffer = (str: string) => { this.outPutBuffer += str; };
+    };
+    private pushBuffer = (str: string) => {
+        this.outPutBuffer += str;
+    };
 
     constructor(codes: ButchCodes) {
         this.c = codes;
@@ -139,13 +141,21 @@ export class ButchBuilder {
             [this.c.break, () => BreakBlock],
             [this.c.return, info => new ReturnBlock(info.obj.extension.builtContent[0])],
             [this.c.log, info => new __consolelog(info.obj.extension.builtContent[0])],
-            [this.c.print, info => new PrintBlock(
-                info.obj.extension.builtContent[0], this.pushBuffer)],
+            [
+                this.c.print,
+                info => new PrintBlock(info.obj.extension.builtContent[0], this.pushBuffer),
+            ],
 
-            [this.c.set, info => new SetBlock(
-                info.obj.extension.builtContent[0], info.obj.extension.builtContent[1])],
-                
-            [this.c.container, info => new ContainerBlock(info.obj.extension.builtContent)]
+            [
+                this.c.set,
+                info =>
+                    new SetBlock(
+                        info.obj.extension.builtContent[0],
+                        info.obj.extension.builtContent[1],
+                    ),
+            ],
+
+            [this.c.container, info => new ContainerBlock(info.obj.extension.builtContent)],
         ]);
 
         this.exBuilders = new Map<string, ExBuilder>();
@@ -245,7 +255,7 @@ export class ButchBuilder {
 
     buildBlock(info: BlockInfo): Block {
         this.execMiddlewares(info);
-
+        console.log(info.obj.get("type"));
         const builder = this.exBuilders.get(info.obj.get("type"));
         if (builder) {
             return builder(info, this.c, this);
@@ -257,10 +267,10 @@ export class ButchBuilder {
     }
 
     build(programObj: ButchObjBase, autoFlushInterval: number = NaN): Program {
-        // if (programObj.get("__codesHash") !== this.c.__hash) 
-        //     new CompilationError(`Invalid program encoding; builder expects hash : 
+        // if (programObj.get("__codesHash") !== this.c.__hash)
+        //     new CompilationError(`Invalid program encoding; builder expects hash :
         //         ${this.c.__hash}, but had hash ${programObj.get("__codesHash")}`)
-        const prog = new Program(); 
+        const prog = new Program();
         const content = programObj.getContent() ?? CompilationError.throwInvalidFile();
 
         for (let i = 0; i < content.length; ++i) {
