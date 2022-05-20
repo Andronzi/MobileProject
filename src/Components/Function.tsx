@@ -19,7 +19,7 @@ function FunctionBlock({ item }: FunctionalBlockProps) {
 
   return (
     <View onLayout={onLayout} style={styles.container}> 
-      <Title title={item.codes} name=""></Title>
+      <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")}></Title>
       <Droppable content={item.content} />
     </View>
   );
