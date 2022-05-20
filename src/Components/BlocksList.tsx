@@ -13,7 +13,7 @@ import { useTheme, makeStyles } from "@rneui/themed";
 
 import blocksState from "../Data/blocksState";
 import { RenderObj } from "./RenderObj";
-import AddButton from "./AddButton";
+import AddButton from "./BlockUI/AddButton";
 
 import { FunctionBlock } from "../Components/Function";
 

@@ -277,7 +277,7 @@ export class ButchBuilder {
 
         for (let i = 0; i < content.length; ++i) {
             const info: BlockInfo = {
-                obj: new ButchObjBase(content[i], this.c),
+                obj: new ButchObjBase(content[i], this.c, this.rc),
                 location: [i],
             };
 
