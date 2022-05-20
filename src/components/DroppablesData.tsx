@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 
-import { ButchObj } from "src/Butch/ButchObj";
+import { ButchObj } from "../Butch/ButchObj";
 import Droppable from "./Droppable";
 
-const plug = new ButchObj({}, {});
+const plug = new ButchObj({}, { __hash: "", k: "" });
 const DNDElementsContext = React.createContext<ButchObj>(plug);
 
 export function useDNDElements() {

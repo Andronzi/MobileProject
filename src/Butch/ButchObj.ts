@@ -102,7 +102,6 @@ export class ButchObj extends ButchObjBase {
     constructor(obj: { [key: string]: any }, codes: ButchCodes) {
         super(obj, codes);
 
-        // Возможно этот конструктор не работает
         this.content = super.getContent()?.map(item => new ButchObj(item, codes));
     }
 
