@@ -1,4 +1,4 @@
-import { Coordinates, Size } from "../Types/Types";
+import { Coordinates, Size } from "../types/Types";
 import DRErrors from "../Errors";
 import { ButchObj } from "../Butch/ButchObj";
 

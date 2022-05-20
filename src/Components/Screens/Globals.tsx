@@ -13,9 +13,7 @@ function createCard(obj: ButchObj, styles: {
   default: object,
   [key: string]: object
 }): JSX.Element {
-  const type = obj.get("type");
-  
-  switch (type) {
+  switch (obj.type) {
     case "function": 
       return <View style={[styles.default, styles.function]}>
         <Text style={styles.nameText}>

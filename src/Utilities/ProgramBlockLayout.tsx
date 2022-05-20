@@ -9,7 +9,7 @@ import {
 } from "../Modules/ProgramBlocks";
 import DRErrors from "../Errors";
 import { ButchObj } from "../Butch/ButchObj";
-import { ButchCodes } from "../Types/Types";
+import { ButchCodes } from "../types/Types";
 
 const ProgramBlocks: { [key: string]: React.FC<any> } = {
   declare: DeclarationBlock,

@@ -27,7 +27,7 @@ import ButchObjBase from "./ButchObj";
 
 import * as rnfs from "react-native-fs";
 import { v4 } from "uuid";
-import { ButchCodes } from "../Types/Types";
+import { ButchCodes } from "../types/Types";
 
 export class Program extends Block {
     private globalEnv: Environment;
@@ -108,6 +108,7 @@ export class ButchBuilder {
 
     // codes dictionary
     private c: ButchCodes;
+    private rc: ButchCodes;
     private builders: Map<string, Builder>;
     private exBuilders: Map<string, ExBuilder>;
     private middlewares: Middleware[];
@@ -122,8 +123,9 @@ export class ButchBuilder {
         this.outPutBuffer += str;
     };
 
-    constructor(codes: ButchCodes) {
+    constructor(codes: ButchCodes, revesedCodes: ButchCodes) {
         this.c = codes;
+        this.rc = revesedCodes;
 
         // bind default builders
         this.builders = new Map<string, Builder>([
@@ -255,7 +257,7 @@ export class ButchBuilder {
 
     buildBlock(info: BlockInfo): Block {
         this.execMiddlewares(info);
-        console.log(info.obj.get("type"));
+        
         const builder = this.exBuilders.get(info.obj.get("type"));
         if (builder) {
             return builder(info, this.c, this);
@@ -312,16 +314,21 @@ export class ButchBuilder {
         });
     }
 
-    getCodes(): ButchCodes {
-        return { ...this.c };
+    getCodes(): Readonly<ButchCodes> {
+        return this.c;
+    }
+    getRCodes(): Readonly<ButchCodes>  {
+        return this.rc;
     }
 
     public static initDefaultBuilder(): Promise<ButchBuilder> {
         return readButchCodesSetAssets()
             .then(set => createButchCodesFile(set))
             .then(() => readButchCodes())
-            .then(_codes => new ButchBuilder(_codes));
+            .then(_codes => new ButchBuilder(_codes[0], _codes[1]));
     }
 }
+
+
 
 export default Program;

@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { ButchGlobals } from "../Types/Types";
+import { ButchGlobals } from "../types/Types";
 
 export const butchGlobContext = createContext<ButchGlobals>({
     builder: null,
