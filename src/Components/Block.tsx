@@ -1,35 +1,39 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import PropTypes from "prop-types";
 
 import { makeStyles, useTheme } from "@rneui/themed";
-import { Children, IStyle } from "../Types/Types"
+import { Children, IStyle } from "../Types/Types";
 
 interface BlockProps {
   children: Children;
   style?: IStyle;
 }
 
-const defaultStyles = makeStyles((theme) => ({
+const defaultStyles = makeStyles(theme => ({
   containerStyles: {
     flexDirection: "row",
     borderRadius: 5,
-    background: theme.colors?.black
-  }
+    background: "#A6B1E1",
+  },
 }));
 
-const { theme } = useTheme();
-const defaultStyle = defaultStyles(theme);
-
 export function Block({ children, style }: BlockProps) {
+  const { theme } = useTheme();
+  const defaultStyle = defaultStyles(theme);
+
   return (
     <View style={[defaultStyle, style]}>
-      {children}
+      <>
+        {React.Children.map(children, child => {
+          return { child };
+        })}
+      </>
     </View>
-  )
+  );
 }
 
 Block.propTypes = {
   children: PropTypes.array,
-  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
-}
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+};

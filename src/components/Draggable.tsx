@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { View, Animated, PanResponder, TouchableWithoutFeedback, Dimensions } from "react-native";
 
 import { Children, IStyle } from "../Types/Types";
-import useStateCallback from "../hooks/useStateCallback";
+import useStateCallback from "../Hooks/useStateCallback";
 import { useScrollViewRef } from "../DND-test";
 import PropTypes from "prop-types";
 

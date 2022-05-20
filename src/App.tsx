@@ -1,13 +1,12 @@
 import React, { useContext, useState } from "react";
-import { ActivityIndicator, View, Text} from "react-native";
-import { useTheme, makeStyles } from "@rneui/themed"
-import rnfs from "react-native-fs"
+import { ActivityIndicator, View, Text } from "react-native";
+import { useTheme, makeStyles } from "@rneui/themed";
+import rnfs from "react-native-fs";
 
 import ConsoleScreen from "./Components/Screens/Console";
 import WorkSpaceScreen from "./Components/Screens/Workspace";
 import GlobalsScreen from "./Components/Screens/Globals";
 import { createNavContainer } from "./Components/StackNav";
-import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
 
 import { butchGlobContext } from "./Contexts/AppContexts";
 
@@ -17,23 +16,18 @@ import { ButchObj } from "./Butch/ButchObj";
 type AppData = { builder: ButchBuilder } | undefined;
 
 function initButchGlobals(): Promise<{
-  builder: ButchBuilder,
-  programObj: ButchObj,
+  builder: ButchBuilder;
+  programObj: ButchObj;
 }> {
   return Promise.all([
-    ButchBuilder.initDefaultBuilder(), 
-    rnfs.readFileAssets("bch/testProgram.json")
+    ButchBuilder.initDefaultBuilder(),
+    rnfs.readFileAssets("bch/testProgram.json"),
   ]).then(([builder, namedProg]) => {
     const encoded = builder.encodeNamedProgram(namedProg);
     const programObj = new ButchObj(JSON.parse(encoded), builder.getCodes());
-    
-    return { builder, programObj };
-  })
-  
-}
 
-function initCodesRessss() {
-  const codesMap = new Map();
+    return { builder, programObj };
+  });
 }
 
 const Nav = createNavContainer();
@@ -44,33 +38,40 @@ export const App: React.FC = () => {
 
   const { theme } = useTheme();
   const styles = useStyles(theme);
-  
-  if (!appData) {
-    initButchGlobals().then(_butchGlobals => {
-      setAppData(prev => {
-        butchGlogals.builder = _butchGlobals.builder;
-        butchGlogals.programObj = _butchGlobals.programObj;
-        return { ...prev, builder: _butchGlobals.builder };
-      });
-    }) 
 
-    return <View style={styles.loadScreen}>
-      <ActivityIndicator size="large" color={theme.colors.primary} />
-    </View>   
-  } 
-  else return (
-    <View style={{ zIndex: 0 }}>
-      <Nav.Stack>
-        <Nav.Screen name={"console"} 
-          component={ConsoleScreen} 
-          transProps={{ builder: appData.builder }} 
-        />
-        <Nav.Screen name={"default"} component={ WorkSpaceScreen } transProps />
-        <Nav.Screen name="globals" component={GlobalsScreen} />
-      </Nav.Stack>
-    </View>
-  )
-}
+  if (!appData) {
+    initButchGlobals()
+      .then(_butchGlobals => {
+        setAppData(prev => {
+          butchGlogals.builder = _butchGlobals.builder;
+          butchGlogals.programObj = _butchGlobals.programObj;
+          return { ...prev, builder: _butchGlobals.builder };
+        });
+      })
+      .catch(e => {
+        console.log(e);
+      });
+
+    return (
+      <View style={styles.loadScreen}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  } else
+    return (
+      <View style={{ zIndex: 0 }}>
+        <Nav.Stack>
+          <Nav.Screen
+            name={"console"}
+            component={ConsoleScreen}
+            transProps={{ builder: appData.builder }}
+          />
+          <Nav.Screen name={"default"} component={WorkSpaceScreen} transProps />
+          <Nav.Screen name="globals" component={GlobalsScreen} />
+        </Nav.Stack>
+      </View>
+    );
+};
 
 const useStyles = makeStyles(theme => ({
   loadScreen: {

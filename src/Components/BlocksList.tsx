@@ -9,11 +9,13 @@ import {
   Pressable,
   LayoutRectangle,
 } from "react-native";
-import { useTheme, makeStyles } from '@rneui/themed';
+import { useTheme, makeStyles } from "@rneui/themed";
 
 import blocksState from "../Data/blocksState";
 import { RenderObj } from "./RenderObj";
 import AddButton from "./AddButton";
+
+import { FunctionBlock } from "../Components/Function";
 
 import { ButchObj } from "src/Butch/ButchObj";
 
@@ -23,14 +25,12 @@ function useScrollViewRef(): React.RefObject<ScrollView> | null {
   return useContext(ScrollViewRefContext);
 }
 
-export const BlocksList: 
-  React.FC<{ objToRender: ButchObj }> = ({ objToRender }) => 
-{
+export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender }) => {
   const [isVisible, setVisible] = useState(false);
-  const [blockType, setBlockType] = useState('');
-  const [blockName, setBlockName] = useState('');
-  const [blockValue, setBlockValue] = useState('');
-  const [layout, setLayout] = useState<LayoutRectangle>()
+  const [blockType, setBlockType] = useState("");
+  const [blockName, setBlockName] = useState("");
+  const [blockValue, setBlockValue] = useState("");
+  const [layout, setLayout] = useState<LayoutRectangle>();
 
   const block: any = blocksState;
 
@@ -63,12 +63,18 @@ export const BlocksList:
   }, [block]);
 
   return (
-    <View onLayout={({ nativeEvent }) => {
-      setLayout(nativeEvent.layout)
-    }}>
-      { !isVisible ? (
-          <AddButton onPress={() => {setVisible(true)}} parentLatout={layout}/>
-        ) : undefined }
+    <View
+      onLayout={({ nativeEvent }) => {
+        setLayout(nativeEvent.layout);
+      }}>
+      {!isVisible ? (
+        <AddButton
+          onPress={() => {
+            setVisible(true);
+          }}
+          parentLatout={layout}
+        />
+      ) : undefined}
 
       {/* This Modal must be redone after component builder apear */}
       <Modal
@@ -123,7 +129,8 @@ export const BlocksList:
          */}
       <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
         <ScrollViewRefContext.Provider value={scrollViewRef}>
-          <Text>{String(objToRender)}</Text>
+          {/* <FunctionBlock> */}
+          <Text>{JSON.stringify(objToRender)}</Text>
           <RenderObj />
         </ScrollViewRefContext.Provider>
       </ScrollView>
@@ -133,7 +140,7 @@ export const BlocksList:
 
 const useStyles = makeStyles(theme => ({
   commonView: {
-    backgroundColor: theme.colors?.grey4
+    backgroundColor: theme.colors?.grey4,
   },
 
   darkCommonView: {

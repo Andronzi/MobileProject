@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FlatList } from "react-native";
 
-import { ButchObj } from "src/Butch/ButchObj";
-import createProgramBlock from "src/Utilities/ProgramBlockLayout";
+import { ButchObj } from "../Butch/ButchObj";
+import createProgramBlock from "../Utilities/ProgramBlockLayout";
 
 declare interface DroppableProps {
   content: ButchObj[] | undefined;
