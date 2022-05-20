@@ -18,11 +18,13 @@ import { ButchCodes, Coordinates, Size } from "../types/Types";
 export class ButchObjBase {
     public data: BObj;
     public readonly codes: ButchCodes;
+    public readonly rCodes: ButchCodes;
     // any extension your middleware could apply
     public extension: { coordinates?: Coordinates; size?: Size; [key: string]: any } = {};
 
-    constructor(obj: { [key: string]: any }, codes: ButchCodes) {
+    constructor(obj: { [key: string]: BObjPayload }, codes: ButchCodes, rCodes: ButchCodes) {
         this.codes = codes;
+        this.rCodes = rCodes;
         this.data = obj;
     }
 
@@ -81,15 +83,11 @@ export class ButchObjBase {
         if (!obj) {
             throw Error("Invalid path to find block");
         }
-        return new ButchObjBase(obj, this.codes);
+        return new ButchObjBase(obj, this.codes, this.rCodes);
     }
-
-    public static readonly createEmptyBObj = (codes: ButchCodes) => ({
-        [codes["type"]]: codes["program"],
-        [codes["__hash"]]: codes.__hash,
-        [codes["content"]]: [],
-    });
 }
+
+type ButchObjectCreator = () => ButchObj;
 
 export class ButchObj extends ButchObjBase {
     // eslint-disable-next-line no-use-before-define
@@ -103,12 +101,10 @@ export class ButchObj extends ButchObjBase {
     }
 
     public readonly type: string;
-    public readonly rCodes: ButchCodes;
 
-    constructor(obj: { [key: string]: any }, codes: ButchCodes, rCodes: ButchCodes) {
-        super(obj, codes);
+    constructor(obj: { [key: string]: BObjPayload }, codes: ButchCodes, rCodes: ButchCodes) {
+        super(obj, codes, rCodes);
 
-        this.rCodes = rCodes;
         this.type = rCodes[this.data[this.codes.type] as string];
         this._content = super.getContent()?.map(item => new ButchObj(item, codes, rCodes));
     }
@@ -134,6 +130,45 @@ export class ButchObj extends ButchObjBase {
             })()
         );
     }
+
+    public readonly createProgram: ButchObjectCreator = () =>
+        new ButchObj(
+            {
+                [this.codes.type]: this.codes.program,
+                [this.codes.__hash]: this.codes.__hash,
+                [this.codes.content]: [],
+            },
+            this.codes,
+            this.rCodes,
+        );
+
+    public readonly createDeclare: ButchObjectCreator = () =>
+        new ButchObj(
+            {
+                [this.codes.type]: this.codes.declare,
+                [this.codes.name]: "",
+                [this.codes.content]: [
+                    {
+                        [this.codes.type]: this.codes.expression,
+                        [this.codes.value]: "",
+                    },
+                ],
+            },
+            this.codes,
+            this.rCodes,
+        );
+
+    public readonly createFunction: ButchObjectCreator = () =>
+        new ButchObj(
+            {
+                [this.codes.type]: this.codes.function,
+                [this.codes.name]: "",
+                [this.codes.nameSeq]: [],
+                [this.codes.content]: [],
+            },
+            this.codes,
+            this.rCodes,
+        );
 }
 
 export default ButchObjBase;
