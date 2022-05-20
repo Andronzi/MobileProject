@@ -9,7 +9,7 @@ import {
     isStringArrayField,
     isStringField,
 } from "../types/BObjFields";
-import { ButchCodes } from "../types/Types";
+import { ButchCodes, Coordinates, Size } from "../types/Types";
 
 /**
  * wraper of encoded object
@@ -19,7 +19,7 @@ export class ButchObjBase {
     public data: BObj;
     public readonly codes: ButchCodes;
     // any extension your middleware could apply
-    public extension: { [key: string]: any } = {};
+    public extension: { coordinates?: Coordinates; size?: Size; [key: string]: any } = {};
 
     constructor(obj: { [key: string]: any }, codes: ButchCodes) {
         this.codes = codes;
@@ -89,12 +89,6 @@ export class ButchObjBase {
         [codes["__hash"]]: codes.__hash,
         [codes["content"]]: [],
     });
-
-    // public static readonly createEmptyBObj = (codes: ButchCodes) => ({
-    //     [codes["type"]]: codes["program"],
-    //     [codes["__hash"]]: codes.__hash,
-    //     [codes["content"]]: []
-    // });
 }
 
 export class ButchObj extends ButchObjBase {
@@ -143,4 +137,3 @@ export class ButchObj extends ButchObjBase {
 }
 
 export default ButchObjBase;
-
