@@ -2,7 +2,7 @@ import React from "react"
 import { View, TouchableOpacity } from "react-native"
 import { useTheme, makeStyles, Icon } from "@rneui/themed"
 
-export const ToolBarHeight = 50;
+export const DefaultHeight = 50;
 
 export const LeftArrow: React.FC<{ onPress: () => void }> = ({ onPress }) => (
 	<TouchableOpacity 
@@ -14,17 +14,15 @@ export const LeftArrow: React.FC<{ onPress: () => void }> = ({ onPress }) => (
 	</TouchableOpacity>
 )
 
-const ToolBar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-	const { theme } = useTheme(),
-		styles = useStyle(theme);
+const ToolBar: React.FC<{ 
+	children?: React.ReactNode,
+	extraStyle?: object,
+ }> = ({ children, extraStyle }) => {
+	const { theme } = useTheme(), styles = useStyle(theme);
 
-	return (
-		// <View style={{ alignItems: "flex-start" }}>
-			<View style={styles.toolbar}>
-				{ children }
-			</View>
-		// </View>
-	);
+	return <View style={[styles.toolbar, extraStyle]}>
+		{ children }
+	</View>
 }
 
 const useStyle = makeStyles(theme => ({
@@ -34,7 +32,7 @@ const useStyle = makeStyles(theme => ({
 			flexDirection: 'row',
 			justifyContent: 'space-between',
 			alignItems: "center",
-			height: ToolBarHeight
+			height: DefaultHeight
 		}
 }));
 
