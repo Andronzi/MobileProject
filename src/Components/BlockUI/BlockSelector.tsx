@@ -1,14 +1,18 @@
 import React from "react"
-import { TouchableOpacity, View, Text, Pressable } from "react-native"
+import { TouchableOpacity, View, Text, Button, TouchableNativeFeedback } from "react-native"
 // import { BlocksNames } from "src/types/Types"
 import { makeStyles, useTheme } from "@rneui/themed";
 import { FlatList } from "react-native-gesture-handler";
 
 const BlockSelector: React.FC<{
   choices: [string, () => void][],
-  onClose: () => void
-}> = ({ choices, onClose }) => {
-  
+  onClose: () => void,
+  children?: React.ReactNode
+}> = ({ 
+  choices, 
+  onClose,
+  children 
+}) => {  
   const { theme } = useTheme(), styles = useStyles(theme);
 
   return <View>
@@ -22,11 +26,16 @@ const BlockSelector: React.FC<{
             </TouchableOpacity> )
           } />
         </View>
-        <Pressable  onPress={() => onClose()}>
-          <View style={styles.closeButton}>
+        { children }
+        {/* <View style={styles.closeButton}>
+          <Button color={styles.closeButton.backgroundColor} title="Close" onPress={() => onClose()} />
+        </View> */}
+        <View style={styles.line}/>
+        <View style={styles.closeButton}>
+          <TouchableNativeFeedback onPress={() => onClose()}>
             <Text style={styles.selectText}>Close</Text>
-          </View>
-        </Pressable>
+          </TouchableNativeFeedback>
+        </View>
       </View>
     </View>
   </View>
@@ -45,6 +54,7 @@ const useStyles = makeStyles(theme => ({
     height: "100%",
   },
   window: {
+    borderRadius: 5,
     marginHorizontal: 15,
     marginVertical: 100,
     padding: 20,
@@ -57,7 +67,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.colors.grey4,
     padding: 5,
     borderRadius: 5,
-    marginBottom: 10
+    marginBottom: 10,
   },
   selectText: {
     fontSize: 20,
@@ -65,9 +75,18 @@ const useStyles = makeStyles(theme => ({
     alignSelf: "center",
   },
   closeButton: {
+    marginTop: 10,
     width: "100%",
-    padding: 10,
+    padding: 5,
     backgroundColor: theme.colors.warning,
+    
+    elevation: 5,
+    shadowColor: "#ffffff"
+  },
+  line: {
+    marginVertical: 5,
+    borderWidth: 1, 
+    borderColor: theme.colors.black 
   }
 }))
 
