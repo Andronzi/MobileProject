@@ -1,96 +1,139 @@
+import React, { useContext, useState } from "react"
 import { makeStyles, useTheme } from "@rneui/themed"
-import React, { useContext } from "react"
-import { View, Text, FlatList } from "react-native"
-import { TouchableHighlight } from "react-native-gesture-handler"
-import { ButchObj } from "src/Butch/ButchObj"
+import { View, Text, FlatList, TouchableNativeFeedback, Modal, LayoutRectangle } from "react-native"
 import { butchGlobContext } from "../../Contexts/AppContexts"
 import ToolBar, { LeftArrow } from "../SimpleToolbar"
 import { Navigator } from "../StackNav"
+import AddButton from "../AddButton"
+import SelectBlock from "../BlockSelector"
+
+import { ButchObj } from "src/Butch/ButchObj"
 
 function createCard(obj: ButchObj, styles: {
   default: object,
   [key: string]: object
 }): JSX.Element {
-  const type = obj.get("type")
-  let content: JSX.Element;
+  const type = obj.get("type");
+
   switch (type) {
-    case "function":
-      content = <>
+    case obj.codes.function:
+      return <View style={[styles.default, styles.function]}>
         <Text style={styles.nameText}>
           { obj.get("name") }
         </Text>
         <Text style={styles.typeText}>
           { "// function" }
         </Text>
-      </>
-      break;
+      </View>
 
-    case "declare":
-      content = <>
+    case obj.codes.declare:
+      return <View style={[styles.default, styles.declare]}>
         <Text style={styles.nameText}>
           { obj.get("name") }
         </Text>
         <Text style={styles.typeText}>
-          { "// variable" }
+          { "// global variable" }
         </Text>
-      </>
-      break;
+      </View>
   
     default:
-      content = <Text>{"Invalid type " + type}</Text>
+      return <View style={styles.default}>
+        <Text>{"Invalid type " + type}</Text>
+      </View>;
   }
-
-  return <View style={[styles.default, styles[type]]}>
-    { content }
-  </View>
 }
 
 const GlobalsScreen: React.FC<{ 
   navigator: Navigator 
 }> = ({ navigator }) => {
-  const { theme } = useTheme(), styles = useStyles(theme);
   const programObj = useContext(butchGlobContext).programObj;
-createCard(new ButchObj({}, {__hash:"2"}), styles);
+  const [layout, setLayout] = useState<LayoutRectangle>();
+  const [selectorVisible, setSelectorVisible] = useState(false);
 
-  return <View>
+  const { theme } = useTheme(), styles = useStyles(theme);
+
+  return <View 
+    onLayout={({ nativeEvent }) => setLayout(nativeEvent.layout) }
+    style={styles.screen}
+  >
     <ToolBar>
       <LeftArrow onPress={() => navigator.goBack()}/>
     </ToolBar>
 
-    <View><Text>Place here list of functions and global variables</Text></View>
+    <Modal 
+      animationType = "fade"
+      transparent={true}
+      visible={selectorVisible}
+      presentationStyle="overFullScreen"
+      onRequestClose={() => setSelectorVisible(false)}
+    >
+      <SelectBlock 
+        onClose={() => setSelectorVisible(false)} 
+        choices={[
+          ["while", ()=>{}],
+          ["while", ()=>{}],
+          ["while", ()=>{}],
+          ["while", ()=>{}],
+          ["while", ()=>{}],
+          ["while", ()=>{}],
+          ["while", ()=>{}],
+          ["while", ()=>{}],
+        ]}
+      />
+    </Modal>
 
-    <FlatList data={programObj?.content} renderItem={({ item }) =>
-      <TouchableHighlight onPress={() => { navigator.goBack({ target: item }); }}>
-        { createCard(item, styles) }
-      </TouchableHighlight>
+    <AddButton onPress={() => setSelectorVisible(true)} parentLatout={layout}/>
+    
+    <FlatList data={programObj?.content} renderItem={({ item }) => 
+      <View style={styles.margins}>
+        <TouchableNativeFeedback onPress={() => { 
+          setTimeout(() => navigator.goBack({ target: item })); 
+        }}>
+          { createCard(item, styles) }
+        </TouchableNativeFeedback> 
+      </View>
     }/>
   </View>
 }
 
-const useStyles = makeStyles(
-  theme => ({
-    declare: {
-      backgroundColor: theme.colors.grey5
-    },
-    function: {
-      backgroundColor: theme.colors.grey4
-    },
-    default: {
-      borderRadius: 5,
-      alignContent: "center",
-      minHeight: "10%",
-      backgroundColor: theme.colors.warning,
-      fontSize: 16
-    },
-    nameText: {
-      fontSize: 12,
-      fontStyle: "italic",
-      color: theme.colors.grey0
-    },
-    typeText: {
-      fontSize: 16,
-      color: theme.colors.black
-    }
+const useStyles = makeStyles(theme => ({
+  screen: {
+    height: "100%", 
+    backgroundColor: "white" 
+  },
+  declare: {
+    backgroundColor: theme.colors.grey5
+  },
+  function: {
+    backgroundColor: theme.colors.grey4
+  },
+  default: {
+    borderRadius: 5,
+    alignContent: "center",
+    minHeight: "10%",
+    backgroundColor: theme.colors.warning,
+    fontSize: 24,
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  typeText: {
+    fontSize: 20,
+    fontStyle: "italic",
+    color: theme.colors.grey0,
+    opacity: 0.75,
+    alignSelf: "center"
+  },
+  nameText: {
+    fontSize: 24,
+    color: theme.colors.black,
+    marginRight: 20
+  },
+  margins: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 10,
+  }
 }))
 
 export default GlobalsScreen;

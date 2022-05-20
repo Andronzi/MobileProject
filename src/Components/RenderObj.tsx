@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: 10,
 		paddingTop: 10,
 		paddingBottom: 10,
+
+		// elevation: 5,
+		// shadowColor: theme.colors.white,
 	},
 
 	input: {

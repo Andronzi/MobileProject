@@ -25,3 +25,8 @@ export type ButchGlobals = {
     programObj: ButchObj | null,
     program: { executable: Program | null, isChanged: boolean }
 }
+
+const blockNamesArr = ["function", "declare", 
+    "while", "for", "if", "print", "expression", "break", "return"] as const;
+
+export type BlocksNames = typeof blockNamesArr[number];

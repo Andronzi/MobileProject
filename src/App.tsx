@@ -4,6 +4,8 @@ import { useTheme, makeStyles } from "@rneui/themed"
 import rnfs from "react-native-fs"
 
 import ConsoleScreen from "./Components/Screens/Console";
+import WorkSpaceScreen from "./Components/Screens/Workspace";
+import GlobalsScreen from "./Components/Screens/Globals";
 import { createNavContainer } from "./Components/StackNav";
 import ToolBar, { LeftArrow } from "./Components/SimpleToolbar";
 
@@ -11,7 +13,6 @@ import { butchGlobContext } from "./Contexts/AppContexts";
 
 import { ButchBuilder } from "./Butch/Butch";
 import { ButchObj } from "./Butch/ButchObj";
-import WorkSpaceScreen from "./Components/Screens/Workspace";
 
 type AppData = { builder: ButchBuilder } | undefined;
 
@@ -61,27 +62,7 @@ export const App: React.FC = () => {
           transProps={{ builder: appData.builder }} 
         />
         <Nav.Screen name={"default"} component={ WorkSpaceScreen } transProps />
-        {/* ({ navigator, objToRender }) => (
-            <View>
-              <ToolBar>
-                <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
-                <Button title="Launch" onPress={() => { 
-                  testBchFile(appData.builder); 
-                  // manualTest();
-                  navigator.goTo("console", { doClearing: disposableCallback(() => true)})
-                }} />
-                <Button title="Console" onPress={() => { navigator.goTo("console") }} />
-              </ToolBar>
-              <BlocksList objToRender={objToRender}/>
-            </View>
-          ) */}
-        <Nav.Screen name="globals" component={ ({ navigator }) => <>
-            <ToolBar>
-              <LeftArrow onPress={() => navigator.goBack()}/>
-            </ToolBar>
-            <View><Text>Place here list of functions and global variables</Text></View>
-          </>
-        } />
+        <Nav.Screen name="globals" component={GlobalsScreen} />
       </Nav.Stack>
     </View>
   )

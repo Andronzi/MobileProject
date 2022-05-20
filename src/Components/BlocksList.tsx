@@ -6,25 +6,26 @@ import {
   TouchableOpacity, 
   TextInput, 
   ScrollView,
-  Pressable
+  Pressable,
+  LayoutRectangle,
 } from "react-native";
-import { useTheme, makeStyles, Icon } from '@rneui/themed';
+import { useTheme, makeStyles } from '@rneui/themed';
 
 import blocksState from "../Data/blocksState"; 
 import { RenderObj } from "./RenderObj";
-import { Dimensions } from "react-native";
+import AddButton from "./AddButton";
+
 import { ButchObj } from "src/Butch/ButchObj";
 
-const addButtonSize = 60;
 
 export const BlocksList: 
   React.FC<{ objToRender: ButchObj }> = ({ objToRender }) => 
 {
-  const [addButtonPos, setAddButtonPos] = useState({ right: 20, bottom: 20 })
   const [isVisible, setVisible] = useState(false);
   const [blockType, setBlockType] = useState('');
   const [blockName, setBlockName] = useState('');
   const [blockValue, setBlockValue] = useState('');
+  const [layout, setLayout] = useState<LayoutRectangle>()
 
   const block: any = blocksState;
 
@@ -54,24 +55,11 @@ export const BlocksList:
   }, [block]) 
 
   return (
-    <View
-      onLayout={({ nativeEvent }) => {
-        setAddButtonPos(prev => ({ 
-          ...prev, 
-          bottom: nativeEvent.layout.y + nativeEvent.layout.height
-            - Dimensions.get("window").height + 20
-        }));
+    <View onLayout={({ nativeEvent }) => {
+      setLayout(nativeEvent.layout)
     }}>
       { !isVisible ? (
-          <View style={[styles.addButton, addButtonPos]} >
-            <TouchableOpacity onPress={() => {setVisible(true)}}>
-              <Icon 
-                name="plus"
-                type="entypo"
-                size={addButtonSize}
-              />
-            </TouchableOpacity>
-          </View>
+          <AddButton onPress={() => {setVisible(true)}} parentLatout={layout}/>
         ) : undefined }
 
       {/* This Modal must be redone after component builder apear */}
@@ -110,16 +98,15 @@ export const BlocksList:
           <CoolComponent obj={objToRender} />
          */}
       <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
-        <Text>{ String(objToRender) }</Text>
         <RenderObj/>
       </ScrollView>
     </View>  
   )
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   commonView: {
-    backgroundColor: theme.colors?.grey0
+    backgroundColor: theme.colors?.grey4
   },
 
   darkCommonView: {
@@ -172,14 +159,4 @@ const useStyles = makeStyles((theme) => ({
     padding: 10,
     backgroundColor: '#FF3333'
   },
-
-  addButton: {
-    backgroundColor: theme.colors?.secondary, 
-    borderRadius: 50,
-    position: "absolute", 
-    zIndex: 100,
-
-    elevation: 5,
-    shadowColor: theme.colors?.black
-  }
 }));

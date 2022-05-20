@@ -12,7 +12,7 @@ import {
 import { ButchObj } from "src/Butch/ButchObj";
 import createProgramBlock from "src/Utilities/ProgramBlockLayout";
 
-const plug = new ButchObj({}, {});
+const plug = new ButchObj({}, { __hash: "123" });
 const DNDElementsContext = React.createContext<ButchObj>(plug);
 
 export function useDNDElements() {
