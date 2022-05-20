@@ -16,7 +16,7 @@ import { RenderObj } from "./RenderObj";
 import AddButton from "./AddButton";
 import { FunctionBlock } from "../Components/Function";
 
-import { ButchObj } from "src/Butch/ButchObj";
+import { ButchObj } from "../Butch/ButchObj";
 
 const ScrollViewRefContext = React.createContext<React.RefObject<ScrollView> | null>(null);
 
