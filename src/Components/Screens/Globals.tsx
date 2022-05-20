@@ -37,7 +37,7 @@ function createCard(obj: ButchObj, styles: {
   
     default:
       return <View style={styles.default}>
-        <Text>{"Invalid type " + type}</Text>
+        <Text>{"Invalid type " + obj.type}</Text>
       </View>;
   }
 }

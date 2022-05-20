@@ -25,9 +25,7 @@ export function Block({ children, style }: BlockProps) {
   return (
     <View style={[defaultStyle, style]}>
       <>
-        {React.Children.map(children, child => {
-          return { child };
-        })}
+        {React.Children.map(children, child => ( child ))}
       </>
     </View>
   );

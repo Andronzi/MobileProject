@@ -8,11 +8,11 @@ import Droppable from "./Droppable";
 import { useDNDElements } from "./DroppablesData";
 import { Block } from "../Components/Block";
 
-interface FunctionalBlockProps {
+interface BlockProps {
   item: ButchObj;
 }
 
-export function FunctionBlock({ item }: FunctionalBlockProps) {
+export function DeclareBlock({ item }: BlockProps) {
   const theme = useTheme();
   const styles = useStyles(theme);
   const context = useDNDElements();
@@ -30,12 +30,10 @@ export function FunctionBlock({ item }: FunctionalBlockProps) {
   return (
     <View ref={selfRef} style={styles.container}>
       <Block
-        style={{ margin: 0}}>
+        style={{ margin: 0, color: "white" }}>
         <Text style={styles.blockText}>{item.type}</Text>
         <TextInput style={styles.inputText} placeholder="name" value={item.get("name")} />
-        {item.type === "function" && item.get("nameSeq").map(item => (
-          <TextInput style={styles.inputText} placeholder="argument" value={item} />
-        ))}
+        <TextInput style={styles.inputText} placeholder="value" value={item.get("value")} />
       </Block>
       <Droppable content={item.content} />
     </View>

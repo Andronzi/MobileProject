@@ -67,7 +67,7 @@ const WorkSpaceScreen: React.FC<{
       <Button title="Launch" onPress={() => onLaunch()} />
       <Button title="Console" onPress={() => { navigator.goTo("console") }} /> */}
     </ToolBar> 
-    <BlocksList objToRender={target}/>
+    { target && <BlocksList objToRender={target}/> }
   </View>
 }
 
