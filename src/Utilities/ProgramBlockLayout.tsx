@@ -6,15 +6,11 @@ import {
   FunctionBlock,
   DeclarationBlock,
   WhileLoopBlock,
-<<<<<<< HEAD
   ExpressionBlock,
   ReturnBlock,
   PrintBlock,
-} from "../modules/ProgramBlocks.d";
-
-=======
 } from "../Modules/ProgramBlocks.d";
->>>>>>> 552c797f8e3ff95ac3bb75f812d85cc2bcb9eda1
+
 import DRErrors from "../Errors";
 import { ButchObj } from "../Butch/ButchObj";
 
