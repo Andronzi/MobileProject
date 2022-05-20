@@ -1,4 +1,4 @@
-import { ButchObj } from "src/Butch/ButchObj";
+import { ButchObj } from "../Butch/ButchObj";
 
 export declare function FunctionBlock(item: ButchObj): JSX.Element;
 

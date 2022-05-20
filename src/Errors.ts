@@ -9,4 +9,8 @@ export default class DRErrors {
     static unexpectedUndefined(name?: string, message?: string): never {
         throw new Error(message ?? `Unexpected undefined ${name ?? ""} appeared`);
     }
+
+    static unexpectedBehaviour(name?: string, message?: string) {
+        throw new Error(message ?? `Unexpected behaviour while running ${name ?? ""}`);
+    }
 }

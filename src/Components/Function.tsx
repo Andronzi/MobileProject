@@ -17,6 +17,7 @@ export function FunctionBlock({ item }: FunctionalBlockProps) {
   const styles = useStyles(theme);
   const context = useDNDElements();
 
+  const [, onLayout] = useComponentData(item);
   const selfRef = useRef<View>(null);
   useEffect(() => {
     selfRef?.current?.measure((fx, fy, width, height, px, py) => {
@@ -26,7 +27,7 @@ export function FunctionBlock({ item }: FunctionalBlockProps) {
   });
 
   return (
-    <View ref={selfRef} style={styles.container}>
+    <View ref={selfRef} onLayout={onLayout} style={styles.container}>
       {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
       <Block
         // children={["function", item.get("name"), item.get("nameSeq")]}
