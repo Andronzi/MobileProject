@@ -39,9 +39,10 @@ export function createButchCodesFile(codesSet: string[], outPath = "") {
 }
 
 function parseButchCodes(data: string) {
-  let parsed = JSON.parse(data);
+  const parsed = JSON.parse(data) as {[key: string]: string};
+  Object.entries(parsed).forEach(([name, code]) => parsed[code] = name);
   parsed.__hash = cyrb53(data).toString();
-  return parsed;
+  return parsed as ButchCodes;
 }
 
 export function readButchCodes(path = ""): Promise<ButchCodes> {

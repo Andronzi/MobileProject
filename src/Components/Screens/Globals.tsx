@@ -14,9 +14,13 @@ function createCard(obj: ButchObj, styles: {
   [key: string]: object
 }): JSX.Element {
   const type = obj.get("type");
+  console.log(type);
+  console.log(obj.codes);
+  
+  
 
   switch (type) {
-    case obj.codes.function:
+    case "function": // obj.codes.function:
       return <View style={[styles.default, styles.function]}>
         <Text style={styles.nameText}>
           { obj.get("name") }
@@ -26,7 +30,7 @@ function createCard(obj: ButchObj, styles: {
         </Text>
       </View>
 
-    case obj.codes.declare:
+    case "declare": // obj.codes.declare:
       return <View style={[styles.default, styles.declare]}>
         <Text style={styles.nameText}>
           { obj.get("name") }

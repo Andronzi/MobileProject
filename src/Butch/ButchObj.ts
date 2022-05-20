@@ -132,6 +132,16 @@ export class ButchObj extends ButchObjBase {
             })()
         );
     }
+
+    get(key: "type" | "name" | "value" | "__codesHash"): string;
+    get(key: "nameSeq"): string[];
+    get(key: string): BObj[];
+    get(key: string): BObjPayload {
+        if (key === "type") {
+            const t = this.data[this.codes[key]] as string;
+            return this.codes[t];
+        } else return super.get((key));
+    }
 }
 
 export default ButchObjBase;
