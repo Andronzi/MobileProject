@@ -1,4 +1,4 @@
-import { Coordinates, Size } from "./../types/Types";
+import { Coordinates, Size } from "../Types/Types";
 import DRErrors from "../Errors";
 import { ButchObj } from "../Butch/ButchObj";
 
@@ -57,8 +57,8 @@ function binarySearch(content: ButchObj[], landingСoords: Coordinates): BinaryS
     return { position: RelativePosition.BEFORE, index: mid };
 }
 
-export function findCoordinates(bObj: ButchObj, landingСoords: Coordinates) {
-    if (bObj.content === undefined) return;
+export function findCoordinates(bObj: ButchObj[] | undefined, landingCoords: Coordinates) {
+    if (bObj === undefined) return;
     
     // const bObjCoords =
     //     (bObj?.extension.coordinates as Coordinates) ??
@@ -66,5 +66,21 @@ export function findCoordinates(bObj: ButchObj, landingСoords: Coordinates) {
     // const bObjSize =
     //     (bObj?.extension.size as Size) ?? DRErrors.unexpectedUndefined("bObj.extension.size");
 
-    const bsResult = binarySearch(bObj.content, landingСoords);
+    const bsResult = binarySearch(bObj, landingCoords);
+    switch (bsResult.position) {
+        case RelativePosition.IN:
+            findCoordinates(bObj[bsResult.index].content, landingCoords);
+            break;
+
+        case RelativePosition.AFTER:
+            findCoordinates(bObj[bsResult.index].content, landingCoords);
+            break;
+
+        case RelativePosition.BEFORE:
+            findCoordinates(bObj[bsResult.index].content, landingCoords);
+            break;
+
+        default:
+            break;
+    }
 }
