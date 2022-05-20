@@ -1,10 +1,13 @@
 import React, { useRef } from "react";
-import { View, Animated, PanResponder, TouchableWithoutFeedback } from "react-native";
+import { View, Animated, PanResponder, TouchableWithoutFeedback, Dimensions } from "react-native";
 
 import { Children, IStyle } from "../types/Types";
-import useStateCallback from "../hooks/useStateCallback";
+import useStateCallback from "../Hooks/useStateCallback";
+import { useScrollViewRef } from "../DND-test";
+import PropTypes from "prop-types";
 
 const ANIMATION_FRICTION = 8;
+const SCROLL_START_OFFSET = 70;
 
 interface IDraggableProps {
   children?: Children;
@@ -24,16 +27,20 @@ const createMargins = (styles: IStyle = {}) => {
   return stylesMargins;
 };
 
-function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
-  let _animatedValueX = 0;
-  let _animatedValueY = 0;
+const windowSize = Dimensions.get("window");
+let offsetScreen = 20;
 
+function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
   const [state, setState] = useStateCallback({
     isAnimating: false,
     isDragging: false,
     isPicked: false,
     zIndex: 1,
   });
+
+  let isScrolling = useRef(false).current;
+
+  const svRef = useScrollViewRef();
 
   const animationValue = useRef(new Animated.Value(0)).current;
   const scaleEaseIn = animationValue.interpolate({
@@ -42,17 +49,14 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
   });
 
   const pan = useRef(new Animated.ValueXY()).current;
-  pan.x.addListener(value => (_animatedValueX = value.value));
-  pan.y.addListener(value => (_animatedValueY = value.value));
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => !state.isAnimating && (state.isDragging || state.isPicked),
 
     onPanResponderGrant: () => {
-      console.log("pan grant: ", +pan.x, +pan.y);
       pan.setOffset({
-        x: _animatedValueX,
-        y: _animatedValueY,
+        x: pan.x._value,
+        y: pan.y._value,
       });
       pan.setValue({ x: 0, y: 0 });
 
@@ -66,34 +70,30 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
         x: gesture.dx,
         y: gesture.dy,
       });
+
+      // svRef?.current?.scrollToOffset({ offset: 100 });
+      move(gesture.moveY);
+      // setInterval();
     },
 
     // Maybe move code to onTouchEnd
     onPanResponderRelease: (_, gestures) => {
-      if (gestures.moveY < 400) {
-        setState({ ...state, isDragging: false, isAnimating: true }, function () {
-          console.log("Released: ", state);
-        });
-        // TODO: think about promises to animate using end animation callback
-        // Проблема в анимации
-        Animated.spring(pan, {
-          toValue: { x: 0, y: 0 },
-          friction: ANIMATION_FRICTION,
-          tension: 20,
-          useNativeDriver: true,
-        }).start(({}) => {
-          pan.setValue({ x: 0, y: 0 });
-          pan.flattenOffset();
-          setState({ ...state, zIndex: 1, isAnimating: false }, function () {
-            console.log("Animated: ", state);
-          });
-        });
-      } else {
+      isScrolling = false;
+      setState({ ...state, isDragging: false, isAnimating: true }, function () {
+        console.log("Released: ", state);
+      });
+      Animated.spring(pan, {
+        toValue: { x: 0, y: 0 },
+        friction: ANIMATION_FRICTION,
+        tension: 20,
+        useNativeDriver: true,
+      }).start(({}) => {
+        pan.setValue({ x: 0, y: 0 });
         pan.flattenOffset();
-        pan.setOffset({ x: 0, y: 0 });
-        console.log("After flattening: ", _animatedValueX, _animatedValueY, "x, y: ", pan.x, pan.y);
-        setState({ ...state, isDragging: false });
-      }
+        setState({ ...state, zIndex: 1, isAnimating: false }, function () {
+          console.log("Animated: ", state);
+        });
+      });
     },
   });
 
@@ -101,6 +101,7 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
     Animated.spring(animationValue, {
       toValue: 1,
       friction: ANIMATION_FRICTION,
+      delay: delayLongPress - 10,
       useNativeDriver: true,
     }).start();
   };
@@ -120,12 +121,44 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
     }).start();
   };
 
+  const moveList = (coords: number) => {
+    if (!isScrolling) {
+      return;
+    }
+
+    svRef?.current?.scrollToOffset({ offset: coords, animated: true });
+    offsetScreen += 20;
+    console.log(svRef === null || svRef === undefined);
+    console.log("Scrolling");
+
+    requestAnimationFrame(() => {
+      setTimeout(() => moveList(coords), 10);
+    });
+  };
+
+  const move = (y: number) => {
+    if (y + SCROLL_START_OFFSET > windowSize.height) {
+      if (!isScrolling) {
+        isScrolling = true;
+        moveList(y);
+      }
+    } else if (y < SCROLL_START_OFFSET) {
+      if (!isScrolling) {
+        isScrolling = true;
+        moveList(y);
+      }
+    } else {
+      isScrolling = false;
+    }
+  };
+
   return (
     <Animated.View
       style={[
         {
           transform: [{ scale: scaleEaseIn }, { translateX: pan.x }, { translateY: pan.y }],
-          zIndex: state.isAnimating || state.isDragging ? 100 : 1,
+          zIndex: state.zIndex,
+          elevation: state.zIndex,
         },
         createMargins(style),
       ]}
@@ -138,20 +171,11 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
     </Animated.View>
   );
 }
-// Draggable.defaultProps = {
-//   delayLongPress: 370,
-//   style: {
-//     width: 50,
-//     height: 50,
-//     borderRadius: 25,
-//     backgroundColor: "#8995ef",
-//     alignSelf: "center",
-//   },
-// };
-// Draggable.propTypes = {
-//   children: PropTypes.any,
-//   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-//   delayLongPress: PropTypes.number,
-// };
+
+Draggable.propTypes = {
+  children: PropTypes.any,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  delayLongPress: PropTypes.number,
+};
 
 export default Draggable;
