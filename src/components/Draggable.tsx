@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Animated, PanResponder, TouchableWithoutFeedback, Dimensions } from "react-native";
 
 import { Children, IStyle } from "../Types/Types";
@@ -40,6 +40,9 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
 
   let isScrolling = useRef(false).current;
 
+  useEffect(() => {
+    console.log();
+  });
   const svRef = useScrollViewRef();
 
   const animationValue = useRef(new Animated.Value(0)).current;

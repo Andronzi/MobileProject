@@ -14,7 +14,6 @@ import { useTheme, makeStyles } from "@rneui/themed";
 import blocksState from "../Data/blocksState";
 import { RenderObj } from "./RenderObj";
 import AddButton from "./AddButton";
-
 import { FunctionBlock } from "../Components/Function";
 
 import { ButchObj } from "src/Butch/ButchObj";
@@ -129,8 +128,8 @@ export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender })
          */}
       <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
         <ScrollViewRefContext.Provider value={scrollViewRef}>
-          {/* <FunctionBlock> */}
           <Text>{JSON.stringify(objToRender)}</Text>
+          <FunctionBlock item={objToRender} />
           <RenderObj />
         </ScrollViewRefContext.Provider>
       </ScrollView>

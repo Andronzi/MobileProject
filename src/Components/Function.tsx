@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Text, TextInput } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 
@@ -16,10 +16,17 @@ export function FunctionBlock({ item }: FunctionalBlockProps) {
   const theme = useTheme();
   const styles = useStyles(theme);
   const context = useDNDElements();
-  const [sizeAndCoords, onLayout] = useComponentData(item);
+
+  const selfRef = useRef<View>(null);
+  useEffect(() => {
+    selfRef?.current?.measure((fx, fy, width, height, px, py) => {
+      item.extension.coords = { px, py };
+      item.extension.size = { width, height };
+    });
+  });
 
   return (
-    <View onLayout={onLayout} style={styles.container}>
+    <View ref={selfRef} style={styles.container}>
       {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
       <Block
         // children={["function", item.get("name"), item.get("nameSeq")]}

@@ -33,11 +33,6 @@ const ProgramBlocks: { [key: string]: React.FC<any> } = {
   // print:
 } as const;
 
-function decodeCodes(codes: ButchCodes) {
-  const codesMap = new Map();
-  Object.entries();
-}
-
 export default function createProgramBlock(item: ButchObj): JSX.Element {
   if (item.content === undefined) return DRErrors.unexpectedUndefined("item.content");
   const type: string = item.get("type");
