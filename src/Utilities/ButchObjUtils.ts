@@ -1,4 +1,4 @@
-import { Coordinates, Size } from "./../types/Types";
+import { Coordinates, Size } from "../Types/Types";
 import DRErrors from "../Errors";
 import { ButchObj } from "../Butch/ButchObj";
 
@@ -32,12 +32,12 @@ function binarySearch(content: ButchObj[], landingСoords: Coordinates): BinaryS
     let mid = ~~((left + right) / 2);
 
     while (left <= right) {
-        const bObjCoords =
-            (content[mid].extension.coordinates as Coordinates) ??
-            DRErrors.unexpectedUndefined("content[mid].extension.coordinates");
-        const bObjSize =
-            (content[mid].extension.size as Size) ??
-            DRErrors.unexpectedUndefined("content[mid].extension.size");
+        if (content[mid].extension.coordinates === undefined) {
+            mid =+ 1;
+        }
+
+        const bObjCoords = content[mid].extension.coordinates as Coordinates;
+        const bObjSize = (content[mid].extension.size as Size);
 
         if (isIntersects(bObjCoords, bObjSize, landingСoords))
             return { position: RelativePosition.IN, index: mid };
@@ -57,14 +57,31 @@ function binarySearch(content: ButchObj[], landingСoords: Coordinates): BinaryS
     return { position: RelativePosition.BEFORE, index: mid };
 }
 
-export function findCoordinates(bObj: ButchObj, landingСoords: Coordinates) {
-    if (bObj.content === undefined) return;
-    
-    // const bObjCoords =
-    //     (bObj?.extension.coordinates as Coordinates) ??
-    //     DRErrors.unexpectedUndefined("bObj.extension.coordinates");
-    // const bObjSize =
-    //     (bObj?.extension.size as Size) ?? DRErrors.unexpectedUndefined("bObj.extension.size");
+// Maybe use indices
+function findCoordinates(bObj: ButchObj[] | undefined, landingCoords: Coordinates): ButchObj | void {
+    if (bObj === undefined) return;
 
-    const bsResult = binarySearch(bObj.content, landingСoords);
+    const bsResult = binarySearch(bObj, landingCoords);
+    let result: ButchObj;
+    switch (bsResult.position) {
+        case RelativePosition.IN:
+            result = findCoordinates(bObj[bsResult.index].content, landingCoords) ?? bObj[bsResult.index];
+            break;
+
+        case RelativePosition.AFTER:
+            // result = findCoordinates(bObj[bsResult.index].content, landingCoords);
+            break;
+
+        // BEFORE
+        default:
+            // result = findCoordinates(bObj[bsResult.index].content, landingCoords);
+            break;
+    }
+
+    return result;
+}
+
+
+export function changePosition(bObj: ButchObj[] | undefined, landingCoords: Coordinates) {
+
 }

@@ -9,9 +9,7 @@ import {
 } from "../Modules/ProgramBlocks";
 import DRErrors from "../Errors";
 import { ButchObj } from "../Butch/ButchObj";
-import { ButchCodes } from "../types/Types";
-
-const hashProgramBlocks = new Map();
+import { ButchCodes } from "../Types/Types";
 
 const ProgramBlocks: { [key: string]: React.FC<any> } = {
   declare: DeclarationBlock,
@@ -37,7 +35,7 @@ const ProgramBlocks: { [key: string]: React.FC<any> } = {
 
 function decodeCodes(codes: ButchCodes) {
   const codesMap = new Map();
-  
+  Object.entries();
 }
 
 export default function createProgramBlock(item: ButchObj): JSX.Element {
