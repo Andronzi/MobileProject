@@ -1,11 +1,11 @@
 import React from "react"
 import { TouchableOpacity, View, Text, Pressable } from "react-native"
-import { BlocksNames } from "src/types/Types"
+// import { BlocksNames } from "src/types/Types"
 import { makeStyles, useTheme } from "@rneui/themed";
 import { FlatList } from "react-native-gesture-handler";
 
 const BlockSelector: React.FC<{
-  choices: [BlocksNames, () => void][],
+  choices: [string, () => void][],
   onClose: () => void
 }> = ({ choices, onClose }) => {
   
@@ -16,8 +16,8 @@ const BlockSelector: React.FC<{
     <View style={styles.container}>
       <View style={styles.window}>
         <View>
-          <FlatList style={{ flexDirection: "column" }} data={choices} renderItem={({ item }) => (
-            <TouchableOpacity style={[styles.selectButton, {  }]} onPress={() => item[1]()}>
+          <FlatList data={choices} renderItem={({ item }) => (
+            <TouchableOpacity style={styles.selectButton} onPress={() => item[1]()}>
               <Text style={styles.selectText}>{ item[0] }</Text>
             </TouchableOpacity> )
           } />

@@ -8,7 +8,7 @@ export const LeftArrow: React.FC<{ onPress: () => void }> = ({ onPress }) => (
 	<TouchableOpacity 
 		activeOpacity={0.3} 
 		onPress={onPress} 
-		style={{ marginHorizontal: 5, marginVertical: 5 }}
+		style={{ marginHorizontal: 10, marginVertical: 5 }}
 		>
 		<Icon name="chevron-thin-left" type="entypo" size={30}/>
 	</TouchableOpacity>
@@ -30,7 +30,7 @@ const useStyle = makeStyles(theme => ({
 			backgroundColor: theme.colors?.primary,
 			minHeight: 20,
 			flexDirection: 'row',
-			justifyContent: 'space-between',
+			justifyContent: "flex-start",
 			alignItems: "center",
 			height: DefaultHeight
 		}

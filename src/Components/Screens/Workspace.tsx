@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { Button, TouchableNativeFeedback, View, Text } from "react-native"
+import { TouchableNativeFeedback, View, Text } from "react-native"
 import { ButchObj } from "../../Butch/ButchObj"
 import ToolBar from "../SimpleToolbar"
 import { Navigator } from "../StackNav"
@@ -47,22 +47,42 @@ const WorkSpaceScreen: React.FC<{
 
   return <View>
     <ToolBar>
-        <TouchableNativeFeedback onPress={() => {  navigator.goTo("globals") }}>
-          <View style={{height: "100%", justifyContent: "center"}}>
-            <Text style={{fontSize: 18, color: "white"}}>Globals</Text>
-          </View>
-        </TouchableNativeFeedback>
+      <TouchableNativeFeedback onPress={() => navigator.goTo("globals")}>
+        <View style={styles.buttonView}>
+          <Text style={styles.buttonText}>Globals</Text>
+        </View>
+      </TouchableNativeFeedback>
+      <TouchableNativeFeedback onPress={() => onLaunch()}>
+        <View style={styles.buttonView}>
+          <Text style={styles.buttonText}>Launch</Text>
+        </View>
+      </TouchableNativeFeedback>
+      <TouchableNativeFeedback onPress={() => navigator.goTo("console")}>
+        <View style={styles.buttonView}>
+          <Text style={styles.buttonText}>Console</Text>
+        </View>
+      </TouchableNativeFeedback>
 
-      <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
+      {/* <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
       <Button title="Launch" onPress={() => onLaunch()} />
-      <Button title="Console" onPress={() => { navigator.goTo("console") }} />
-    </ToolBar>
+      <Button title="Console" onPress={() => { navigator.goTo("console") }} /> */}
+    </ToolBar> 
     <BlocksList objToRender={target}/>
   </View>
 }
 
 const useStyles = makeStyles(theme => ({
-
-})) 
+  buttonView: {
+    padding: 10,
+    height: "100%", 
+    justifyContent: "center",
+    flex: 1
+  },
+  buttonText: {
+    alignSelf: "center",
+    fontSize: 18, 
+    color: "white"
+  }
+})); 
 
 export default WorkSpaceScreen

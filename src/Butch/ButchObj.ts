@@ -93,16 +93,30 @@ export class ButchObjBase {
         [codes["__hash"]]: codes.__hash,
         [codes["content"]]: []
     });
+
+    // public static readonly createEmptyBObj = (codes: ButchCodes) => ({
+    //     [codes["type"]]: codes["program"],
+    //     [codes["__hash"]]: codes.__hash,
+    //     [codes["content"]]: []
+    // });
 }
 
 export class ButchObj extends ButchObjBase {
     // eslint-disable-next-line no-use-before-define
-    public content: ButchObj[] | undefined;
+    private _content: ButchObj[] | undefined;
+    public get content(): ButchObj[] | undefined {
+        return this._content && [...this._content];
+    }
+    public set content(newContent: ButchObj[] | undefined) {
+        if (newContent) 
+            this.data[this.codes.content] = newContent.map(value => value.data);
+        this._content = newContent
+    }
 
     constructor(obj: { [key: string]: any }, codes: ButchCodes) {
         super(obj, codes);
 
-        this.content = super.getContent()?.map(item => new ButchObj(item, codes));
+        this._content = super.getContent()?.map(item => new ButchObj(item, codes));
     }
 
     /**
@@ -145,3 +159,5 @@ export class ButchObj extends ButchObjBase {
 }
 
 export default ButchObjBase;
+
+(new ButchObj({}, {__hash:"1"})).content?.push(new ButchObj({}, {__hash:"1"}));

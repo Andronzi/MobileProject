@@ -61,5 +61,12 @@
                 }
 			]}
 		]
-	}
+	},
+    {
+        "type": "declare",
+        "name": "var",
+        "content": [
+            { "type": "expression", "value": "value1" }
+        ]
+    }
 ]}

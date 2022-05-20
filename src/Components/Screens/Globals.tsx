@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useCallback, useContext, useState } from "react"
 import { makeStyles, useTheme } from "@rneui/themed"
 import { View, Text, FlatList, TouchableNativeFeedback, Modal, LayoutRectangle } from "react-native"
 import { butchGlobContext } from "../../Contexts/AppContexts"
@@ -14,13 +14,9 @@ function createCard(obj: ButchObj, styles: {
   [key: string]: object
 }): JSX.Element {
   const type = obj.get("type");
-  console.log(type);
-  console.log(obj.codes);
   
-  
-
   switch (type) {
-    case "function": // obj.codes.function:
+    case "function": 
       return <View style={[styles.default, styles.function]}>
         <Text style={styles.nameText}>
           { obj.get("name") }
@@ -30,10 +26,11 @@ function createCard(obj: ButchObj, styles: {
         </Text>
       </View>
 
-    case "declare": // obj.codes.declare:
+    case "declare": 
       return <View style={[styles.default, styles.declare]}>
         <Text style={styles.nameText}>
-          { obj.get("name") }
+          { obj.get("name") + " = " + (
+            obj.content ? obj.content[0].get("value") : undefined) }
         </Text>
         <Text style={styles.typeText}>
           { "// global variable" }
@@ -53,6 +50,10 @@ const GlobalsScreen: React.FC<{
   const programObj = useContext(butchGlobContext).programObj;
   const [layout, setLayout] = useState<LayoutRectangle>();
   const [selectorVisible, setSelectorVisible] = useState(false);
+
+  // const creteNewFunction = useCallback(() => {
+    
+  // }, [programObj]);
 
   const { theme } = useTheme(), styles = useStyles(theme);
 
@@ -74,14 +75,8 @@ const GlobalsScreen: React.FC<{
       <SelectBlock 
         onClose={() => setSelectorVisible(false)} 
         choices={[
-          ["while", ()=>{}],
-          ["while", ()=>{}],
-          ["while", ()=>{}],
-          ["while", ()=>{}],
-          ["while", ()=>{}],
-          ["while", ()=>{}],
-          ["while", ()=>{}],
-          ["while", ()=>{}],
+          ["function", ()=>{}],
+          ["variable", ()=>{}],
         ]}
       />
     </Modal>
@@ -122,6 +117,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between"
   },
   typeText: {
+    minWidth: 75,
+    flexShrink: 10,
     fontSize: 20,
     fontStyle: "italic",
     color: theme.colors.grey0,
@@ -129,6 +126,7 @@ const useStyles = makeStyles(theme => ({
     alignSelf: "center"
   },
   nameText: {
+    flexShrink: 1,
     fontSize: 24,
     color: theme.colors.black,
     marginRight: 20
