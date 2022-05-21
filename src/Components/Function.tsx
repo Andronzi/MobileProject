@@ -76,5 +76,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: 18,
     backgroundColor: "#F4EEFF",
     color: "#424874",
+    borderRadius: 10,
+    padding: 10
   },
 }));

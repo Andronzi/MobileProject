@@ -54,5 +54,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 8,
     backgroundColor: "#F4EEFF",
     color: "#424874",
+    borderRadius: 10,
+    padding: 10,
   },
 }));
