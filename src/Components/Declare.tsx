@@ -45,7 +45,6 @@ export default function DeclarationBlock({ item }: BlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
     fontSize: 18,
     color: "#F4EEFF",
@@ -56,5 +55,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: 18,
     backgroundColor: "#F4EEFF",
     color: "#424874",
+    borderRadius: 10,
+    padding: 10
   },
 }));

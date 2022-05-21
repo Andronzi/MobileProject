@@ -27,7 +27,7 @@ export default function ForLoopBlock({ item }: BlockProps) {
 
   return (
     <Draggable item={item}>
-      <DataPicker item={item} style={styles.container}>
+      <DataPicker item={item}>
         <Block style={{ padding: 10 }}>
           <Text style={styles.blockText}>{item.type}</Text>
           <TextInput style={styles.blockText} value={getForExpression(0)} />
@@ -41,16 +41,17 @@ export default function ForLoopBlock({ item }: BlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
-    fontSize: 14,
+    fontSize: 18,
     color: "#F4EEFF",
   },
 
   inputText: {
-    fontSize: 14,
-    marginLeft: 8,
+    margin: 10,
+    fontSize: 18,
     backgroundColor: "#F4EEFF",
     color: "#424874",
+    borderRadius: 10,
+    padding: 10
   },
 }));

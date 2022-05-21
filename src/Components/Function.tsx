@@ -30,7 +30,7 @@ export default function FunctionBlock({ item }: FunctionalBlockProps) {
   // console.log(item.content);
 
   return (
-    <Draggable item={item} style={styles.container}>
+    <Draggable item={item}>
       <DataPicker item={item}>
         {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
         <Block
@@ -65,7 +65,6 @@ export default function FunctionBlock({ item }: FunctionalBlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
     fontSize: 18,
     color: "#F4EEFF",
@@ -76,5 +75,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: 18,
     backgroundColor: "#F4EEFF",
     color: "#424874",
+    borderRadius: 10,
+    padding: 10
   },
 }));

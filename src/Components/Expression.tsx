@@ -19,7 +19,7 @@ export default function ExpressionBlock({ item }: BlockProps) {
 
   return (
     <Draggable item={item}>
-      <DataPicker item={item} style={styles.container}>
+      <DataPicker item={item}>
         <Block style={{ padding: 10 }}>
           <Text style={styles.blockText}>{item.type}</Text>
           <Text style={styles.inputText}>{item.get("value")}</Text>
@@ -31,7 +31,6 @@ export default function ExpressionBlock({ item }: BlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
     fontSize: 18,
     color: "#F4EEFF",
@@ -42,5 +41,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: 18,
     backgroundColor: "#F4EEFF",
     color: "#424874",
+    borderRadius: 10,
+    padding: 10,
   },
 }));

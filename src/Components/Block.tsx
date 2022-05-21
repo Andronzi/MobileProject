@@ -13,11 +13,14 @@ interface BlockProps {
 const defaultStyles = makeStyles(theme => ({
   containerStyles: {
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
-    paddingStart: 10,
+    padding: 10,
     marginHorizontal: 10,
     borderRadius: 10,
     backgroundColor: "#A6B1E1",
+    minHeight: 40,
+    marginTop: 20
   },
 }));
 
