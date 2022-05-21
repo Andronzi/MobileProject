@@ -8,10 +8,12 @@ const BlockSelector: React.FC<{
   choices: [string, () => void][],
   onClose: () => void,
   children?: React.ReactNode
+  onDefault?: () => void
 }> = ({ 
   choices, 
   onClose,
-  children 
+  children,
+  onDefault 
 }) => {  
   const { theme } = useTheme(), styles = useStyles(theme);
 
@@ -21,7 +23,10 @@ const BlockSelector: React.FC<{
       <View style={styles.window}>
         <View>
           <FlatList data={choices} renderItem={({ item }) => (
-            <TouchableOpacity style={styles.selectButton} onPress={() => item[1]()}>
+            <TouchableOpacity 
+              style={styles.selectButton} 
+              onPress={() => { item[1](); onDefault && onDefault() }}
+            >
               <Text style={styles.selectText}>{ item[0] }</Text>
             </TouchableOpacity> )
           } />

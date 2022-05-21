@@ -131,44 +131,81 @@ export class ButchObj extends ButchObjBase {
         );
     }
 
-    public readonly createProgram: ButchObjectCreator = () =>
-        new ButchObj(
-            {
+    private createEpressionBObj = () => ({
+        [this.codes.type]: this.codes.expression,
+        [this.codes.value]: ""
+    });
+
+    private createConteinerBObj = () => ({
+        [this.codes.type]: this.codes.container,
+        [this.codes.content]: []
+    })
+
+    public readonly wrap = (obj: BObj) => new ButchObj(obj, this.codes, this.rCodes);
+
+    public readonly createProgram: ButchObjectCreator = () => 
+            this.wrap({
                 [this.codes.type]: this.codes.program,
                 [this.codes.__hash]: this.codes.__hash,
                 [this.codes.content]: [],
-            },
-            this.codes,
-            this.rCodes,
-        );
+            });
 
     public readonly createDeclare: ButchObjectCreator = () =>
-        new ButchObj(
-            {
+        this.wrap({
                 [this.codes.type]: this.codes.declare,
                 [this.codes.name]: "",
                 [this.codes.content]: [
-                    {
-                        [this.codes.type]: this.codes.expression,
-                        [this.codes.value]: "",
-                    },
+                    this.createEpressionBObj()
                 ],
-            },
-            this.codes,
-            this.rCodes,
-        );
+            });
 
     public readonly createFunction: ButchObjectCreator = () =>
-        new ButchObj(
-            {
+        this.wrap({
                 [this.codes.type]: this.codes.function,
                 [this.codes.name]: "",
                 [this.codes.nameSeq]: [],
                 [this.codes.content]: [],
-            },
-            this.codes,
-            this.rCodes,
-        );
+            });
+
+    public readonly createWhile: ButchObjectCreator = () =>
+        this.wrap({
+                [this.codes.type]: this.codes.while,
+                [this.codes.content]: [
+                    this.createEpressionBObj(), 
+                    this.createConteinerBObj()
+                ]
+            });
+    
+    public readonly createFor: ButchObjectCreator = () =>
+        this.wrap({
+            [this.codes.type]: this.codes.for,
+            [this.codes.content]: [
+                this.createEpressionBObj(),
+                this.createEpressionBObj(),
+                this.createEpressionBObj(),
+                this.createConteinerBObj()
+            ]
+        });
+
+    public readonly createPrint: ButchObjectCreator = () => 
+        this.wrap({
+            [this.codes.type]: this.codes.print,
+            [this.codes.content]: []
+        });
+
+    public readonly createReturn: ButchObjectCreator = () => 
+        this.wrap({
+            [this.codes.type]: this.codes.return,
+            [this.codes.content]: []
+        });
+
+    public readonly createBreak: ButchObjectCreator = () => 
+        this.wrap({
+            [this.codes.type]: this.codes.break
+        });
+
+    public readonly createExpression: ButchObjectCreator = () => 
+        this.wrap(this.createEpressionBObj());
 }
 
 export default ButchObjBase;
