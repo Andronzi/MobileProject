@@ -6,17 +6,19 @@ import {
   TouchableNativeFeedback, 
   Modal, 
   LayoutRectangle, 
-  Button 
+  Button, 
+  TouchableOpacity, 
+  TextInput
 } from "react-native"
-import { makeStyles, useTheme } from "@rneui/themed"
+import { Icon, makeStyles, useTheme } from "@rneui/themed"
 import { butchGlobContext } from "../../Contexts/AppContexts"
 import ToolBar, { LeftArrow } from "../SimpleToolbar"
 import { Navigator } from "../StackNav"
 import AddButton from "../BlockUI/AddButton"
 import SelectBlock from "../BlockUI/BlockSelector"
+import OptionalMenu from "../OptionsMenu"
 
 import { ButchObj } from "src/Butch/ButchObj"
-import { TextInput } from "react-native-gesture-handler"
 
 function createCard(obj: ButchObj, styles: {
   default: object,
@@ -61,6 +63,16 @@ const GlobalsScreen: React.FC<{
   const [selected, setSelected] = useState<string>();
   const [name, setName] = useState<string>("");
   const [value, setValue] = useState<string>("");
+  const [opMenuData, setOpMenuData] = useState<{
+    visible: boolean,
+    pos: { top: number, left: number },
+    targetIndex: number,
+    timeout?: NodeJS.Timeout
+  }>({
+    visible: false,
+    pos: { top: 0, left: 0 },
+    targetIndex: -1
+  })
 
   const appendContent = useCallback(
     (obj: ButchObj | null) => {
@@ -68,6 +80,13 @@ const GlobalsScreen: React.FC<{
         programObj.content =  [...programObj.content, obj];
     }, [programObj]
   );
+
+  const reset = useCallback(() => {
+    setSelectorVisible(false);
+    setSelected(undefined);
+    setName("");
+    setValue("");
+  }, [setSelectorVisible, setSelected, setName, setValue])
 
   const { theme } = useTheme(), styles = useStyles(theme);
 
@@ -78,6 +97,7 @@ const GlobalsScreen: React.FC<{
     <ToolBar>
       <LeftArrow onPress={() => navigator.goBack()}/>
     </ToolBar>
+
     <Modal 
       animationType = "fade"
       transparent={true}
@@ -86,14 +106,10 @@ const GlobalsScreen: React.FC<{
       onRequestClose={() => setSelectorVisible(false)}
     >
       <SelectBlock 
-        onClose={() => setSelectorVisible(false)} 
+        onClose={() => reset()} 
         choices={[
-          ["function", () => {
-            setSelected("function"); //setSelectorVisible(false)
-          }],
-          ["variable", () => {
-            setSelected("variable"); //setSelectorVisible(false)
-          }],
+          ["function", () => setSelected("function")],
+          ["variable", () => setSelected("variable")],
         ]}
       >
         <View style={[styles.addBlockCard, { display: selected ? "flex" : "none" }]}>
@@ -116,29 +132,54 @@ const GlobalsScreen: React.FC<{
             </View>
           ) : undefined }
           <View style={{ flexDirection: "row", justifyContent: "space-around"}}>
-            <View style={[styles.margins, { flex: 1}]}>
+            <View style={{ flex: 1}}>
               <Button title="Add" onPress={() => {
                 appendContent(programObj && (
                   selected === "function" ? programObj.createFunction()
                     : programObj.createDeclare()));
-                setSelected(undefined);
+                reset();
               }}/>
             </View>
-            {/* <View style={[styles.margins, { flex: 1}]}>
-                <Button title="close" onPress={() => setSelected(undefined)}/>
-            </View> */}
           </View>
         </View>
       </SelectBlock>
     </Modal>
 
     <AddButton onPress={() => setSelectorVisible(true)} parentLatout={layout}/>
+    <OptionalMenu pos={opMenuData.pos} visible={opMenuData.visible}>
+      <TouchableOpacity activeOpacity={0.5} onPress={() => {
+        if (programObj)
+          programObj.content = programObj?.content?.filter(
+            (_, i) => i !== opMenuData.targetIndex);
+            
+        setOpMenuData(prev => ({...prev, visible: false, targetIndex: -1}))
+      }}>
+        <Icon 
+          name="trash"
+          type="entypo"
+          size={40}
+        />
+      </TouchableOpacity>
+    </OptionalMenu>
 
-    <FlatList data={programObj?.content} renderItem={({ item }) => 
-      <View style={styles.margins}>
-        <TouchableNativeFeedback onPress={() => { 
-          setTimeout(() => navigator.goBack({ target: item })); 
-        }}>
+    <FlatList data={programObj?.content} renderItem={({ item, index }) => 
+      <View style={styles.margins} >
+        <TouchableNativeFeedback 
+          onPress={() => {
+            setTimeout(() => navigator.goBack({ target: item })); 
+          }}
+          onLongPress={({ nativeEvent }) => {
+            clearTimeout(opMenuData.timeout);
+            setOpMenuData({
+              visible: true,
+              pos: { top: nativeEvent.pageY, left: nativeEvent.pageX },
+              targetIndex: index,
+              timeout: setTimeout(
+                () => setOpMenuData(prev => ({...prev, visible: false})), 
+                2000)
+            });
+          }}
+        >
           { createCard(item, styles) }
         </TouchableNativeFeedback> 
       </View>

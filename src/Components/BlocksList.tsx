@@ -130,7 +130,7 @@ export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender })
       <ScrollView style={isVisible ? styles.darkCommonView : styles.commonView}>
         <ScrollViewRefContext.Provider value={scrollViewRef}>
           <Text>{JSON.stringify(objToRender)}</Text>
-          <FunctionBlock item={objToRender} />
+          {/* <FunctionBlock item={objToRender} /> */}
           <RenderObj />
         </ScrollViewRefContext.Provider>
       </ScrollView>

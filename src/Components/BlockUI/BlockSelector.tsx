@@ -1,5 +1,5 @@
 import React from "react"
-import { TouchableOpacity, View, Text, Button, TouchableNativeFeedback } from "react-native"
+import { TouchableOpacity, View, Text, TouchableNativeFeedback } from "react-native"
 // import { BlocksNames } from "src/types/Types"
 import { makeStyles, useTheme } from "@rneui/themed";
 import { FlatList } from "react-native-gesture-handler";
@@ -27,15 +27,11 @@ const BlockSelector: React.FC<{
           } />
         </View>
         { children }
-        {/* <View style={styles.closeButton}>
-          <Button color={styles.closeButton.backgroundColor} title="Close" onPress={() => onClose()} />
-        </View> */}
-        <View style={styles.line}/>
-        <View style={styles.closeButton}>
-          <TouchableNativeFeedback onPress={() => onClose()}>
+        <TouchableNativeFeedback onPress={() => onClose()}>
+          <View style={styles.closeButton}>
             <Text style={styles.selectText}>Close</Text>
-          </TouchableNativeFeedback>
-        </View>
+          </View>
+        </TouchableNativeFeedback>
       </View>
     </View>
   </View>
@@ -75,6 +71,7 @@ const useStyles = makeStyles(theme => ({
     alignSelf: "center",
   },
   closeButton: {
+    borderRadius: 2,
     marginTop: 10,
     width: "100%",
     padding: 5,

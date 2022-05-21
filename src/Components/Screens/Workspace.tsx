@@ -62,10 +62,6 @@ const WorkSpaceScreen: React.FC<{
           <Text style={styles.buttonText}>Console</Text>
         </View>
       </TouchableNativeFeedback>
-
-      {/* <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
-      <Button title="Launch" onPress={() => onLaunch()} />
-      <Button title="Console" onPress={() => { navigator.goTo("console") }} /> */}
     </ToolBar> 
     <BlocksList objToRender={target}/>
   </View>
