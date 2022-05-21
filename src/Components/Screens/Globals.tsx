@@ -11,6 +11,7 @@ import {
   TextInput
 } from "react-native"
 import { Icon, makeStyles, useTheme } from "@rneui/themed"
+import rnfs from "react-native-fs"
 import { butchGlobContext } from "../../Contexts/AppContexts"
 import ToolBar, { LeftArrow } from "../SimpleToolbar"
 import { Navigator } from "../StackNav"
@@ -19,6 +20,8 @@ import SelectBlock from "../BlockUI/BlockSelector"
 import OptionalMenu from "../OptionsMenu"
 
 import { ButchObj } from "src/Butch/ButchObj"
+import confStyles from "../../Config/styles"
+import ErrorWin from "../Error"
 
 function createCard(obj: ButchObj, styles: {
   default: object,
@@ -56,13 +59,20 @@ function createCard(obj: ButchObj, styles: {
 const GlobalsScreen: React.FC<{ 
   navigator: Navigator 
 }> = ({ navigator }) => {
-  const programObj = useContext(butchGlobContext).programObj;
+  const glogContext = useContext(butchGlobContext);
+  const { programObj, program } = glogContext;
   const [layout, setLayout] = useState<LayoutRectangle>();
   const [selectorVisible, setSelectorVisible] = useState(false);
+  const [errorVisible, setErrorVisible] = useState(false)
 
   const [selected, setSelected] = useState<string>();
   const [name, setName] = useState<string>("");
   const [value, setValue] = useState<string>("");
+  const [, _setProgramName] = useState(program.name);
+  const setProgramName = useCallback((name: string) => {
+    _setProgramName(name);
+    program.name = name;
+  }, [program])
   const [opMenuData, setOpMenuData] = useState<{
     visible: boolean,
     pos: { top: number, left: number },
@@ -81,6 +91,22 @@ const GlobalsScreen: React.FC<{
     }, [programObj]
   );
 
+  const onSave = useCallback(() => {
+    rnfs.writeFile(`${rnfs.DocumentDirectoryPath}/${program.name}.bch`, 
+      JSON.stringify(programObj?.data));
+  }, [programObj, program]);
+
+  const onLoad = useCallback(() => {
+    rnfs.readFile(`${rnfs.DocumentDirectoryPath}/${program.name}.bch`)
+      .then(data => {
+        glogContext.programObj = programObj?.wrap(JSON.parse(data)) || null;
+        console.log(glogContext.programObj);
+      }).catch(e => {
+        console.log(e);
+        setErrorVisible(true);
+      })
+  }, [programObj, program]);
+
   const reset = useCallback(() => {
     setSelectorVisible(false);
     setSelected(undefined);
@@ -89,6 +115,7 @@ const GlobalsScreen: React.FC<{
   }, [setSelectorVisible, setSelected, setName, setValue])
 
   const { theme } = useTheme(), styles = useStyles(theme);
+  const btnStyles = makeStyles(confStyles)();
 
   return <View 
     onLayout={({ nativeEvent }) => setLayout(nativeEvent.layout) }
@@ -96,7 +123,35 @@ const GlobalsScreen: React.FC<{
   >
     <ToolBar>
       <LeftArrow onPress={() => navigator.goBack()}/>
+        <TouchableNativeFeedback onPress={onLoad}>
+          <View style={btnStyles.buttonView}>
+            <Text style={btnStyles.buttonText}>Load</Text>
+          </View>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback onPress={onSave}>
+          <View style={btnStyles.buttonView}>
+            <Text style={btnStyles.buttonText}>Save</Text>
+          </View>
+        </TouchableNativeFeedback>
     </ToolBar>
+
+    <View style={styles.programName}>
+      <View style={{ justifyContent: "center", marginRight: 3 }}>
+        <Text style={styles.progNameText}>ProgName :</Text>
+      </View>
+      <TextInput 
+        style={[styles.textInput, { flex: 1, paddingBottom: 0}]}
+        value={program.name} 
+        onChange={({ nativeEvent }) => {
+          setProgramName(nativeEvent.text);
+      }}/>
+    </View>
+
+    <ErrorWin 
+      message="Invalid programm name to load"
+      visible={errorVisible} 
+      onClose={() => setErrorVisible(false)}
+    />
 
     <Modal 
       animationType = "fade"
@@ -112,14 +167,16 @@ const GlobalsScreen: React.FC<{
           ["variable", () => setSelected("variable")],
         ]}
       >
-        <View style={[styles.addBlockCard, { display: selected ? "flex" : "none" }]}>
-          <Text style={styles.typeText}>Name</Text>
-          <TextInput 
-            defaultValue="name" 
-            style={styles.textInput}
-            onChange={({ nativeEvent }) => setName(nativeEvent.text)} 
-            value={name} 
-          />
+        <View style={[{ display: selected ? "flex" : "none" }]}>
+          <View>
+            <Text style={styles.typeText}>Name</Text>
+            <TextInput 
+              defaultValue="name" 
+              style={styles.textInput}
+              onChange={({ nativeEvent }) => setName(nativeEvent.text)} 
+              value={name} 
+            />
+          </View>
           { selected === "variable" ? (
             <View>
               <Text style={styles.typeText}>Value</Text>
@@ -189,7 +246,14 @@ const GlobalsScreen: React.FC<{
 }
 
 const useStyles = makeStyles(theme => ({
-  addBlockCard: {
+  progNameText:{
+    fontWeight:"bold", 
+    color: "black"
+  },
+  programName: {
+    flexDirection: "row",
+    padding: 10,
+    backgroundColor: theme.colors.primary
   },
   textInput: {
     borderBottomColor: theme.colors.grey0,

@@ -9,7 +9,7 @@ import rnfs from "react-native-fs"
 export async function testBchFile(builder: ButchBuilder) {
     const namedTestProg = await rnfs.readFileAssets("bch/testProgram.json");
     const progStr = builder.encodeNamedProgram(namedTestProg)
-    const bobj = new ButchObjBase(JSON.parse(progStr), builder.getCodes());
+    const bobj = new ButchObjBase(JSON.parse(progStr), builder.getCodes(), builder.getRCodes());
     
     const program = builder.build(bobj);
     
@@ -40,5 +40,5 @@ export function initDefaultBuilder() {
     return readButchCodesSetAssets()
         .then(set => createButchCodesFile(set))
         .then(() => readButchCodes())
-        .then(_codes => new ButchBuilder(_codes))
+        .then(_codes => new ButchBuilder(_codes[0], _codes[1]))
 }

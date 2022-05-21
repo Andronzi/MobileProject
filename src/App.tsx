@@ -46,6 +46,7 @@ export const App: React.FC = () => {
         setAppData(prev => {
           butchGlogals.builder = _butchGlobals.builder;
           butchGlogals.programObj = _butchGlobals.programObj;
+          butchGlogals.program.name = "testProgram";
           return { ...prev, builder: _butchGlobals.builder };
         });
       }).catch(e => console.log(e));

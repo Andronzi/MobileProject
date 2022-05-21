@@ -32,6 +32,7 @@ import { ButchCodes } from "../types/Types";
 export class Program extends Block {
     private globalEnv: Environment;
     private flusher: { flush: () => void; interval: number } | undefined;
+    private write: ((str: string) => void) | undefined;
 
     constructor() {
         super();
@@ -52,6 +53,10 @@ export class Program extends Block {
 
     useFlushFunc(flushFunc: () => void, autoFlushInterval: number = NaN) {
         this.flusher = { flush: flushFunc, interval: autoFlushInterval };
+    }
+
+    useBufferWriter(write: (str: string) => void) {
+        this.write = write;
     }
 
     setBlock(newBlock: Block, path: number[]) {
@@ -76,15 +81,30 @@ export class Program extends Block {
     }
 
     execute(): Value {
+        console.log(this.globalEnv);
+        
+
         const flushInterval =
             this.flusher && Number.isFinite(this.flusher.interval)
                 ? setInterval(this.flusher.flush, this.flusher.interval)
                 : undefined;
+        try {
+            super.execute(this.globalEnv);
+        } catch (e) {
+            if (this.write && e instanceof Error) {
+                this.write(e.name + "\n" + e.message);
+                if (e instanceof RuntimeError) {
+                    e.blockIndexStack.forEach(path => {
+                        this.write && this.write(`\nin Block located in ${path.toString()}`);
+                    })
+                }
+            }
+        }
 
-        super.execute(this.globalEnv);
-
+        this.write && this.write("_\n_\n_\n_\n_\n_\n_\n_\n_\n_\n_\n_\n_\n_\n_\n_\n")
+        
         if (flushInterval) clearInterval(flushInterval);
-
+        
         this.flusher?.flush();
 
         return Value.Undefined;
@@ -115,11 +135,13 @@ export class ButchBuilder {
 
     private streams: { id: string; write: (str: string) => void }[] = [];
     private outPutBuffer = "";
-    private flushBuffer = () => {
+    public readonly flushBuffer = () => {
+        console.log(this.outPutBuffer);
+        
         this.streams.forEach(({ write }) => write(this.outPutBuffer));
         this.outPutBuffer = "";
     };
-    private pushBuffer = (str: string) => {
+    public readonly pushBuffer = (str: string) => {
         this.outPutBuffer += str;
     };
 
@@ -299,6 +321,7 @@ export class ButchBuilder {
 
         if (this.streams.length) {
             prog.useFlushFunc(this.flushBuffer, autoFlushInterval);
+            prog.useBufferWriter(this.pushBuffer);
         }
 
         return prog;

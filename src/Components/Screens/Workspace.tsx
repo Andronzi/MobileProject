@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useCallback, useContext } from "react"
 import { TouchableNativeFeedback, View, Text } from "react-native"
 import { ButchObj } from "../../Butch/ButchObj"
 import ToolBar from "../SimpleToolbar"
@@ -6,7 +6,11 @@ import { Navigator } from "../StackNav"
 import { disposableCallback } from "../../Utilities/tools"
 import { BlocksList } from "../BlocksList"
 import { butchGlobContext } from "../../Contexts/AppContexts"
-import { makeStyles, useTheme } from "@rneui/themed"
+// import { makeStyles, useTheme } from "@rneui/themed"
+import { CompilationError } from "../../Butch/errors"
+
+import { makeStyles } from "react-native-elements"
+import confStyles from "../../Config/styles"
 
 /**
  * TODO: that function must assemble array of index-pathes to blocks, which need rebuilding
@@ -19,18 +23,19 @@ const WorkSpaceScreen: React.FC<{
 }> = ({ navigator, target }) => {
   const butchGlobals = useContext(butchGlobContext)
 
-  const onLaunch = () => {
+  const onLaunch = useCallback(() => {
     if (butchGlobals.builder === null || butchGlobals.programObj === null) return;
     
-    if (butchGlobals.program.executable === null || butchGlobals.program.isChanged) {
-      butchGlobals.program.executable = butchGlobals.builder?.build(butchGlobals.programObj)
+    try {
+      if (butchGlobals.program.executable === null || butchGlobals.program.isChanged) {
+        butchGlobals.program.executable = butchGlobals.builder?.build(butchGlobals.programObj)
+      } 
+    } catch (e) {
+      if (e instanceof CompilationError) {
+        butchGlobals.builder.pushBuffer(e.name + "\n" + e.message);
+        butchGlobals.builder.flushBuffer();
+      }
     } 
-    // else if (butchGlobals.program.isChanged) {
-    //   butchGlobals.builder?.rebuild(
-    //     butchGlobals.program.executable, 
-    //     butchGlobals.programObj, 
-    //     assembleChanges(butchGlobals.programObj));
-    // }
     
     butchGlobals.program.isChanged = false;
     
@@ -38,12 +43,13 @@ const WorkSpaceScreen: React.FC<{
       "console", 
       { doClearing: disposableCallback(() => true) }, 
       () => {
-        if (butchGlobals.program.executable)
-          butchGlobals.program.executable.execute();
+        if (butchGlobals.program.executable) {
+            butchGlobals.program.executable.execute();
+        }
       })
-  } 
+  }, [butchGlobals, navigator]) 
 
-  const { theme } = useTheme(), styles = useStyles(theme);
+  const styles = makeStyles(confStyles)()
 
   return <View>
     <ToolBar>
@@ -66,19 +72,5 @@ const WorkSpaceScreen: React.FC<{
     { target && <BlocksList objToRender={target}/> }
   </View>
 }
-
-const useStyles = makeStyles(theme => ({
-  buttonView: {
-    padding: 10,
-    height: "100%", 
-    justifyContent: "center",
-    flex: 1
-  },
-  buttonText: {
-    alignSelf: "center",
-    fontSize: 18, 
-    color: "white"
-  }
-})); 
 
 export default WorkSpaceScreen

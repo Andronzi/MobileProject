@@ -195,12 +195,18 @@ export class PrintBlock extends Block
     }
 
     protected logicsBody(env: Environment): Value {
-        const value = 
-            this.getContent()[this.valueIndex]
-            .execute(env)
-            .evaluate(env, TypeNames.STRING);
+        const value = this.getContent()[this.valueIndex]
+            .execute(env).evaluate(env, TypeNames.ANY)
+
+        let result = ""
+        if (value instanceof Array) {
+            value.forEach((val: Value) => {
+                result += " " + val.evaluate(env, TypeNames.STRING); 
+            })
+        } 
+        else result = value.toString();
         
-        this.writer(value + "\n");
+        this.writer(result + "\n");
         return Value.Undefined;
     }
 }

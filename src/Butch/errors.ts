@@ -7,7 +7,7 @@ export class RuntimeError extends Error {
 
     constructor(where: Block, message: string) {
         super(message);
-        // this.stack = ""; // comment this to see normal error call stack
+        this.stack = ""; // comment this to see normal error call stack
         this.logBlockLocation(where);
     }
 
@@ -75,6 +75,7 @@ export class CompilationError extends Error {
             )}, located in [${info.location.toString()}]`;
         }
         super(message);
+        this.stack = ""; // comment this to see normal error call stack
         this.errorLocation = info ? info.location : [];
     }
 

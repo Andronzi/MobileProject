@@ -7,47 +7,7 @@
       "name": "main",
       "nameSeq": [],
       "content": [
-        {
-          "type": "declare",
-          "name": "i",
-          "content": [{ "type": "expression", "value": "0" }]
-        },
-        { "type": "print", "content": [{ "type": "deref", "name": "i" }] },
-        {
-          "type": "while",
-          "content": [
-            { "type": "expression", "value": "i < 10000" },
-            {
-              "type": "container",
-              "content": [
-                { "type": "expression", "value": "i = i + 1" },
-                { "type": "print", "content": [{ "type": "deref", "name": "i" }] }
-              ]
-            }
-          ]
-        },
-        { "type": "print", "content": [{ "type": "deref", "name": "i" }] },
-        {
-          "type": "if",
-          "content": [
-            { "type": "expression", "value": "i >= 100" },
-            { "type": "print", "content": [{ "type": "text", "value": "expression_is_true" }] },
-            { "type": "print", "content": [{ "type": "text", "value": "expression_is_false" }] }
-          ]
-        },
-        { "type": "print", "content": [{ "type": "expression", "value": "foo(12)" }] },
-        {
-          "type": "for",
-          "content": [
-            { "type": "declare", "name": "i", "content": [{ "type": "expression", "value": "0" }] },
-            { "type": "expression", "value": "i < 10" },
-            { "type": "expression", "value": "i = i + 1" },
-            {
-              "type": "print",
-              "content": [{ "type": "expression", "value": "'index:_' + i + '_from_ForBlock'" }]
-            }
-          ]
-        }
+        { "type": "expression", "value": "test(2)" }
       ]
     },
     {
@@ -68,8 +28,54 @@
     },
     {
       "type": "declare",
-      "name": "var",
-      "content": [{ "type": "expression", "value": "\"value1\"" }]
+      "name": "array",
+      "content": [{ "type": "expression", "value": "[4, 4, 5, 6, 7, 1, 9, 4, 3, 2]" }]
+    },
+    {
+      "type": "declare",
+      "name": "size",
+      "content": [{ "type": "expression", "value": "10" }]
+    },
+    {
+      "type": "function",
+      "name":"test",
+      "nameSeq":["b"],
+      "content": [
+        {
+          "type": "declare", "name": "sum", "content": [
+            { "type": "expression", "value": "0"}
+          ]
+        },
+        {
+          "type": "for",
+          "content": [
+            { "type": "declare", "name": "i", "content": [{ "type": "expression", "value": "0" }] },
+            { "type": "expression", "value": "i < size" },
+            { "type": "expression", "value": "i = i + 1" },
+            {
+              "type": "for",
+              "content": [
+                { "type": "declare", "name": "j", "content": [{ "type": "expression", "value": "0" }] },
+                { "type": "expression", "value": "j < size" },
+                { "type": "expression", "value": "j = j + 1" },
+                { "type": "container", "content": [
+                  {
+                    "type": "print", "content": [
+                      { "type": "expression", "value": "2 * array[i] // array[j]^2" }
+                    ]
+                  },
+                  { "type": "expression", "value": "sum = sum + array[i]^b * array[j]^b" }
+                ]}
+              ]
+            }
+          ]
+        },
+        {
+          "type": "print", "content": [
+            { "type": "expression", "value": "sum"}
+          ]
+        }
+      ]
     }
   ]
 }

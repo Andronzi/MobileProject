@@ -33,7 +33,7 @@ export type ButchCodes = { __hash: string; [key: string]: string };
 export type ButchGlobals = {
     builder: ButchBuilder | null;
     programObj: ButchObj | null;
-    program: { executable: Program | null; isChanged: boolean };
+    program: { name: string, executable: Program | null; isChanged: boolean };
 };
 
 const blockNamesArr = [

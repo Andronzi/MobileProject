@@ -34,7 +34,10 @@ const ConsoleScreen: React.FC<props> = ({
 		textStream.id = builder.useOutStream({ 
 			write: (str: string) => {
 				setTextStream(prev => { 
-					return { id: prev.id, value: prev.value + str };
+					return { id: prev.id, 
+						value: prev.value.length < 10000 
+							? prev.value + str 
+							: prev.value.substring(0, 5000) + "\n" + str };
 				});
 		}});
 	}
