@@ -9,6 +9,8 @@ import { useDNDElements } from "./DroppablesData";
 import { Block } from "../Components/Block";
 import Draggable from "./Draggable";
 
+import Colors from "../config/colors";
+
 interface BlockProps {
   item: ButchObj;
 }
@@ -44,15 +46,15 @@ export default function ExpressionBlock({ item }: BlockProps) {
 const useStyles = makeStyles(theme => ({
   blockText: {
     fontSize: 18,
-    color: "#F4EEFF",
+    color: Colors.purpleLight,
   },
 
   inputText: {
     margin: 10,
     fontSize: 18,
-    backgroundColor: "#F4EEFF",
-    color: "#424874",
+    backgroundColor: Colors.purpleLight,
+    color: Colors.purpleDark,
     borderRadius: 10,
-    padding: 10,
+    padding: 10
   },
 }));

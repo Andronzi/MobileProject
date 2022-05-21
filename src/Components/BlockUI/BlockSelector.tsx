@@ -4,6 +4,8 @@ import { TouchableOpacity, View, Text, TouchableNativeFeedback } from "react-nat
 import { makeStyles, useTheme } from "@rneui/themed";
 import { FlatList } from "react-native-gesture-handler";
 
+import Colors from "../../config/colors";
+
 const BlockSelector: React.FC<{
   choices: [string, () => void][],
   onClose: () => void,
@@ -34,7 +36,7 @@ const BlockSelector: React.FC<{
         { children }
         <TouchableNativeFeedback onPress={() => onClose()}>
           <View style={styles.closeButton}>
-            <Text style={styles.selectText}>Close</Text>
+            <Text style={styles.closeBtnText}>Close</Text>
           </View>
         </TouchableNativeFeedback>
       </View>
@@ -65,14 +67,19 @@ const useStyles = makeStyles(theme => ({
     shadowColor: theme.colors?.black,
   },
   selectButton: {
-    backgroundColor: theme.colors.grey4,
+    backgroundColor: Colors.purpleLight,
     padding: 5,
     borderRadius: 5,
     marginBottom: 10,
   },
   selectText: {
     fontSize: 20,
-    color: "black",
+    color: Colors.purpleDark,
+    alignSelf: "center",
+  },
+  closeBtnText: {
+    fontSize: 20,
+    color: Colors.purpleLight,
     alignSelf: "center",
   },
   closeButton: {
@@ -80,7 +87,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: 10,
     width: "100%",
     padding: 5,
-    backgroundColor: theme.colors.warning,
+    backgroundColor: Colors.purpleDark,
     
     elevation: 5,
     shadowColor: "#ffffff"
