@@ -19,6 +19,7 @@ export function DataPicker({ item, children, style }: DataPickerProps) {
     selfRef?.current?.measure((fx, fy, width, height, px, py) => {
       item.extension.coordinates = { x: px, y: py };
       // item.extension.size = { width, height };
+      console.log(px, py);
     });
   });
 

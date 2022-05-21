@@ -157,6 +157,9 @@ export function deleteElement(globalBObj: ButchObj, deletableElement: ButchObj) 
                 // }
 
                 // Возможно это не работает
+                // for (let i = 0; i < globalBObj.content.length; i++) {
+                    
+                // }
 
                 globalBObj.content.splice(i, 1);
                 globalBObj.content = globalBObj.content;
@@ -186,6 +189,7 @@ function printExtensions(globalBObj: ButchObj) {
     for (let i = 0; i < (globalBObj.content ? globalBObj.content.length : 0); i++) {
         console.log("coordinates:", globalBObj.extension.coordinates);
         console.log("size:", globalBObj.extension.size);
+
         printExtensions(globalBObj.content[i]);
     }
 }

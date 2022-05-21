@@ -11,8 +11,8 @@ import PropTypes from "prop-types";
 
 import { Children, IStyle } from "../types/Types";
 import { useDNDElements } from "./DroppablesData";
-import { useScrollViewRef } from "../DND-test";
-import { changePosition } from "../Utilities/ButchObjUtils";
+import { changePosition, deleteElement } from "../Utilities/ButchObjUtils";
+import { useScrollViewRef } from "../Components/BlocksList";
 import { ButchObj } from "../Butch/ButchObj";
 
 const ANIMATION_FRICTION = 8;
@@ -51,7 +51,7 @@ function Draggable({ style, children, item, delayLongPress = 370 }: IDraggablePr
   let isScrolling = useRef(false).current;
 
   const svRef = useScrollViewRef();
-  const draggablesData = useDNDElements();
+  const [draggablesData, setA] = useDNDElements();
 
   const animationValue = useRef(new Animated.Value(0)).current;
   const scaleEaseIn = animationValue.interpolate({
@@ -60,7 +60,6 @@ function Draggable({ style, children, item, delayLongPress = 370 }: IDraggablePr
   });
 
   const pan = useRef(new Animated.ValueXY()).current;
-  // pan.x.
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => !state.isAnimating && (state.isDragging || state.isPicked),
@@ -91,7 +90,7 @@ function Draggable({ style, children, item, delayLongPress = 370 }: IDraggablePr
     onPanResponderRelease: (_, gestures) => {
       isScrolling = false;
       state = { ...state, isDragging: false, isAnimating: true };
-      console.log(state);
+      console.log(state, " ");
       // Animated.spring(pan, {
       //   toValue: { x: 0, y: 0 },
       //   friction: ANIMATION_FRICTION,
@@ -104,7 +103,10 @@ function Draggable({ style, children, item, delayLongPress = 370 }: IDraggablePr
       //   console.log(state)
       // });
 
+      // changePosition(draggablesData, item, { x: gestures.moveX, y: gestures.moveY });
       changePosition(draggablesData, item, { x: gestures.moveX, y: gestures.moveY });
+      setA(a => a + 1);
+      pan.setValue({ x: 0, y: 0 });
       pan.flattenOffset();
     },
   });

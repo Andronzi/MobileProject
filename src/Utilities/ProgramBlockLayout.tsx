@@ -9,10 +9,9 @@ import ConditionalBlock from "../Components/ConditionalBlock";
 import ForLoopBlock from "../Components/ForBlock";
 import PrintBlock from "../Components/Print";
 import DeclarationBlock from "../Components/Declare";
-import useComponentData from "../hooks/useComponentData";
 
-import DRErrors from "../Errors";
 import { ButchObj } from "../Butch/ButchObj";
+import { ScrollView } from "react-native-gesture-handler";
 
 const ProgramBlocks: { [key: string]: React.FC<any> } = {
   declare: DeclarationBlock,
@@ -48,9 +47,11 @@ declare interface DroppableProps {
 export function Droppable({ content }: DroppableProps) {
   return (
     <FlatList
+      style={{ backgroundColor: "red" }}
       scrollEnabled={false}
       contentContainerStyle={{ margin: 14 }}
       data={content}
+      keyExtractor={(item, index) => index.toString()}
       renderItem={item => {
         console.log(item.item.data);
         return createProgramBlock(item.item);
