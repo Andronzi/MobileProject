@@ -19,7 +19,7 @@ export default function IfBlock({ item }: BlockProps) {
 
   // console.log(item.content);
 
-  const getIfExpression: (index: number) => string = (index: number) => {
+  const getIfExpression: ((index: number) => string) = (index: number) => {
     if (index == 0 && item.content !== undefined) return item.content[index].get("value");
 
     if (index != 0 && item.content !== undefined) return item.content[index].content?.get("value");
