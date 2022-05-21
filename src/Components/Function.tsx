@@ -8,6 +8,8 @@ import { Block } from "../Components/Block";
 import { DataPicker } from "./DataPicker";
 import Draggable from "./Draggable";
 
+import Colors from "../config/colors";
+
 // import {
 //   ConditionalBlock,
 //   ForLoopBlock,
@@ -67,14 +69,14 @@ export default function FunctionBlock({ item }: FunctionalBlockProps) {
 const useStyles = makeStyles(theme => ({
   blockText: {
     fontSize: 18,
-    color: "#F4EEFF",
+    color: Colors.purpleLight,
   },
 
   inputText: {
     margin: 10,
     fontSize: 18,
-    backgroundColor: "#F4EEFF",
-    color: "#424874",
+    backgroundColor: Colors.purpleLight,
+    color: Colors.purpleDark,
     borderRadius: 10,
     padding: 10
   },
