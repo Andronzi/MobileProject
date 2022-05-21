@@ -66,6 +66,7 @@ const WorkSpaceScreen: React.FC<{
       <Button title="Console" onPress={() => { navigator.goTo("console") }} /> */}
       </ToolBar>
 
+      <Text>{JSON.stringify(target?.data)}</Text>
       {target !== undefined ? <BlocksList objToRender={target} /> : undefined}
     </View>
   );

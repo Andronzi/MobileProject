@@ -1,11 +1,9 @@
-import React, { useRef } from "react";
-import { View, Text } from "react-native";
+import React from "react";
+import { View } from "react-native";
 import PropTypes from "prop-types";
 
 import { makeStyles, useTheme } from "@rneui/themed";
-import useComponentData from "../hooks/useComponentData";
 import { Children, IStyle } from "../types/Types";
-import { ButchObj } from "../Butch/ButchObj";
 
 interface BlockProps {
   children: Children;
@@ -15,8 +13,11 @@ interface BlockProps {
 const defaultStyles = makeStyles(theme => ({
   containerStyles: {
     flexDirection: "row",
-    borderRadius: 5,
-    background: "#A6B1E1",
+    alignItems: "center",
+    paddingStart: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: "#A6B1E1",
   },
 }));
 
@@ -24,15 +25,7 @@ export function Block({ children, style }: BlockProps) {
   const { theme } = useTheme();
   const defaultStyle = defaultStyles(theme);
 
-  return (
-    <View style={[defaultStyle, style]}>
-      <>
-        {React.Children.map(children, child => {
-          return { child };
-        })}
-      </>
-    </View>
-  );
+  return <View style={[style, defaultStyle.containerStyles]}>{children}</View>;
 }
 
 Block.propTypes = {

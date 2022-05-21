@@ -3,7 +3,9 @@ import { View, Text, TextInput } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 
 import { ButchObj } from "../Butch/ButchObj";
+import useComponentData from "../hooks/useComponentData";
 import { Droppable } from "../Utilities/ProgramBlockLayout";
+import { useDNDElements } from "./DroppablesData";
 import { Block } from "../Components/Block";
 import Draggable from "./Draggable";
 import { DataPicker } from "./DataPicker";
@@ -12,9 +14,10 @@ interface BlockProps {
   item: ButchObj;
 }
 
-export default function DeclarationBlock({ item }: BlockProps) {
+export default function PrintBlock({ item }: BlockProps) {
   const theme = useTheme();
   const styles = useStyles(theme);
+  const context = useDNDElements();
 
   const selfRef = useRef<View>(null);
   useEffect(() => {
@@ -28,17 +31,11 @@ export default function DeclarationBlock({ item }: BlockProps) {
 
   return (
     <Draggable item={item}>
-      <DataPicker item={item}>
+      <DataPicker item={item} style={styles.container}>
         <Block style={{ padding: 10 }}>
           <Text style={styles.blockText}>{item.type}</Text>
-          <TextInput style={styles.inputText} placeholder="name" value={item.get("name")} />
-          <TextInput
-            style={styles.inputText}
-            placeholder="value"
-            value={item.content ? item.content[0].get("value") : ""}
-          />
         </Block>
-        <Droppable content={item.content} />
+        {/* <Droppable content={item.content} /> */}
       </DataPicker>
     </Draggable>
   );
@@ -52,8 +49,8 @@ const useStyles = makeStyles(theme => ({
   },
 
   inputText: {
-    margin: 10,
     fontSize: 18,
+    marginLeft: 10,
     backgroundColor: "#F4EEFF",
     color: "#424874",
   },

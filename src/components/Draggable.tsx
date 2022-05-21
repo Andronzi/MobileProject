@@ -1,10 +1,20 @@
 import React, { useEffect, useRef } from "react";
-import { View, Animated, PanResponder, TouchableWithoutFeedback, Dimensions } from "react-native";
+import {
+  View,
+  Animated,
+  PanResponder,
+  TouchableWithoutFeedback,
+  Dimensions,
+  GestureResponderEvent,
+} from "react-native";
+import PropTypes from "prop-types";
 
 import { Children, IStyle } from "../types/Types";
+import { useDNDElements } from "./DroppablesData";
 import useStateCallback from "../hooks/useStateCallback";
 import { useScrollViewRef } from "../DND-test";
-import PropTypes from "prop-types";
+import { changePosition } from "../Utilities/ButchObjUtils";
+import { ButchObj } from "../Butch/ButchObj";
 
 const ANIMATION_FRICTION = 8;
 const SCROLL_START_OFFSET = 70;
@@ -13,6 +23,7 @@ interface IDraggableProps {
   children?: Children;
   style?: IStyle;
   delayLongPress?: number;
+  item: ButchObj;
 }
 
 const inputRange = [0, 0.5, 0.6, 1];
@@ -30,17 +41,18 @@ const createMargins = (styles: IStyle = {}) => {
 const windowSize = Dimensions.get("window");
 let offsetScreen = 20;
 
-function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
-  const [state, setState] = useStateCallback({
+function Draggable({ style, children, item, delayLongPress = 370 }: IDraggableProps) {
+  let state = useRef({
     isAnimating: false,
     isDragging: false,
     isPicked: false,
     zIndex: 1,
-  });
+  }).current;
 
   let isScrolling = useRef(false).current;
 
   const svRef = useScrollViewRef();
+  const draggablesData = useDNDElements();
 
   const animationValue = useRef(new Animated.Value(0)).current;
   const scaleEaseIn = animationValue.interpolate({
@@ -49,6 +61,7 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
   });
 
   const pan = useRef(new Animated.ValueXY()).current;
+  // pan.x.
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => !state.isAnimating && (state.isDragging || state.isPicked),
@@ -60,9 +73,8 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
       });
       pan.setValue({ x: 0, y: 0 });
 
-      setState({ ...state, isDragging: true, isPicked: false }, function () {
-        console.log("Grant: ", state);
-      });
+      state = { ...state, isDragging: true, isPicked: false };
+      console.log(state);
     },
 
     onPanResponderMove: (_, gesture) => {
@@ -79,25 +91,27 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
     // Maybe move code to onTouchEnd
     onPanResponderRelease: (_, gestures) => {
       isScrolling = false;
-      setState({ ...state, isDragging: false, isAnimating: true }, function () {
-        console.log("Released: ", state);
-      });
-      Animated.spring(pan, {
-        toValue: { x: 0, y: 0 },
-        friction: ANIMATION_FRICTION,
-        tension: 20,
-        useNativeDriver: true,
-      }).start(({}) => {
-        pan.setValue({ x: 0, y: 0 });
-        pan.flattenOffset();
-        setState({ ...state, zIndex: 1, isAnimating: false }, function () {
-          console.log("Animated: ", state);
-        });
-      });
+      state = { ...state, isDragging: false, isAnimating: true };
+      console.log(state);
+      // Animated.spring(pan, {
+      //   toValue: { x: 0, y: 0 },
+      //   friction: ANIMATION_FRICTION,
+      //   tension: 20,
+      //   useNativeDriver: true,
+      // }).start(({}) => {
+      //   pan.setValue({ x: 0, y: 0 });
+      //   pan.flattenOffset();
+      //   state = { ...state, zIndex: 1, isAnimating: false }
+      //   console.log(state)
+      // });
+
+      changePosition(draggablesData, item, { x: gestures.moveX, y: gestures.moveY });
+      pan.flattenOffset();
     },
   });
 
-  const onPressIn = () => {
+  const onTouchStart = (event: GestureResponderEvent) => {
+    event.stopPropagation();
     Animated.spring(animationValue, {
       toValue: 1,
       friction: ANIMATION_FRICTION,
@@ -106,11 +120,9 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
     }).start();
   };
 
-  const onLongPress = () => {
-    setState({ ...state, zIndex: 100, isPicked: true }, function () {
-      console.log("onLongPress: ", state);
-      console.log(pan.x);
-    });
+  const onLongPress = (event: GestureResponderEvent) => {
+    event.stopPropagation();
+    state = { ...state, zIndex: 100, isPicked: true };
   };
 
   const onTouchEnd = () => {
@@ -157,6 +169,7 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
       style={[
         {
           transform: [{ scale: scaleEaseIn }, { translateX: pan.x }, { translateY: pan.y }],
+          // left: ,
           zIndex: state.zIndex,
           elevation: state.zIndex,
         },
@@ -164,7 +177,7 @@ function Draggable({ style, children, delayLongPress = 370 }: IDraggableProps) {
       ]}
       {...panResponder.panHandlers}>
       <TouchableWithoutFeedback delayLongPress={delayLongPress} onLongPress={onLongPress}>
-        <View style={[style, createMargins()]} onTouchStart={onPressIn} onTouchEnd={onTouchEnd}>
+        <View style={[style, createMargins()]} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           {children}
         </View>
       </TouchableWithoutFeedback>

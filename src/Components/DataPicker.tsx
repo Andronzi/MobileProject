@@ -1,15 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, TextInput } from "react-native";
+import { View } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 
 import { ButchObj } from "../Butch/ButchObj";
 import useComponentData from "../hooks/useComponentData";
-import { useDNDElements } from "./DroppablesData";
 import { Children, IStyle } from "../types/Types";
 
 interface DataPickerProps {
   item: ButchObj;
-  style: IStyle;
+  style?: IStyle;
   children: Children;
 }
 

@@ -63,6 +63,9 @@ function findCurrentElement(content: ButchObj[], landingСoords: Coordinates): I
     let result: InsertionPosition = { position: RelativePosition.AFTER, index: 0 };
 
     for (let i = 0; i < content.length; i++) {
+        // if (content[i].type === "container") {
+
+        // }
         if (content[i].extension.coordinates === undefined) {
             result.index = i;
             continue;
@@ -185,6 +188,8 @@ export function changePosition(
         findInsertionPosition(globalBObj, globalBObj.content, landingCoords) ??
         DRErrors.unexpectedUndefined("findCoordinates(bObj.content, landingCoords, bObj)");
 
+    console.log({ index: result.index, datad: result?.parent?.data });
+
     if (result.parent?.content === undefined) return;
 
     const newContent = [];
@@ -198,4 +203,6 @@ export function changePosition(
     for (let i = result.index + 1; i < result.parent.content.length; i++) {
         newContent.push(result.parent.content[i]);
     }
+
+    // console.log(result.parent.content);
 }
