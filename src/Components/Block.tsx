@@ -20,7 +20,7 @@ const defaultStyles = makeStyles(theme => ({
     borderRadius: 10,
     backgroundColor: "#A6B1E1",
     minHeight: 40,
-    marginTop: 10
+    marginTop: 20
   },
 }));
 

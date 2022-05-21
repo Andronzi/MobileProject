@@ -27,8 +27,8 @@ export default function IfBlock({ item }: BlockProps) {
 
   return (
     <Draggable item={item}>
-      <DataPicker item={item} style={styles.container}>
-        <Block style={{ margin: 0, color: "white" }}>
+      <DataPicker item={item}>
+        <Block style={{ padding: 10 }}>
           <Text style={styles.blockText}>{item.type}</Text>
           <TextInput style={styles.blockText} value={getIfExpression(0)} />
           <TextInput style={styles.blockText} value={getIfExpression(1)} />
@@ -43,18 +43,17 @@ export default function IfBlock({ item }: BlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
-    fontSize: 14,
+    fontSize: 18,
     color: "#F4EEFF",
   },
 
   inputText: {
-    fontSize: 14,
-    marginLeft: 8,
+    margin: 10,
+    fontSize: 18,
     backgroundColor: "#F4EEFF",
     color: "#424874",
     borderRadius: 10,
-    padding: 10,
+    padding: 10
   },
 }));

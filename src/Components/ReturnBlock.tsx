@@ -15,9 +15,9 @@ export default function ReturnBlock({ item }: BlockProps) {
   const styles = useStyles(theme);
 
   return (
-    <DataPicker item={item} style={styles.container}>
-      <Block>
-        <Text style={[styles.blockText, { padding: 10 }]}>{item.type}</Text>
+    <DataPicker item={item}>
+      <Block style={{ padding: 10 }}>
+        <Text style={styles.blockText}>{item.type}</Text>
         <Text style={[styles.inputText]}>{item.content ? item.content[0].get("value") : ""}</Text>
       </Block>
       {/* <Droppable content={item.content} /> */}
@@ -26,15 +26,14 @@ export default function ReturnBlock({ item }: BlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
     fontSize: 18,
     color: "#F4EEFF",
   },
 
   inputText: {
+    margin: 10,
     fontSize: 18,
-    marginLeft: 10,
     backgroundColor: "#F4EEFF",
     color: "#424874",
     borderRadius: 10,

@@ -28,7 +28,7 @@ export default function ConditionalBlock({ item }: BlockProps) {
   // console.log(item.content);
 
   return (
-    <View ref={selfRef} style={styles.container}>
+    <View ref={selfRef}>
       <Block style={{ padding: 10 }}>
         <Text style={styles.blockText}>{item.type}</Text>
         <TextInput style={styles.inputText} placeholder="expression" value={item.get("value")} />
@@ -39,7 +39,6 @@ export default function ConditionalBlock({ item }: BlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
     fontSize: 18,
     color: "#F4EEFF",

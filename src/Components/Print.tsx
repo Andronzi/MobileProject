@@ -31,7 +31,7 @@ export default function PrintBlock({ item }: BlockProps) {
 
   return (
     <Draggable item={item}>
-      <DataPicker item={item} style={styles.container}>
+      <DataPicker item={item}>
         <Block style={{ padding: 10 }}>
           <Text style={styles.blockText}>{item.type}</Text>
         </Block>
@@ -42,15 +42,14 @@ export default function PrintBlock({ item }: BlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
     fontSize: 18,
     color: "#F4EEFF",
   },
 
   inputText: {
+    margin: 10,
     fontSize: 18,
-    marginLeft: 10,
     backgroundColor: "#F4EEFF",
     color: "#424874",
     borderRadius: 10,

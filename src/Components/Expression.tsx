@@ -30,7 +30,7 @@ export default function ExpressionBlock({ item }: BlockProps) {
 
   return (
     <Draggable item={item}>
-      <View ref={selfRef} style={styles.container}>
+      <View ref={selfRef}>
         <Block style={{ padding: 10 }}>
           <Text style={styles.blockText}>{item.type}</Text>
           <Text style={styles.inputText}>{item.get("value")}</Text>
@@ -42,7 +42,6 @@ export default function ExpressionBlock({ item }: BlockProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
     fontSize: 18,
     color: "#F4EEFF",
