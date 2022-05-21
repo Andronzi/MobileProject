@@ -42,35 +42,27 @@ const WorkSpaceScreen: React.FC<{
   const { theme } = useTheme(),
     styles = useStyles(theme);
 
-  return (
-    <View>
-      <ToolBar>
-        <TouchableNativeFeedback onPress={() => navigator.goTo("globals")}>
-          <View style={styles.buttonView}>
-            <Text style={styles.buttonText}>Globals</Text>
-          </View>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback onPress={() => onLaunch()}>
-          <View style={styles.buttonView}>
-            <Text style={styles.buttonText}>Launch</Text>
-          </View>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback onPress={() => navigator.goTo("console")}>
-          <View style={styles.buttonView}>
-            <Text style={styles.buttonText}>Console</Text>
-          </View>
-        </TouchableNativeFeedback>
-
-        {/* <Button title="Globals" onPress={() => { navigator.goTo("globals") }} />
-      <Button title="Launch" onPress={() => onLaunch()} />
-      <Button title="Console" onPress={() => { navigator.goTo("console") }} /> */}
-      </ToolBar>
-
-      <Text>{JSON.stringify(target?.data)}</Text>
-      {target !== undefined ? <BlocksList objToRender={target} /> : undefined}
-    </View>
-  );
-};
+  return <View>
+    <ToolBar>
+      <TouchableNativeFeedback onPress={() => navigator.goTo("globals")}>
+        <View style={styles.buttonView}>
+          <Text style={styles.buttonText}>Globals</Text>
+        </View>
+      </TouchableNativeFeedback>
+      <TouchableNativeFeedback onPress={() => onLaunch()}>
+        <View style={styles.buttonView}>
+          <Text style={styles.buttonText}>Launch</Text>
+        </View>
+      </TouchableNativeFeedback>
+      <TouchableNativeFeedback onPress={() => navigator.goTo("console")}>
+        <View style={styles.buttonView}>
+          <Text style={styles.buttonText}>Console</Text>
+        </View>
+      </TouchableNativeFeedback>
+    </ToolBar> 
+    { target && <BlocksList objToRender={target}/> }
+  </View>
+}
 
 const useStyles = makeStyles(theme => ({
   buttonView: {

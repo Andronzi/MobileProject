@@ -1,13 +1,10 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, useCallback } from "react";
 import {
-  Modal,
   View,
   Text,
-  TouchableOpacity,
-  TextInput,
   ScrollView,
-  Pressable,
   LayoutRectangle,
+  Modal
 } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 
@@ -16,6 +13,7 @@ import { RenderObj } from "./RenderObj";
 import AddButton from "./BlockUI/AddButton";
 import { ButchObj } from "../Butch/ButchObj";
 import { DNDElementsProvider } from "../Components/DroppablesData";
+import BlockSelector from "./BlockUI/BlockSelector";
 
 const ScrollViewRefContext = React.createContext<React.RefObject<ScrollView> | null>(null);
 
@@ -25,40 +23,23 @@ function useScrollViewRef(): React.RefObject<ScrollView> | null {
 
 export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender }) => {
   const [isVisible, setVisible] = useState(false);
-  const [blockType, setBlockType] = useState("");
-  const [blockName, setBlockName] = useState("");
-  const [blockValue, setBlockValue] = useState("");
   const [layout, setLayout] = useState<LayoutRectangle>();
+  // const [selectorVisible, setSelectorVisible] = useState(false);
 
-  const block: any = blocksState;
+  const appendObj = useCallback((obj: ButchObj) => {
+    if (objToRender.content)
+      objToRender.content = [...objToRender.content, obj]
+  }, [objToRender])
+
+  const closeSelector = useCallback(
+    () => setVisible(false), 
+    [setVisible]
+  );
 
   const { theme } = useTheme();
   const styles = useStyles(theme);
 
   const scrollViewRef = useRef<ScrollView>(null);
-
-  const onPressEvent = (content: {
-    id: number | string;
-    type: string;
-    name: string;
-    value: string;
-  }) => {
-    block[content.id] = {
-      type: content.type,
-      name: content.name,
-      content: {
-        1: {
-          type: "text",
-          value: content.value,
-        },
-      },
-    };
-  };
-
-  useEffect(() => {
-    setBlockName("");
-    setBlockValue("");
-  }, [block]);
 
   return (
     <View
@@ -74,53 +55,26 @@ export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender })
         />
       ) : undefined}
 
-      {/* This Modal must be redone after component builder apear */}
-      <Modal
-        animationType={"fade"}
+      <Modal 
+        animationType = "fade"
         transparent={true}
         visible={isVisible}
         presentationStyle="overFullScreen"
-        onRequestClose={() => setVisible(false)}>
-        <View style={styles.modal}>
-          <View style={styles.blocksSelectView}>
-            <TouchableOpacity
-              style={styles.selectionBlock}
-              onPress={() => setBlockType("function")}>
-              <Text style={styles.selectionText}>Function</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.selectionBlock} onPress={() => setBlockType("declare")}>
-              <Text style={styles.selectionText}>Declare</Text>
-            </TouchableOpacity>
-          </View>
-          <TextInput
-            placeholder="name"
-            value={blockName}
-            onChangeText={text => setBlockName(text)}
-          />
-          <TextInput
-            placeholder="value"
-            value={blockValue}
-            onChangeText={text => setBlockValue(text)}
-          />
-          <Pressable
-            style={styles.modalAddButton}
-            onPress={() => {
-              onPressEvent({ id: Date.now(), type: blockType, name: blockName, value: blockValue });
-            }}>
-            <Text style={styles.selectionText}>Add</Text>
-            {/* <Icon name="close" type="antdesign"/>     */}
-          </Pressable>
-          <Pressable
-            style={styles.modalCloseButton}
-            onPress={() => {
-              setBlockType("");
-              setBlockName("");
-              setBlockValue("");
-              setVisible(!isVisible);
-            }}>
-            <Text style={styles.selectionText}>Close Modal</Text>
-          </Pressable>
-        </View>
+        onRequestClose={closeSelector}
+      >
+        <BlockSelector 
+          choices={[
+            ["while", () => appendObj(objToRender.createWhile())],
+            ["for", () => appendObj(objToRender.createFor())],
+            ["print", () => appendObj(objToRender.createPrint())],
+            ["expression", () => appendObj(objToRender.createExpression())],
+            ["declare",() => appendObj(objToRender.createDeclare())],
+            ["return",() => appendObj(objToRender.createReturn())],
+            ["break",() => appendObj(objToRender.createBreak())]
+          ]}
+          onDefault={closeSelector}
+          onClose={closeSelector}
+        />
       </Modal>
       {/* Vlad create cool component, so instead ScrollView:
           <CoolComponent obj={objToRender} />
