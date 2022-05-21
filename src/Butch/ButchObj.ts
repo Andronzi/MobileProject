@@ -9,7 +9,7 @@ import {
     isStringArrayField,
     isStringField,
 } from "../types/BObjFields";
-import { ButchCodes } from "../types/Types";
+import { ButchCodes, Coordinates, Size } from "../types/Types";
 
 /**
  * wraper of encoded object
@@ -20,11 +20,11 @@ export class ButchObjBase {
     public readonly codes: ButchCodes;
     public readonly rCodes: ButchCodes;
     // any extension your middleware could apply
-    public extension: { [key: string]: any } = {};
+    public extension: { coordinates?: Coordinates; size?: Size; [key: string]: any } = {};
 
     constructor(obj: { [key: string]: BObjPayload }, codes: ButchCodes, rCodes: ButchCodes) {
         this.codes = codes;
-        this.rCodes = rCodes; 
+        this.rCodes = rCodes;
         this.data = obj;
     }
 
@@ -131,31 +131,44 @@ export class ButchObj extends ButchObjBase {
         );
     }
 
-    public readonly createProgram: ButchObjectCreator = () => 
-        new ButchObj({
+    public readonly createProgram: ButchObjectCreator = () =>
+        new ButchObj(
+            {
                 [this.codes.type]: this.codes.program,
                 [this.codes.__hash]: this.codes.__hash,
                 [this.codes.content]: [],
-            }, this.codes, this.rCodes);
+            },
+            this.codes,
+            this.rCodes,
+        );
 
-    public readonly createDeclare: ButchObjectCreator = () => 
-        new ButchObj({
-            [this.codes.type]: this.codes.declare,
-            [this.codes.name]: "",
-            [this.codes.content]: [{ 
-                [this.codes.type]: this.codes.expression,
-                [this.codes.value]: ""
-            }]
-        }, this.codes, this.rCodes);
+    public readonly createDeclare: ButchObjectCreator = () =>
+        new ButchObj(
+            {
+                [this.codes.type]: this.codes.declare,
+                [this.codes.name]: "",
+                [this.codes.content]: [
+                    {
+                        [this.codes.type]: this.codes.expression,
+                        [this.codes.value]: "",
+                    },
+                ],
+            },
+            this.codes,
+            this.rCodes,
+        );
 
-    public readonly createFunction: ButchObjectCreator = () => 
-        new ButchObj({
-            [this.codes.type]: this.codes.function,
-            [this.codes.name]: "",
-            [this.codes.nameSeq]: [],
-            [this.codes.content]: []
-        }, this.codes, this.rCodes);
+    public readonly createFunction: ButchObjectCreator = () =>
+        new ButchObj(
+            {
+                [this.codes.type]: this.codes.function,
+                [this.codes.name]: "",
+                [this.codes.nameSeq]: [],
+                [this.codes.content]: [],
+            },
+            this.codes,
+            this.rCodes,
+        );
 }
 
 export default ButchObjBase;
-

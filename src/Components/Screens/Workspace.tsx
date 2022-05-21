@@ -63,7 +63,7 @@ const WorkSpaceScreen: React.FC<{
         </View>
       </TouchableNativeFeedback>
     </ToolBar> 
-    <BlocksList objToRender={target}/>
+    { target && <BlocksList objToRender={target}/> }
   </View>
 }
 

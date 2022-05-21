@@ -8,16 +8,15 @@ import Droppable from "./Droppable";
 import { useDNDElements } from "./DroppablesData";
 import { Block } from "../Components/Block";
 
-interface FunctionalBlockProps {
+interface BlockProps {
   item: ButchObj;
 }
 
-export function FunctionBlock({ item }: FunctionalBlockProps) {
+export function WhileLoopBlock({ item }: BlockProps) {
   const theme = useTheme();
   const styles = useStyles(theme);
   const context = useDNDElements();
 
-  const [, onLayout] = useComponentData(item);
   const selfRef = useRef<View>(null);
   useEffect(() => {
     selfRef?.current?.measure((fx, fy, width, height, px, py) => {
@@ -29,15 +28,11 @@ export function FunctionBlock({ item }: FunctionalBlockProps) {
   console.log(item.content);
 
   return (
-    <View ref={selfRef} onLayout={onLayout} style={styles.container}>
-      {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
+    <View ref={selfRef} style={styles.container}>
       <Block
-        style={{ margin: 0}}>
+        style={{ margin: 0, color: "white" }}>
         <Text style={styles.blockText}>{item.type}</Text>
-        <TextInput style={styles.inputText} placeholder="name" value={item.get("name")} />
-        {item.type === "function" && item.get("nameSeq").map(item => (
-          <TextInput style={styles.inputText} placeholder="argument" value={item} />
-        ))}
+        <TextInput style={styles.inputText} placeholder="expression" value={item.get("value")} />
       </Block>
       <Droppable content={item.content} />
     </View>

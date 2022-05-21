@@ -6,10 +6,13 @@ import {
   FunctionBlock,
   DeclarationBlock,
   WhileLoopBlock,
+  ExpressionBlock,
+  ReturnBlock,
+  PrintBlock,
 } from "../Modules/ProgramBlocks.d";
+
 import DRErrors from "../Errors";
 import { ButchObj } from "../Butch/ButchObj";
-import { ButchCodes } from "../types/Types";
 
 const ProgramBlocks: { [key: string]: React.FC<any> } = {
   declare: DeclarationBlock,
@@ -21,8 +24,8 @@ const ProgramBlocks: { [key: string]: React.FC<any> } = {
   // nameSeq:,  // content:,
   // value:,
   // text:,
-  // expression: ,
-  // return:,
+  expression: ExpressionBlock,
+  return: ReturnBlock,
   // break:,
   // log:,
   while: WhileLoopBlock,
@@ -30,11 +33,10 @@ const ProgramBlocks: { [key: string]: React.FC<any> } = {
   if: ConditionalBlock,
   // container:,
   // set:,
-  // print:
+  print: PrintBlock
 } as const;
 
 export default function createProgramBlock(item: ButchObj): JSX.Element {
-  if (item.content === undefined) return DRErrors.unexpectedUndefined("item.content");
-  const type: string = item.get("type");
-  return React.createElement(ProgramBlocks[type]);
+  console.log(item.type);
+  return React.createElement(ProgramBlocks[item.type]);
 }
