@@ -117,6 +117,7 @@ function findInsertionPosition(
     if (bObj === undefined) return undefined;
 
     const bsResult = findCurrentElement(bObj, landingCoords);
+    console.log({ bs: bsResult.index });
     let result: InsertionPosition;
     switch (bsResult.position) {
         case RelativePosition.IN:
@@ -179,11 +180,23 @@ export function deleteElement(globalBObj: ButchObj, deletableElement: ButchObj) 
     return;
 }
 
+function printExtensions(globalBObj: ButchObj) {
+    if (globalBObj === undefined) return;
+
+    for (let i = 0; i < (globalBObj.content ? globalBObj.content.length : 0); i++) {
+        console.log("coordinates:", globalBObj.extension.coordinates);
+        console.log("size:", globalBObj.extension.size);
+        printExtensions(globalBObj.content[i]);
+    }
+}
+
 export function changePosition(
     globalBObj: ButchObj,
     elementToAdd: ButchObj,
     landingCoords: Coordinates,
 ) {
+    deleteElement(globalBObj, elementToAdd);
+    printExtensions(globalBObj);
     const result =
         findInsertionPosition(globalBObj, globalBObj.content, landingCoords) ??
         DRErrors.unexpectedUndefined("findCoordinates(bObj.content, landingCoords, bObj)");
@@ -203,6 +216,4 @@ export function changePosition(
     for (let i = result.index + 1; i < result.parent.content.length; i++) {
         newContent.push(result.parent.content[i]);
     }
-
-    // console.log(result.parent.content);
 }

@@ -17,8 +17,8 @@ export function DataPicker({ item, children, style }: DataPickerProps) {
   const selfRef = useRef<View>(null);
   useEffect(() => {
     selfRef?.current?.measure((fx, fy, width, height, px, py) => {
-      item.extension.coords = { px, py };
-      item.extension.size = { width, height };
+      item.extension.coordinates = { x: px, y: py };
+      // item.extension.size = { width, height };
     });
   });
 

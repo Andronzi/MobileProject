@@ -6,8 +6,14 @@ import { Droppable } from "../Utilities/ProgramBlockLayout";
 import createProgramBlock from "../Utilities/ProgramBlockLayout";
 import useForceUpdate from "../hooks/useUpdate";
 
-const plug = new ButchObj({}, { __hash: "", k: "" }, { __hash: "", k: "" });
-const DNDElementsContext = React.createContext<ButchObj>(plug);
+type DNDContextType = [ButchObj, () => void];
+const plug: DNDContextType = [
+  new ButchObj({}, { __hash: "", k: "" }, { __hash: "", k: "" }),
+  () => {
+    return;
+  },
+];
+const DNDElementsContext = React.createContext<[ButchObj, () => void]>(plug);
 
 export function useDNDElements() {
   return useContext(DNDElementsContext);
@@ -21,7 +27,7 @@ export function DNDElementsProvider({ programData }: DNDElementsProviderProps) {
   const update = useForceUpdate();
 
   return (
-    <DNDElementsContext.Provider value={programData}>
+    <DNDElementsContext.Provider value={[programData, update]}>
       {/* <FlatList data={programData.content} renderItem={}></FlatList> */}
       {/* <FunctionBlock item={programData}></FunctionBlock> */}
       {createProgramBlock(programData)}

@@ -40,7 +40,7 @@ export default function DeclarationBlock({ item }: BlockProps) {
             value={item.content ? item.content[0].get("value") : ""}
           />
         </Block>
-        <Droppable content={item.content} />
+        {/* <Droppable content={item.content} /> */}
       </DataPicker>
     </Draggable>
   );

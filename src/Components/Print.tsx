@@ -1,11 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, Text } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 
 import { ButchObj } from "../Butch/ButchObj";
-import useComponentData from "../hooks/useComponentData";
-import { Droppable } from "../Utilities/ProgramBlockLayout";
-import { useDNDElements } from "./DroppablesData";
 import { Block } from "../Components/Block";
 import Draggable from "./Draggable";
 import { DataPicker } from "./DataPicker";
@@ -19,7 +16,6 @@ interface BlockProps {
 export default function PrintBlock({ item }: BlockProps) {
   const theme = useTheme();
   const styles = useStyles(theme);
-  const context = useDNDElements();
 
   const selfRef = useRef<View>(null);
   useEffect(() => {
