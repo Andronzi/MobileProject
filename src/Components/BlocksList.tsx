@@ -1,11 +1,5 @@
 import React, { useState, useContext, useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  LayoutRectangle,
-  Modal
-} from "react-native";
+import { View, Text, ScrollView, LayoutRectangle, Modal, Dimensions } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 
 import blocksState from "../Data/blocksState";
@@ -14,27 +8,30 @@ import AddButton from "./BlockUI/AddButton";
 import { ButchObj } from "../Butch/ButchObj";
 import { DNDElementsProvider } from "../Components/DroppablesData";
 import BlockSelector from "./BlockUI/BlockSelector";
+import useForceUpdate from "../hooks/useForceUpdate";
 
 const ScrollViewRefContext = React.createContext<React.RefObject<ScrollView> | null>(null);
 
-function useScrollViewRef(): React.RefObject<ScrollView> | null {
+export function useScrollViewRef(): React.RefObject<ScrollView> | null {
   return useContext(ScrollViewRefContext);
 }
+
+const windowHeight = Dimensions.get("window").height;
 
 export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender }) => {
   const [isVisible, setVisible] = useState(false);
   const [layout, setLayout] = useState<LayoutRectangle>();
+  const [ignored, forceUpdate] = useForceUpdate();
   // const [selectorVisible, setSelectorVisible] = useState(false);
 
-  const appendObj = useCallback((obj: ButchObj) => {
-    if (objToRender.content)
-      objToRender.content = [...objToRender.content, obj]
-  }, [objToRender])
-
-  const closeSelector = useCallback(
-    () => setVisible(false), 
-    [setVisible]
+  const appendObj = useCallback(
+    (obj: ButchObj) => {
+      if (objToRender.content) objToRender.content = [...objToRender.content, obj];
+    },
+    [objToRender],
   );
+
+  const closeSelector = useCallback(() => setVisible(false), [setVisible]);
 
   const { theme } = useTheme();
   const styles = useStyles(theme);
@@ -55,22 +52,21 @@ export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender })
         />
       ) : undefined}
 
-      <Modal 
-        animationType = "fade"
+      <Modal
+        animationType="fade"
         transparent={true}
         visible={isVisible}
         presentationStyle="overFullScreen"
-        onRequestClose={closeSelector}
-      >
-        <BlockSelector 
+        onRequestClose={closeSelector}>
+        <BlockSelector
           choices={[
             ["while", () => appendObj(objToRender.createWhile())],
             ["for", () => appendObj(objToRender.createFor())],
             ["print", () => appendObj(objToRender.createPrint())],
             ["expression", () => appendObj(objToRender.createExpression())],
-            ["declare",() => appendObj(objToRender.createDeclare())],
-            ["return",() => appendObj(objToRender.createReturn())],
-            ["break",() => appendObj(objToRender.createBreak())]
+            ["declare", () => appendObj(objToRender.createDeclare())],
+            ["return", () => appendObj(objToRender.createReturn())],
+            ["break", () => appendObj(objToRender.createBreak())],
           ]}
           onDefault={closeSelector}
           onClose={closeSelector}
@@ -84,7 +80,13 @@ export const BlocksList: React.FC<{ objToRender: ButchObj }> = ({ objToRender })
       {/* <Text>{JSON.stringify(objToRender)}</Text>
           <FunctionBlock item={objToRender} /> */}
       {/* <RenderObj /> */}
-      <DNDElementsProvider programData={objToRender}></DNDElementsProvider>
+      <ScrollView ref={scrollViewRef} style={{ height: "100%", backgroundColor: "green" }}>
+        <ScrollViewRefContext.Provider value={scrollViewRef}>
+          <DNDElementsProvider
+            forceUpdate={forceUpdate}
+            programData={objToRender}></DNDElementsProvider>
+        </ScrollViewRefContext.Provider>
+      </ScrollView>
       {/* </ScrollViewRefContext.Provider>
       </ScrollView> */}
     </View>

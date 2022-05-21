@@ -22,7 +22,7 @@ const defaultStyles = makeStyles(theme => ({
     borderRadius: 10,
     backgroundColor: Colors.purpleMedium,
     minHeight: 40,
-    marginTop: 20
+    marginTop: 20,
   },
 }));
 
@@ -34,6 +34,6 @@ export function Block({ children, style }: BlockProps) {
 }
 
 Block.propTypes = {
-  children: PropTypes.array,
+  children: PropTypes.any,
   style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };

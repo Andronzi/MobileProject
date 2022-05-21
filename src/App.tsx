@@ -21,7 +21,7 @@ function initButchGlobals(): Promise<{
 }> {
   return Promise.all([
     ButchBuilder.initDefaultBuilder(),
-    rnfs.readFileAssets("bch/functionCheck.json"),
+    rnfs.readFileAssets("bch/testProgram.json"),
   ]).then(([builder, namedProg]) => {
     const encoded = builder.encodeNamedProgram(namedProg);
     const programObj = new ButchObj(JSON.parse(encoded), builder.getCodes(), builder.getRCodes());
