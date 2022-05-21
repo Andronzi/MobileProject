@@ -1,0 +1,28 @@
+{
+  "type": "program",
+  "__codesHash": 123,
+  "content": [
+    {
+      "type": "function",
+      "name": "foo",
+      "nameSeq": ["a", "b", "pizdets"],
+      "content": [
+        {
+          "type": "return",
+          "content": [
+            {
+              "type": "expression",
+              "value": "a * 2"
+            }
+          ]
+        },
+        { "type": "expression", "value": "FUUUUUCK" },
+        { "type": "declare", "name": "i", "content": [{ "type": "expression", "value": "0" }] },
+        { "type": "expression", "value": "i < 10000" },
+        { "type": "declare", "name": "i", "content": [{ "type": "expression", "value": "0" }] },
+        { "type": "expression", "value": "'AHAHAHAHHAHHAAHAHH'" },
+        { "type": "print", "content": [{ "type": "expression", "value": "'expression_is_true'" }] }
+      ]
+    }
+  ]
+}

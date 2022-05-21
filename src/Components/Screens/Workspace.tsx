@@ -18,10 +18,10 @@ import confStyles from "../../Config/styles"
 declare function assembleChanges(obj: ButchObj): number[][];
 
 const WorkSpaceScreen: React.FC<{
-  navigator: Navigator,
-  target: ButchObj
+  navigator: Navigator;
+  target: ButchObj;
 }> = ({ navigator, target }) => {
-  const butchGlobals = useContext(butchGlobContext)
+  const butchGlobals = useContext(butchGlobContext);
 
   const onLaunch = useCallback(() => {
     if (butchGlobals.builder === null || butchGlobals.programObj === null) return;

@@ -10,7 +10,7 @@ type MeasureData =
     }
   | undefined;
 
-export default function useComponentData(butchObj: ButchObj | undefined) {
+export default function useComponentData(butchObj?: ButchObj | undefined) {
   const [data, setData] = useState<MeasureData>(undefined);
 
   const onLayout = useCallback((event: LayoutChangeEvent) => {

@@ -26,7 +26,6 @@ const ConsoleScreen: React.FC<props> = ({
 	const scrollView = useRef<ScrollView>(null)
 	const [textStream, setTextStream] = useState({ id: "", value: "" });
 	if (doClearing && doClearing()) {
-		console.log("cleared");
 		setTextStream(prev => ({ ...prev, value: "" }));
 	}
 

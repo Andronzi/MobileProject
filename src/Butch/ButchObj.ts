@@ -92,6 +92,7 @@ type ButchObjectCreator = () => ButchObj;
 export class ButchObj extends ButchObjBase {
     // eslint-disable-next-line no-use-before-define
     private _content: ButchObj[] | undefined;
+    public readonly parent: ButchObj | undefined;
     public get content(): ButchObj[] | undefined {
         return this._content && [...this._content];
     }
@@ -102,11 +103,17 @@ export class ButchObj extends ButchObjBase {
 
     public readonly type: string;
 
-    constructor(obj: { [key: string]: BObjPayload }, codes: ButchCodes, rCodes: ButchCodes) {
+    constructor(
+        obj: { [key: string]: BObjPayload },
+        codes: ButchCodes,
+        rCodes: ButchCodes,
+        parent: ButchObj | undefined = undefined,
+    ) {
         super(obj, codes, rCodes);
 
+        this.parent = parent;
         this.type = rCodes[this.data[this.codes.type] as string];
-        this._content = super.getContent()?.map(item => new ButchObj(item, codes, rCodes));
+        this._content = super.getContent()?.map(item => new ButchObj(item, codes, rCodes, this));
     }
 
     /**

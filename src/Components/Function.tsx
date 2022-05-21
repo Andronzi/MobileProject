@@ -1,56 +1,81 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, TextInput } from "react-native";
+import React from "react";
+import { Text, TextInput } from "react-native";
 import { useTheme, makeStyles } from "@rneui/themed";
 
 import { ButchObj } from "../Butch/ButchObj";
-import useComponentData from "../hooks/useComponentData";
-import Droppable from "./Droppable";
-import { useDNDElements } from "./DroppablesData";
+import { Droppable } from "../Utilities/ProgramBlockLayout";
 import { Block } from "../Components/Block";
+import { DataPicker } from "./DataPicker";
+import Draggable from "./Draggable";
+
+// import {
+//   ConditionalBlock,
+//   ForLoopBlock,
+//   FunctionBlock,
+//   DeclarationBlock,
+//   WhileLoopBlock,
+//   ExpressionBlock,
+//   ReturnBlock,
+//   PrintBlock,
+// } from "../Modules/ProgramBlocks.d";
 
 interface FunctionalBlockProps {
   item: ButchObj;
 }
 
-export function FunctionBlock({ item }: FunctionalBlockProps) {
+export default function FunctionBlock({ item }: FunctionalBlockProps) {
   const theme = useTheme();
   const styles = useStyles(theme);
-  const context = useDNDElements();
 
-  const [, onLayout] = useComponentData(item);
-  const selfRef = useRef<View>(null);
-  useEffect(() => {
-    selfRef?.current?.measure((fx, fy, width, height, px, py) => {
-      item.extension.coords = { px, py };
-      item.extension.size = { width, height };
-    });
-  });
-
-  console.log(item.content);
+  // console.log(item.content);
 
   return (
-    <View ref={selfRef} onLayout={onLayout} style={styles.container}>
-      {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
-      <Block
-        style={{ margin: 0}}>
-        <Text style={styles.blockText}>{item.type}</Text>
-        <TextInput style={styles.inputText} placeholder="name" value={item.get("name")} />
-        {item.type === "function" && item.get("nameSeq").map(item => (
-          <TextInput style={styles.inputText} placeholder="argument" value={item} />
-        ))}
-      </Block>
-      <Droppable content={item.content} />
-    </View>
+    <Draggable item={item}>
+      <DataPicker item={item}>
+        {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
+        <Block
+          // children={["function", item.get("name"), item.get("nameSeq")]}
+          style={{ padding: 10 }}>
+          <Text style={styles.blockText}>function</Text>
+          <TextInput style={styles.inputText} placeholder="name" value={item.get("name")} />
+          {item.get("nameSeq").map(item => {
+            return (
+              <>
+                <TextInput style={styles.inputText} placeholder="argument" value={item} />
+              </>
+            );
+          })}
+        </Block>
+        <Droppable content={item.content} />
+      </DataPicker>
+    </Draggable>
+    // <View ref={selfRef} onLayout={onLayout} style={styles.container}>
+    //   {/* <Title title="function" name={item.get("name")} nameSeq={item.get("nameSeq")} /> */}
+    //   <Block
+    //     style={{ margin: 0}}>
+    //     <Text style={styles.blockText}>{item.type}</Text>
+    //     <TextInput style={styles.inputText} placeholder="name" value={item.get("name")} />
+    //     {item.type === "function" && item.get("nameSeq").map(item => (
+    //       <TextInput style={styles.inputText} placeholder="argument" value={item} />
+    //     ))}
+    //   </Block>
+    //   <Droppable content={item.content} />
+    // </View>
   );
 }
 
 const useStyles = makeStyles(theme => ({
-  container: { marginBottom: 10 },
   blockText: {
+    fontSize: 18,
     color: "#F4EEFF",
   },
 
   inputText: {
+    margin: 10,
+    fontSize: 18,
+    backgroundColor: "#F4EEFF",
     color: "#424874",
+    borderRadius: 10,
+    padding: 10
   },
 }));

@@ -63,6 +63,9 @@ function findCurrentElement(content: ButchObj[], landingСoords: Coordinates): I
     let result: InsertionPosition = { position: RelativePosition.AFTER, index: 0 };
 
     for (let i = 0; i < content.length; i++) {
+        // if (content[i].type === "container") {
+
+        // }
         if (content[i].extension.coordinates === undefined) {
             result.index = i;
             continue;
@@ -114,6 +117,7 @@ function findInsertionPosition(
     if (bObj === undefined) return undefined;
 
     const bsResult = findCurrentElement(bObj, landingCoords);
+    console.log({ bs: bsResult.index });
     let result: InsertionPosition;
     switch (bsResult.position) {
         case RelativePosition.IN:
@@ -140,12 +144,50 @@ function findInsertionPosition(
     return result;
 }
 
-function findElementParent(globalBObj: ButchObj, deletableElement: ButchObj) {
-    for (let i = 0; i < globalBObj.content?.length; i++) {}
+export function deleteElement(globalBObj: ButchObj, deletableElement: ButchObj) {
+    if (deletableElement.parent === undefined) {
+        if (globalBObj.content === undefined) {
+            DRErrors.unexpectedUndefined("deleteElement->globalBObj.content");
+        }
+
+        for (let i = 0; i < globalBObj.content.length; i++) {
+            if (globalBObj.content[i] == deletableElement) {
+                // for (let j = 0; j < i; j++) {
+
+                // }
+
+                // Возможно это не работает
+
+                globalBObj.content.splice(i, 1);
+                globalBObj.content = globalBObj.content;
+                return;
+            }
+        }
+
+        return;
+    } else if (deletableElement.parent.content === undefined) {
+        DRErrors.unexpectedUndefined("deleteElement->deletableElement.parent.content");
+    }
+
+    for (let i = 0; i < deletableElement.parent.content.length; i++) {
+        if (deletableElement.parent.content[i] == deletableElement) {
+            deletableElement.parent.content.splice(i, 1);
+            deletableElement.parent.content = deletableElement.parent.content;
+            return;
+        }
+    }
+
+    return;
 }
 
-export function deleteElement(globalBObj: ButchObj, deletableElement: ButchObj) {
-    return;
+function printExtensions(globalBObj: ButchObj) {
+    if (globalBObj === undefined) return;
+
+    for (let i = 0; i < (globalBObj.content ? globalBObj.content.length : 0); i++) {
+        console.log("coordinates:", globalBObj.extension.coordinates);
+        console.log("size:", globalBObj.extension.size);
+        printExtensions(globalBObj.content[i]);
+    }
 }
 
 export function changePosition(
@@ -153,9 +195,13 @@ export function changePosition(
     elementToAdd: ButchObj,
     landingCoords: Coordinates,
 ) {
+    deleteElement(globalBObj, elementToAdd);
+    printExtensions(globalBObj);
     const result =
         findInsertionPosition(globalBObj, globalBObj.content, landingCoords) ??
         DRErrors.unexpectedUndefined("findCoordinates(bObj.content, landingCoords, bObj)");
+
+    console.log({ index: result.index, datad: result?.parent?.data });
 
     if (result.parent?.content === undefined) return;
 
